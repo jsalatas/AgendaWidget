@@ -20,6 +20,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED"/>
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED"/>
                 <action android:name="android.appwidget.action.APPWIDGET_DISABLED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
 
             <meta-data
