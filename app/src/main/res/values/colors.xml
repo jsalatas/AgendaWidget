@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#308E03</color>
+    <color name="colorDeselected">#A1D1A1</color>
     <color name="colorPrimaryDark">#005E00</color>
-    <color name="colorAccent">#EEFFEE</color>
-    <color name="colorWidgetActions">#00FF00</color>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="colorWidgetActions">#AAAAAA</color>
+    <color name="colorText">#333333</color>
 </resources>

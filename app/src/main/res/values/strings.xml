@@ -6,4 +6,7 @@
     <string name="add">Add new</string>
     <string name="refresh">Refresh</string>
     <string name="settings">Widget settings</string>
+    <string name="tab_general">General</string>
+    <string name="tab_calendar">Calendar</string>
+    <string name="tab_tasks">Tasks</string>
 </resources>

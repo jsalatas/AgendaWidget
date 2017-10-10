@@ -5,10 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TabHost;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 
 /**
@@ -23,6 +28,8 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     public AgendaWidgetConfigureActivity() {
         super();
     }
+
+    private TabHost tabHost;
 
     // Write the prefix to the SharedPreferences object for this widget
     static void saveTitlePref(Context context, int appWidgetId, String text) {
@@ -72,6 +79,22 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
         }
+
+        tabHost = (TabHost) findViewById(android.R.id.tabhost);
+        tabHost.setup();
+
+        tabHost.addTab(tabHost.newTabSpec("tab_general").setIndicator(getString(R.string.tab_general)).setContent(R.id.tab_general));
+        tabHost.addTab(tabHost.newTabSpec("tab_calendar").setIndicator(getString(R.string.tab_calendar)).setContent(R.id.tab_calendar));
+        tabHost.addTab(tabHost.newTabSpec("tab_tasks").setIndicator(getString(R.string.tab_tasks)).setContent(R.id.tab_tasks));
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+            View v = tabHost.getTabWidget().getChildAt(i);
+            TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(getResources().getColorStateList(R.drawable.tab_selector));
+        }
+        tabHost.setCurrentTab(0);
+
+
+
 
         //mAppWidgetText.setText(loadTitlePref(AgendaWidgetConfigureActivity.this, mAppWidgetId));
     }
