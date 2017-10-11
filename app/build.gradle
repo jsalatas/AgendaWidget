@@ -15,6 +15,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue("bool", "FIREBASE_CRASH_ENABLED", "true")
+            // avoid warning for "Not all execution paths return a value"
+            return true        }
+        debug {
+            resValue("bool", "FIREBASE_CRASH_ENABLED", "false")
+            // avoid warning for "Not all execution paths return a value"
+            return true
         }
     }
 }
@@ -26,5 +33,11 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile('org.simpleframework:simple-xml:2.7.+')
+            {
+                exclude group: 'stax', module: 'stax-api'
+                exclude group: 'xpp3', module: 'xpp3'
+            }
     testCompile 'junit:junit:4.12'
 }

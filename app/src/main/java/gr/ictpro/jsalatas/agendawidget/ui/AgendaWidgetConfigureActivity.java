@@ -15,6 +15,8 @@ import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
+import gr.ictpro.jsalatas.agendawidget.model.settings.Setting;
+import gr.ictpro.jsalatas.agendawidget.model.settings.SettingsBuilder;
 
 /**
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
@@ -24,6 +26,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private SettingsBuilder settings;
 
     public AgendaWidgetConfigureActivity() {
         super();
@@ -42,12 +45,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     // If there is no preference saved, get the default from a resource
     static String loadTitlePref(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String titleValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null);
-        if (titleValue != null) {
-            return titleValue;
-        } else {
-            return context.getString(R.string.appwidget_text);
-        }
+        return prefs.getString(PREF_PREFIX_KEY + appWidgetId, context.getString(R.string.appwidget_text));
     }
 
     static void deleteTitlePref(Context context, int appWidgetId) {
@@ -93,6 +91,15 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         }
         tabHost.setCurrentTab(0);
 
+        settings = new SettingsBuilder(this, mAppWidgetId);
+
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+
+            }
+        });
+
 
 
 
@@ -123,6 +130,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.action_help:
+                // TODO: Show help activity
                 break;
             default:
                 return super.onOptionsItemSelected(item);
