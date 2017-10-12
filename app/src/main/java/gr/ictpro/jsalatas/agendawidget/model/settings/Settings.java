@@ -52,6 +52,8 @@ public class Settings {
     public View getView(SettingTab tab) {
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
+        int tabPadding = context.getResources().getDimensionPixelSize(R.dimen.settings_tab_padding);
+        root.setPadding(tabPadding, tabPadding, tabPadding, tabPadding);
         LinearLayout.LayoutParams pv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         root.setLayoutParams(pv);
         String category = "";
@@ -80,6 +82,7 @@ public class Settings {
         ScrollView v = new ScrollView(context);
         ViewGroup.LayoutParams ps = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         v.setLayoutParams(pv);
+        v.setPadding(0, 0, 0, 0);
         v.addView(root);
 
         return v;

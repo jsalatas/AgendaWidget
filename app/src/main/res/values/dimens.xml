@@ -10,6 +10,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_button_width">32dp</dimen>
     <dimen name="widget_header">18sp</dimen>
 
+    <dimen name="settings_tab_padding">20dp</dimen>
+
     <dimen name="settings_category_text_size">14sp</dimen>
     <dimen name="settings_title_text_size">16sp</dimen>
     <dimen name="settings_description_text_size">12sp</dimen>
