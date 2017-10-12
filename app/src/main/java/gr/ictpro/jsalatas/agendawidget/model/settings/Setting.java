@@ -21,6 +21,8 @@ public class Setting {
     @Attribute
     private String defaultValue;
 
+    private String value;
+
     public String getName() {
         return name;
     }
@@ -29,20 +31,24 @@ public class Setting {
         return tab;
     }
 
-    public String getCategory() {
+    String getCategory() {
         return category;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    public SettingType getType() {
+    SettingType getType() {
         return type;
+    }
+
+    String getValue() {
+        return value != null? value : defaultValue;
     }
 }
 
