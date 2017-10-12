@@ -156,11 +156,15 @@ public class Settings {
     }
 
     private String getResourceString(String name) {
-        int nameResourceID = context.getResources().getIdentifier(name, "string", context.getApplicationInfo().packageName);
-        if (nameResourceID == 0) {
-            throw new IllegalArgumentException("No resource string found with name " + name);
+        if(name.startsWith("@string/")) {
+            int nameResourceID = context.getResources().getIdentifier(name, "string", context.getApplicationInfo().packageName);
+            if (nameResourceID == 0) {
+                throw new IllegalArgumentException("No resource string found with name " + name);
+            } else {
+                return context.getString(nameResourceID);
+            }
         } else {
-            return context.getString(nameResourceID);
+            return name;
         }
     }
 }
