@@ -5,18 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.settings.Setting;
-import gr.ictpro.jsalatas.agendawidget.model.settings.SettingsBuilder;
+import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
 /**
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
@@ -26,7 +23,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private SettingsBuilder settings;
+    private Settings settings;
 
     public AgendaWidgetConfigureActivity() {
         super();
@@ -91,7 +88,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         }
         tabHost.setCurrentTab(0);
 
-        settings = new SettingsBuilder(this, mAppWidgetId);
+        settings = new Settings(this, mAppWidgetId);
 
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
