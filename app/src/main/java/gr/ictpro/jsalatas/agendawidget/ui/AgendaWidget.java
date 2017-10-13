@@ -9,12 +9,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.IBinder;
-import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.settings.Setting;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
 import java.util.Calendar;
@@ -89,9 +87,8 @@ public class AgendaWidget extends AppWidgetProvider {
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.agenda_widget);
         views.setInt(R.id.widgetLayout, "setBackgroundColor", Color.parseColor(Settings.getStringPref(context, "backgroundColor", appWidgetId)));
-        if(Settings.getBoolPref(context, "dropShadow", appWidgetId)) {
-            views.setFloat(R.id.widgetLayout, "setElevation", dpToPx(4));
-        }
+        views.setInt(R.id.widgetLayoutShadow, "setBackgroundResource", Settings.getBoolPref(context, "dropShadow", appWidgetId)? android.R.drawable.dialog_holo_light_frame:R.drawable.widget_transparent);
+        RelativeLayout l = new RelativeLayout(context);
 
         String currentTime = Calendar.getInstance().getTime().toString();
         views.setTextViewText(R.id.tvCurrentDate, currentTime);

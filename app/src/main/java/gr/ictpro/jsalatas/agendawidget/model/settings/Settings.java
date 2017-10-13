@@ -50,15 +50,7 @@ public class Settings {
     public void saveSettingsValues() {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         for (Setting setting:settings) {
-            switch (setting.getType()) {
-                case BOOL:
-                        prefs.putBoolean(setting.getName(), Boolean.parseBoolean(setting.getValue()));
-                    break;
-                default: //String
-                    prefs.putString(setting.getName(), setting.getValue());
-                     break;
-            }
-
+            prefs.putString(setting.getName() + "_" + widgetId, setting.getValue());
         }
         prefs.apply();
     }
