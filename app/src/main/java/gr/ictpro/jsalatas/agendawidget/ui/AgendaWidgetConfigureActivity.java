@@ -15,18 +15,13 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.settings.SettingTab;
-import gr.ictpro.jsalatas.agendawidget.model.settings.SettingType;
-import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
-import gr.ictpro.jsalatas.agendawidget.model.settings.SettingsListAdapter;
+import gr.ictpro.jsalatas.agendawidget.model.settings.*;
 
 /**
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
  */
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
 
-    private static final String PREFS_NAME = "gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget";
-    private static final String PREF_PREFIX_KEY = "appwidget_";
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Settings settings;
 
@@ -35,13 +30,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     }
 
     private TabHost tabHost;
-
-    // Write the prefix to the SharedPreferences object for this widget
-    static void saveTitlePref(Context context, int appWidgetId, String text) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
-        prefs.apply();
-    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -84,6 +72,8 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         ListView l = (ListView)tabHost.findViewById(R.id.lst_general);
         l.setAdapter(new SettingsListAdapter(this, settings.getListItems(SettingTab.GENERAL)));
 
+        initializeListListeners();
+
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
@@ -99,6 +89,14 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void initializeListListeners() {
+        SettingsOnClickListener listener = new SettingsOnClickListener();
+        ((ListView)tabHost.findViewById(R.id.lst_general)).setOnItemClickListener(listener);
+        ((ListView)tabHost.findViewById(R.id.lst_calendar)).setOnItemClickListener(listener);
+        ((ListView)tabHost.findViewById(R.id.lst_tasks)).setOnItemClickListener(listener);
+
     }
 
     @Override
