@@ -3,6 +3,7 @@
           package="gr.ictpro.jsalatas.agendawidget">
 
     <application
+            android:name=".application.AgentaWidgetApplication"
             android:allowBackup="false"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"

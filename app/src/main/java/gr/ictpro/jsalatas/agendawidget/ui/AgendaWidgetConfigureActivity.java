@@ -43,19 +43,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         prefs.apply();
     }
 
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    static String loadTitlePref(Context context, int appWidgetId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        return prefs.getString(PREF_PREFIX_KEY + appWidgetId, context.getString(R.string.appwidget_text));
-    }
-
-    static void deleteTitlePref(Context context, int appWidgetId) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId);
-        prefs.apply();
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -112,11 +99,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
-        //mAppWidgetText.setText(loadTitlePref(AgendaWidgetConfigureActivity.this, mAppWidgetId));
     }
 
     @Override
@@ -131,6 +113,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                settings.saveSettingsValues();
                 //update the widget
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, AgendaWidget.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {mAppWidgetId});

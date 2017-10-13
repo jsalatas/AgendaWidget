@@ -5,11 +5,17 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.*;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.IBinder;
+import android.text.Layout;
+import android.util.DisplayMetrics;
+import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
+import gr.ictpro.jsalatas.agendawidget.model.settings.Setting;
+import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
 import java.util.Calendar;
 
@@ -79,16 +85,19 @@ public class AgendaWidget extends AppWidgetProvider {
         }
     }
 
+
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        //CharSequence widgetText = AgendaWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-        // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.agenda_widget);
-        views.setInt(R.id.widgetLayout, "setBackgroundColor", Color.argb(50, 255, 255, 255));
+        views.setInt(R.id.widgetLayout, "setBackgroundColor", Color.parseColor(Settings.getStringPref(context, "backgroundColor", appWidgetId)));
+        if(Settings.getBoolPref(context, "dropShadow", appWidgetId)) {
+            views.setFloat(R.id.widgetLayout, "setElevation", dpToPx(4));
+        }
 
         String currentTime = Calendar.getInstance().getTime().toString();
         views.setTextViewText(R.id.tvCurrentDate, currentTime);
 
         Uri data = Uri.withAppendedPath(Uri.parse("agenda://widget/id/"), String.valueOf(appWidgetId));
+
         // Bind widget configuration button
         Intent configIntent = new Intent(context, AgendaWidgetConfigureActivity.class);
         configIntent.setData(data);
@@ -137,7 +146,7 @@ public class AgendaWidget extends AppWidgetProvider {
         super.onDeleted(context, appWidgetIds);
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-            AgendaWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
+            Settings.deletePrefs(context, appWidgetId);
         }
     }
 
@@ -151,6 +160,12 @@ public class AgendaWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         context.stopService(new Intent(context, AgendaUpdateService.class));
+    }
+
+    private static float dpToPx(float dp){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
     }
 }
 

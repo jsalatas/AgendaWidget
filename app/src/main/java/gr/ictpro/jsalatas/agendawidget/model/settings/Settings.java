@@ -1,16 +1,7 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v7.widget.SwitchCompat;
-import android.text.InputType;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.content.SharedPreferences;
 import gr.ictpro.jsalatas.agendawidget.R;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -24,6 +15,9 @@ import java.util.List;
 
 @Root(name = "settings")
 public class Settings {
+    private static final String PREFS_NAME = "gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget";
+    private static List<Setting> settingsList;
+
     @ElementList(inline = true, entry = "setting")
     private List<Setting> settings;
 
@@ -41,9 +35,32 @@ public class Settings {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(this.context.getResources().openRawResource(R.raw.settings)));
             settings = serializer.read(Settings.class, br).getSettings();
+            loadSettingsValues();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadSettingsValues() {
+        for (Setting setting:settings) {
+            setting.setValue(getStringPref(context, setting.getName(), widgetId));
+        }
+    }
+
+    public void saveSettingsValues() {
+        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+        for (Setting setting:settings) {
+            switch (setting.getType()) {
+                case BOOL:
+                        prefs.putBoolean(setting.getName(), Boolean.parseBoolean(setting.getValue()));
+                    break;
+                default: //String
+                    prefs.putString(setting.getName(), setting.getValue());
+                     break;
+            }
+
+        }
+        prefs.apply();
     }
 
     private List<Setting> getSettings() {
@@ -69,4 +86,44 @@ public class Settings {
         return items;
     }
 
+
+    public static void deletePrefs(Context context, int appWidgetId) {
+        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+        for(Setting setting: settingsList) {
+            prefs.remove(setting.getName() + "_" + appWidgetId);
+        }
+        prefs.apply();
+
+    }
+
+    public static String getStringPref(Context context, String name, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return prefs.getString(name + "_" + appWidgetId, getDefaultPref(name));
+    }
+
+    public static Boolean getBoolPref(Context context, String name, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return Boolean.parseBoolean(prefs.getString(name + "_" + appWidgetId, getDefaultPref(name)));
+    }
+
+    private static String getDefaultPref(String name) {
+        for(Setting setting: settingsList) {
+            if(setting.getName().equals(name)) {
+                // Value is null so we always get the default value
+                // TODO: Maybe I need to reconsider the whole approach
+                return setting.getValue();
+            }
+        }
+        throw new IllegalArgumentException("No setting found with name " + name);
+    }
+
+    public static void initiallize(Context context) {
+        Serializer serializer = new Persister();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(context.getResources().openRawResource(R.raw.settings)));
+            settingsList = serializer.read(Settings.class, br).getSettings();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
