@@ -4,8 +4,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TextView android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:text="Tasks settings"/>
+    <ListView android:id="@+id/lst_tasks"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/tab_general"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:layout_height="match_parent">
 
-    <TextView android:layout_width="match_parent"
+    <ListView android:id="@+id/lst_general"
+              android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:text="General settings"/>
+              android:dividerHeight="0dp"
+              android:divider="@null"/>
 
 </LinearLayout>

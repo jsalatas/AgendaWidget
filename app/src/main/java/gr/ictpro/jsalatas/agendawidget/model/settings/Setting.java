@@ -27,7 +27,7 @@ public class Setting {
         return name;
     }
 
-    public SettingTab getTab() {
+    SettingTab getTab() {
         return tab;
     }
 
@@ -49,6 +49,10 @@ public class Setting {
 
     String getValue() {
         return value != null? value : defaultValue;
+    }
+
+    void setValue(String value) {
+        this.value = value;
     }
 }
 

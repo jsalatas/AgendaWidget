@@ -15,12 +15,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="settings_category_text_size">14sp</dimen>
     <dimen name="settings_title_text_size">16sp</dimen>
     <dimen name="settings_description_text_size">12sp</dimen>
-
-    <dimen name="settings_category_padding_top">20dp</dimen>
-    <dimen name="settings_category_padding_bottom">0dp</dimen>
-    <dimen name="settings_text_padding">2dp</dimen>
-    <dimen name="settings_container_padding">10dp</dimen>
-    <dimen name="settings_divider_padding">20dp</dimen>
-
+    <dimen name="settings_margin">15dp</dimen>
+    <dimen name="settings_category_margin_top">15wedp</dimen>
+    <dimen name="settings_category_margin_bottom">0dp</dimen>
 
 </resources>

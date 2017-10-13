@@ -11,11 +11,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.model.settings.SettingTab;
+import gr.ictpro.jsalatas.agendawidget.model.settings.SettingType;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.settings.SettingsListAdapter;
 
 /**
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
@@ -91,18 +94,16 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         settings = new Settings(this, mAppWidgetId);
 
         tabHost.setCurrentTab(0);
-        LinearLayout l = (LinearLayout)tabHost.findViewById(R.id.tab_general);
-        l.removeAllViews();
-        l.addView(settings.getView(SettingTab.GENERAL));
+        ListView l = (ListView)tabHost.findViewById(R.id.lst_general);
+        l.setAdapter(new SettingsListAdapter(this, settings.getListItems(SettingTab.GENERAL)));
 
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
                 switch (tabId) {
                     case "tab_general":
-                        LinearLayout l = (LinearLayout)tabHost.findViewById(R.id.tab_general);
-                        l.removeAllViews();
-                        l.addView(settings.getView(SettingTab.GENERAL));
+                        ListView l = (ListView)tabHost.findViewById(R.id.lst_general);
+                        l.setAdapter(new SettingsListAdapter(AgendaWidgetConfigureActivity.this, settings.getListItems(SettingTab.GENERAL)));
                         break;
                     case "tab_calendar":
                         break;

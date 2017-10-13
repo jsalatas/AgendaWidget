@@ -4,8 +4,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TextView android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:text="Calendar settings"/>
+    <ListView android:id="@+id/lst_calendar"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
 
 </LinearLayout>

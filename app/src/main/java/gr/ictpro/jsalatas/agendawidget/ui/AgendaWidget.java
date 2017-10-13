@@ -83,7 +83,6 @@ public class AgendaWidget extends AppWidgetProvider {
         //CharSequence widgetText = AgendaWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.agenda_widget);
-        views.setViewPadding(R.id.widgetLayout, 16, 16, 16, 16);
         views.setInt(R.id.widgetLayout, "setBackgroundColor", Color.argb(50, 255, 255, 255));
 
         String currentTime = Calendar.getInstance().getTime().toString();
