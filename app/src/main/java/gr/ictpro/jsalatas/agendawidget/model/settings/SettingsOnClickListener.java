@@ -1,7 +1,9 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
@@ -27,6 +29,12 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             setting.setValue(newValue.toString());
             SwitchCompat s = (SwitchCompat) view.findViewById(R.id.swcValue);
             s.setChecked(newValue);
+            if(setting.getName().equals("dropShadow") && newValue) {
+                Setting bgColor = settings.getSetting("backgroundColor");
+                int colorValue = Color.parseColor(bgColor.getValue());
+                int newColor = Color.rgb(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+                bgColor.setValue("#" + Integer.toHexString(newColor));
+            }
         } else if (setting.getType() == SettingType.TRANSPARENT_COLOR) {
             int colorValue = Color.parseColor(setting.getValue());
             final ColorPicker cp;
@@ -35,8 +43,6 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             } else {
                 cp = new ColorPicker((Activity) view.getContext(), Color.alpha(colorValue), Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
             }
-
-
 
             cp.setCallback(new ColorPickerCallback() {
                 @Override
