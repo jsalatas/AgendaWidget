@@ -78,14 +78,21 @@ public class Settings {
         return items;
     }
 
-
     public static void deletePrefs(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         for(Setting setting: settingsList) {
             prefs.remove(setting.getName() + "_" + appWidgetId);
         }
         prefs.apply();
+    }
 
+    Setting getSetting(String name) {
+        for(Setting setting: settings) {
+            if(setting.getName().equals(name)) {
+                return setting;
+            }
+        }
+        throw new IllegalArgumentException("No setting found with name " + name);
     }
 
     public static String getStringPref(Context context, String name, int appWidgetId) {

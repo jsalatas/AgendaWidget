@@ -13,7 +13,7 @@
     <!-- General Settings -->
     <string name="appearance">Appearance</string>
     <string name="background_color_prop">Background Color</string>
-    <string name="background_color_desc">The widget\'s background color</string>
+    <string name="background_color_desc">The widget\'s background color.</string>
     <string name="drop_shadow_prop">Drop Shadow</string>
-    <string name="drop_shadow_desc">Drop a shadow around the widget</string>
+    <string name="drop_shadow_desc">Drop a shadow around the widget. It disables widget\'s transparency.</string>
 </resources>

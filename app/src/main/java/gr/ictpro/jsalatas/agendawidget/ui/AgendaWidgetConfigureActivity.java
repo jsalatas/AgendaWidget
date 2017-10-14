@@ -92,7 +92,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     }
 
     private void initializeListListeners() {
-        SettingsOnClickListener listener = new SettingsOnClickListener();
+        SettingsOnClickListener listener = new SettingsOnClickListener(settings);
         ((ListView)tabHost.findViewById(R.id.lst_general)).setOnItemClickListener(listener);
         ((ListView)tabHost.findViewById(R.id.lst_calendar)).setOnItemClickListener(listener);
         ((ListView)tabHost.findViewById(R.id.lst_tasks)).setOnItemClickListener(listener);

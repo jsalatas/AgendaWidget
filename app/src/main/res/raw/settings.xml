@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
-    <setting name="backgroundColor"
-             tab="GENERAL"
-             category="@string/appearance"
-             title="@string/background_color_prop"
-             description="@string/background_color_desc"
-             type="TRANSPARENT_COLOR"
-             defaultValue="#FFFFFFFF"/>
     <setting name="dropShadow"
              tab="GENERAL"
              category="@string/appearance"
@@ -14,4 +7,11 @@
              description="@string/drop_shadow_desc"
              type="BOOL"
              defaultValue="false"/>
+    <setting name="backgroundColor"
+             tab="GENERAL"
+             category="@string/appearance"
+             title="@string/background_color_prop"
+             description="@string/background_color_desc"
+             type="TRANSPARENT_COLOR"
+             defaultValue="#22000000"/>
 </settings>
