@@ -1,7 +1,9 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -35,10 +37,12 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
         } else if (setting.getType() == SettingType.TRANSPARENT_COLOR) {
             int colorValue = Color.parseColor(setting.getValue());
             final ColorPicker cp;
+            boolean setWallpaper = false;
             if(setting.getName().equals("backgroundColor") && Boolean.parseBoolean(settings.getSetting("dropShadow").getValue())) {
                 cp = new ColorPicker((Activity) view.getContext(), Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
             } else {
                 cp = new ColorPicker((Activity) view.getContext(), Color.alpha(colorValue), Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
+                setWallpaper = true;
             }
 
             cp.setCallback(new ColorPickerCallback() {
@@ -50,6 +54,13 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             });
 
             cp.show();
+            cp.setButtonColor(view.getContext().getResources().getColor(R.color.colorPrimaryDark));
+            if(setWallpaper) {
+                final WallpaperManager wallpaperManager = WallpaperManager.getInstance(view.getContext());
+                final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+                cp.setBackgroundDrawable(wallpaperDrawable);
+            }
+
         } else if (setting.getType() == SettingType.COLOR) {
             int colorValue = Color.parseColor(setting.getValue());
 
@@ -63,6 +74,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             });
 
             cp.show();
+            cp.setButtonColor(view.getContext().getResources().getColor(R.color.colorPrimaryDark));
         }
 
     }
