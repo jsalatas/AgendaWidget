@@ -1,12 +1,9 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.app.Activity;
-import android.app.WallpaperManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
