@@ -30,7 +30,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
                 Setting bgColor = settings.getSetting("backgroundColor");
                 int colorValue = Color.parseColor(bgColor.getValue());
                 int newColor = Color.rgb(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-                bgColor.setValue("#" + Integer.toHexString(newColor));
+                bgColor.setValue(String.format("#%08X", newColor));
             }
         } else if (setting.getType() == SettingType.TRANSPARENT_COLOR) {
             int colorValue = Color.parseColor(setting.getValue());
@@ -44,7 +44,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             cp.setCallback(new ColorPickerCallback() {
                 @Override
                 public void onColorChosen(@ColorInt int color) {
-                    setting.setValue("#" + Integer.toHexString(color));
+                    setting.setValue(String.format("#%08X", color));
                     cp.cancel();
                 }
             });
@@ -57,7 +57,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             cp.setCallback(new ColorPickerCallback() {
                 @Override
                 public void onColorChosen(@ColorInt int color) {
-                    setting.setValue("#" + Integer.toHexString(color));
+                    setting.setValue(String.format("#%08X", color));
                     cp.cancel();
                 }
             });
