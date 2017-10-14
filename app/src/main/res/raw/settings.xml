@@ -14,4 +14,18 @@
              description="@string/background_color_desc"
              type="TRANSPARENT_COLOR"
              defaultValue="#22000000"/>
+    <setting name="headerColor"
+             tab="GENERAL"
+             category="@string/appearance"
+             title="@string/header_color_prop"
+             description="@string/header_color_desc"
+             type="COLOR"
+             defaultValue="#FFFFFF"/>
+    <setting name="controlColor"
+             tab="GENERAL"
+             category="@string/appearance"
+             title="@string/control_color_prop"
+             description="@string/control_color_desc"
+             type="COLOR"
+             defaultValue="#FEC300"/>
 </settings>

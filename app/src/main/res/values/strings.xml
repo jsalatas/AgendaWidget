@@ -16,4 +16,8 @@
     <string name="background_color_desc">The widget\'s background color.</string>
     <string name="drop_shadow_prop">Drop Shadow</string>
     <string name="drop_shadow_desc">Drop a shadow around the widget. It disables widget\'s transparency.</string>
+    <string name="header_color_prop">Header Color</string>
+    <string name="header_color_desc">The color of the header\'s date.</string>
+    <string name="control_color_prop">Controls Color</string>
+    <string name="control_color_desc">The color of the widget\'s control buttons.</string>
 </resources>
