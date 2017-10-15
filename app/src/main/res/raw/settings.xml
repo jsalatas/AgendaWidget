@@ -28,4 +28,25 @@
              description="@string/control_color_desc"
              type="COLOR"
              defaultValue="#FEC300"/>
+    <setting name="longDateFormat"
+             tab="GENERAL"
+             category="@string/datettime_format"
+             title="@string/long_date_prop"
+             description=""
+             type="DATE_LONG"
+             defaultValue="LONG"/>
+    <setting name="shortDateFormat"
+             tab="GENERAL"
+             category="@string/datettime_format"
+             title="@string/short_date_prop"
+             description=""
+             type="DATE_SHORT"
+             defaultValue="SHORT"/>
+    <setting name="timeFormat"
+             tab="GENERAL"
+             category="@string/datettime_format"
+             title="@string/time_prop"
+             description=""
+             type="TIME"
+             defaultValue="SHORT"/>
 </settings>

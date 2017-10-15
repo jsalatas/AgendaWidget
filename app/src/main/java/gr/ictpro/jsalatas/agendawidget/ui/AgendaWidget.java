@@ -8,14 +8,20 @@ import android.content.*;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
+import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Implementation of App Widget functionality.
@@ -90,8 +96,18 @@ public class AgendaWidget extends AppWidgetProvider {
         views.setInt(R.id.widgetLayoutShadow, "setBackgroundResource", Settings.getBoolPref(context, "dropShadow", appWidgetId)? android.R.drawable.dialog_holo_light_frame:R.drawable.widget_transparent);
         RelativeLayout l = new RelativeLayout(context);
 
-        String currentTime = Calendar.getInstance().getTime().toString();
-        views.setTextViewText(R.id.tvCurrentDate, currentTime);
+        Date currentTime = Calendar.getInstance().getTime();
+        Locale locale = AgentaWidgetApplication.getCurrentLocale();
+        DateFormat longDateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
+
+        DateFormat shortDateFormat = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
+        views.setTextViewText(R.id.tvCurrentDate, longDateFormat.format(currentTime));
+        views.setTextViewText(R.id.shortDate, shortDateFormat.format(currentTime));
+        views.setTextViewText(R.id.shortTime, timeFormat.format(currentTime));
+
+
+
         views.setInt(R.id.tvCurrentDate, "setTextColor", Color.parseColor(Settings.getStringPref(context, "headerColor", appWidgetId)));
         views.setInt(R.id.imgAdd, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
         views.setInt(R.id.imgRefresh, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));

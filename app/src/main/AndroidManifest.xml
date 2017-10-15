@@ -42,7 +42,6 @@
                 <action android:name="gr.ictpro.jsalatas.agendawidget.action.UPDATE"/>
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

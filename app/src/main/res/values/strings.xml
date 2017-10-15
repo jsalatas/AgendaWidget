@@ -20,4 +20,18 @@
     <string name="header_color_desc">The color of the header\'s date.</string>
     <string name="control_color_prop">Controls Color</string>
     <string name="control_color_desc">The color of the widget\'s control buttons.</string>
+
+    <string name="datettime_format">Date and Time Format</string>
+    <string name="long_date_prop">Long Date</string>
+    <string name="short_date_prop">Short Date</string>
+    <string name="time_prop">Time</string>
+
+
+    <!-- datetime format dialog -->
+    <string name="dialog_ok">OK</string>
+    <string name="full_format">Full</string>
+    <string name="long_format">Long</string>
+    <string name="medium_format">Medium</string>
+    <string name="short_format">Short</string>
+    <string name="custom_format">Custom</string>
 </resources>
