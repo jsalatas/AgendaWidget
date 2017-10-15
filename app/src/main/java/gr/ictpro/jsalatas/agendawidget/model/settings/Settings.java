@@ -3,6 +3,7 @@ package gr.ictpro.jsalatas.agendawidget.model.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import gr.ictpro.jsalatas.agendawidget.R;
+import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -10,8 +11,12 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Root(name = "settings")
 public class Settings {
@@ -31,6 +36,7 @@ public class Settings {
     public Settings(Context context, int widgetId) {
         this.context = context;
         this.widgetId = widgetId;
+
         Serializer serializer = new Persister();
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(this.context.getResources().openRawResource(R.raw.settings)));
@@ -125,4 +131,49 @@ public class Settings {
             e.printStackTrace();
         }
     }
+
+    public static String formatDate(String type, Date date) {
+        Locale locale = AgentaWidgetApplication.getCurrentLocale();
+
+        DateFormat df;
+        String s = type.toUpperCase();
+        switch (s) {
+            case "FULL":
+                df = DateFormat.getDateInstance(DateFormat.FULL, locale);
+                break;
+            case "LONG":
+                df = DateFormat.getDateInstance(DateFormat.LONG, locale);
+                break;
+            case "MEDIUM":
+                df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+                break;
+            case "SHORT":
+                df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+                break;
+            default: //custom
+                df = new SimpleDateFormat(type);
+                break;
+        }
+
+        return df.format(date);
+    }
+
+    public static String formatTime(String type, Date date) {
+        Locale locale = AgentaWidgetApplication.getCurrentLocale();
+
+        DateFormat df;
+        String s = type.toUpperCase();
+        switch (s) {
+            case "SHORT":
+                df = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
+                break;
+            default: //custom
+                df = new SimpleDateFormat(type);
+                break;
+        }
+
+        return df.format(date);
+    }
+
+
 }

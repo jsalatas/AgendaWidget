@@ -38,7 +38,7 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
             v.setClickable(true);
 
             TextView tv = (TextView) v.findViewById(R.id.tvCategory);
-            tv.setText(getResourceString(((ListItemCategory) item).getCategory()));
+            tv.setText(AgentaWidgetApplication.getResourceString(((ListItemCategory) item).getCategory()));
         } else if (item instanceof ListItemSetting) {
             Setting setting = ((ListItemSetting) item).getSetting();
 
@@ -53,16 +53,16 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
             }
 
             TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
-            tvTitle.setText(getResourceString(setting.getTitle()));
+            tvTitle.setText(AgentaWidgetApplication.getResourceString(setting.getTitle()));
             Date currentTime = Calendar.getInstance().getTime();
 
             TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
             if (setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.DATE_SHORT) {
-                tvDescription.setText(formatDate(setting.getValue(), currentTime));
+                tvDescription.setText(Settings.formatDate(setting.getValue(), currentTime));
             } else if (setting.getType() == SettingType.TIME) {
-                tvDescription.setText(formatTime(setting.getValue(), currentTime));
+                tvDescription.setText(Settings.formatTime(setting.getValue(), currentTime));
             } else {
-                tvDescription.setText(getResourceString(setting.getDescription()));
+                tvDescription.setText(AgentaWidgetApplication.getResourceString(setting.getDescription()));
             }
             v.setClickable(false);
 
@@ -77,60 +77,4 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
 
         return v;
     }
-
-    private String formatDate(String type, Date date) {
-        Locale locale = AgentaWidgetApplication.getCurrentLocale();
-
-        DateFormat df;
-        switch (type) {
-            case "FULL":
-                df = DateFormat.getDateInstance(DateFormat.FULL, locale);
-                break;
-            case "LONG":
-                df = DateFormat.getDateInstance(DateFormat.LONG, locale);
-                break;
-            case "MEDIUM":
-                df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-                break;
-            case "SHORT":
-                df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
-                break;
-            default: //custom
-                df = new SimpleDateFormat(type);
-                break;
-        }
-
-        return df.format(date);
-    }
-
-    private String formatTime(String type, Date date) {
-        Locale locale = AgentaWidgetApplication.getCurrentLocale();
-
-        DateFormat df;
-        switch (type) {
-            case "SHORT":
-                df = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
-                break;
-            default: //custom
-                df = new SimpleDateFormat(type);
-                break;
-        }
-
-        return df.format(date);
-    }
-
-    private String getResourceString(String name) {
-        if (name.startsWith("@string/")) {
-            int nameResourceID = this.getContext().getResources().getIdentifier(name, "string", this.getContext().getApplicationInfo().packageName);
-            if (nameResourceID == 0) {
-                throw new IllegalArgumentException("No resource string found with name " + name);
-            } else {
-                return this.getContext().getString(nameResourceID);
-            }
-        } else {
-            return name;
-        }
-    }
-
-
 }

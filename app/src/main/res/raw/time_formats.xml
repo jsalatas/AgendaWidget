@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="values">
-        <item>@string/short_format</item>
-        <item>@string/custom_format</item>
-    </string-array>
-</resources>

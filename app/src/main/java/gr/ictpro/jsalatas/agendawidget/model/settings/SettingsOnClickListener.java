@@ -8,9 +8,14 @@ import android.support.annotation.ColorInt;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import gr.ictpro.jsalatas.agendawidget.R;
+import gr.ictpro.jsalatas.agendawidget.ui.DateFormatDialog;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class SettingsOnClickListener implements AdapterView.OnItemClickListener {
     private Settings settings;
@@ -28,7 +33,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             setting.setValue(newValue.toString());
             SwitchCompat s = (SwitchCompat) view.findViewById(R.id.swcValue);
             s.setChecked(newValue);
-            if(setting.getName().equals("dropShadow") && newValue) {
+            if (setting.getName().equals("dropShadow") && newValue) {
                 Setting bgColor = settings.getSetting("backgroundColor");
                 int colorValue = Color.parseColor(bgColor.getValue());
                 int newColor = Color.rgb(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
@@ -38,7 +43,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             int colorValue = Color.parseColor(setting.getValue());
             final ColorPicker cp;
             boolean setWallpaper = false;
-            if(setting.getName().equals("backgroundColor") && Boolean.parseBoolean(settings.getSetting("dropShadow").getValue())) {
+            if (setting.getName().equals("backgroundColor") && Boolean.parseBoolean(settings.getSetting("dropShadow").getValue())) {
                 cp = new ColorPicker((Activity) view.getContext(), Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
             } else {
                 cp = new ColorPicker((Activity) view.getContext(), Color.alpha(colorValue), Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
@@ -54,13 +59,12 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             });
 
             cp.show();
-            cp.setButtonColor(view.getContext().getResources().getColor(R.color.colorPrimaryDark));
-            if(setWallpaper) {
+            cp.setButtonColor(view.getContext().getResources().getColor(R.color.colorPrimary));
+            if (setWallpaper) {
                 final WallpaperManager wallpaperManager = WallpaperManager.getInstance(view.getContext());
                 final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
                 cp.setBackgroundDrawable(wallpaperDrawable);
             }
-
         } else if (setting.getType() == SettingType.COLOR) {
             int colorValue = Color.parseColor(setting.getValue());
 
@@ -74,7 +78,25 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             });
 
             cp.show();
-            cp.setButtonColor(view.getContext().getResources().getColor(R.color.colorPrimaryDark));
+            cp.setButtonColor(view.getContext().getResources().getColor(R.color.colorPrimary));
+        } else if (setting.getType() == SettingType.DATE_SHORT || setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.TIME) {
+            final DateFormatDialog df = new DateFormatDialog((Activity) view.getContext(), setting.getValue(), setting.getType());
+            final View v = view;
+            df.setCallback(new DateTimeFormatPickerCallback() {
+                @Override
+                public void onFormatChosen(String format) {
+                    setting.setValue(format);
+                    TextView tvDescription = (TextView)v.findViewById(R.id.tvDescription);
+                    Date currentTime = Calendar.getInstance().getTime();
+                    if (setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.DATE_SHORT) {
+                        tvDescription.setText(Settings.formatDate(setting.getValue(), currentTime));
+                    } else if (setting.getType() == SettingType.TIME) {
+                        tvDescription.setText(Settings.formatTime(setting.getValue(), currentTime));
+                    }
+                    df.cancel();
+                }
+            });
+            df.show();
         }
 
     }

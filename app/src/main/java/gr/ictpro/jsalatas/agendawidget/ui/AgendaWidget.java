@@ -102,9 +102,9 @@ public class AgendaWidget extends AppWidgetProvider {
 
         DateFormat shortDateFormat = DateFormat.getDateInstance(DateFormat.SHORT, locale);
         DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
-        views.setTextViewText(R.id.tvCurrentDate, longDateFormat.format(currentTime));
-        views.setTextViewText(R.id.shortDate, shortDateFormat.format(currentTime));
-        views.setTextViewText(R.id.shortTime, timeFormat.format(currentTime));
+        views.setTextViewText(R.id.tvCurrentDate, Settings.formatDate(Settings.getStringPref(context, "longDateFormat", appWidgetId), currentTime));
+        views.setTextViewText(R.id.shortDate, Settings.formatDate(Settings.getStringPref(context, "shortDateFormat", appWidgetId), currentTime));
+        views.setTextViewText(R.id.shortTime, Settings.formatTime(Settings.getStringPref(context, "timeFormat", appWidgetId), currentTime));
 
 
 

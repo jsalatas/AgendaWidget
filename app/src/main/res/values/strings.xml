@@ -34,4 +34,5 @@
     <string name="medium_format">Medium</string>
     <string name="short_format">Short</string>
     <string name="custom_format">Custom</string>
+    <string name="custom_format_help">Custom format help</string>
 </resources>

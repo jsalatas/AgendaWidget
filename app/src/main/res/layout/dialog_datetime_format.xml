@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/date_format_root"
               android:layout_width="350dp"
               android:layout_height="wrap_content"
               android:orientation="vertical"
               android:layout_margin="16dp">
-    <ListView android:id="@+id/lvDateFormat"
+    <ListView android:id="@+id/lst_date_format"
               android:layout_width="match_parent"
               android:layout_height="0dp"
+              android:choiceMode="singleChoice"
               android:layout_weight="1"/>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -16,22 +18,28 @@
                   android:layout_height="wrap_content"
                   android:inputType="textNoSuggestions"
                   android:visibility="gone"
-                  android:text="Custom Format"/>
+                  android:text=""/>
         <TextView android:id="@+id/tvDateTimeFormatHelp"
                   android:layout_width="match_parent"
                   android:visibility="gone"
                   android:layout_height="wrap_content"
-                  android:text="Help"/>
+                  android:text="@string/custom_format_help"/>
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal">
             <android.support.v4.widget.Space android:layout_width="0dp"
                                              android:layout_height="wrap_content"
                                              android:layout_weight="1"/>
-            <TextView android:id="@+id/tvOk"
+            <TextView android:id="@+id/tvDateTimeFormatOk"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:gravity="end"
+                      android:textStyle="bold"
+                      android:textColor="@color/colorPrimary"
+                      android:textSize="18sp"
+                      android:layout_marginEnd="4dp"
+                      android:focusable="true"
+                      android:layout_marginBottom="10dp"
                       android:text="@string/dialog_ok"/>
         </LinearLayout>
     </LinearLayout>
