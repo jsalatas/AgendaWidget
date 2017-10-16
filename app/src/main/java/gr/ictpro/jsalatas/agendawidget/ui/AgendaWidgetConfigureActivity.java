@@ -1,26 +1,30 @@
 package gr.ictpro.jsalatas.agendawidget.ui;
 
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.settings.*;
+import gr.ictpro.jsalatas.agendawidget.model.settings.SettingTab;
+import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.settings.SettingsListAdapter;
+import gr.ictpro.jsalatas.agendawidget.model.settings.SettingsOnClickListener;
 
 /**
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
  */
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
+    static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
+    static final int PERMISSIONS_REQUEST_READ_CALENDAR_INSIST = 2;
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Settings settings;
@@ -77,12 +81,15 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
+                ListView l;
                 switch (tabId) {
                     case "tab_general":
-                        ListView l = (ListView)tabHost.findViewById(R.id.lst_general);
+                        l = (ListView)tabHost.findViewById(R.id.lst_general);
                         l.setAdapter(new SettingsListAdapter(AgendaWidgetConfigureActivity.this, settings.getListItems(SettingTab.GENERAL)));
                         break;
                     case "tab_calendar":
+                        l = (ListView)tabHost.findViewById(R.id.lst_calendar);
+                        l.setAdapter(new SettingsListAdapter(AgendaWidgetConfigureActivity.this, settings.getListItems(SettingTab.CALENDAR)));
                         break;
                     case "tab_tasks":
                         break;
@@ -130,6 +137,32 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_CALENDAR: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("PERMISSION", ">>>>>>>> READ_CALENDAR Granted!");
+                } else {
+                    Log.d("PERMISSION", ">>>>>>>> READ_CALENDAR Denied!");
+                }
+                return;
+            }
+            case PERMISSIONS_REQUEST_READ_CALENDAR_INSIST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // We know we are in calendar's tab and the first setting is the one we want
+                    // Notice that the first setting is at index (position) 1. The item at 0 is the
+                    // category title
+                    ListView l = (ListView)tabHost.findViewById(R.id.lst_calendar);
+                    l.performItemClick(l.getAdapter().getView(1, null, null),
+                            1, l.getAdapter().getItemId(1));
+                }
+            }
+        }
     }
 
 }

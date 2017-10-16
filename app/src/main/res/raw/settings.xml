@@ -49,4 +49,11 @@
              description=""
              type="TIME"
              defaultValue="SHORT"/>
+    <setting name="calendars"
+             tab="CALENDAR"
+             category="@string/calendars_category"
+             title="@string/selected_calendars_prop"
+             description="@string/selected_calendars_desc"
+             type="CALENDARS"
+             defaultValue="SHORT"/>
 </settings>

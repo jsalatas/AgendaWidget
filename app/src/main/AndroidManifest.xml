@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="gr.ictpro.jsalatas.agendawidget">
 
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+
     <application
             android:name=".application.AgentaWidgetApplication"
             android:allowBackup="false"
