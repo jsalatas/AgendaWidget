@@ -2,9 +2,11 @@ package gr.ictpro.jsalatas.agendawidget.ui.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 
 /*

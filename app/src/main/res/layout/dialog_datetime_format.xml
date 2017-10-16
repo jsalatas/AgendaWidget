@@ -18,12 +18,13 @@
                   android:layout_height="wrap_content"
                   android:inputType="textNoSuggestions"
                   android:visibility="gone"
+                  android:textCursorDrawable="@null"
                   android:text=""/>
         <TextView android:id="@+id/tvDateTimeFormatHelp"
                   android:layout_width="match_parent"
                   android:visibility="gone"
-                  android:layout_height="wrap_content"
-                  android:text="@string/custom_format_help"/>
+                  android:textSize="12sp"
+                  android:layout_height="wrap_content"/>
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal">

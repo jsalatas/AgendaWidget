@@ -2,6 +2,7 @@ package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
 import org.simpleframework.xml.ElementList;
@@ -133,29 +134,32 @@ public class Settings {
     }
 
     public static String formatDate(String type, Date date) {
-        Locale locale = AgentaWidgetApplication.getCurrentLocale();
+            Locale locale = AgentaWidgetApplication.getCurrentLocale();
 
-        DateFormat df;
-        String s = type.toUpperCase();
-        switch (s) {
-            case "FULL":
-                df = DateFormat.getDateInstance(DateFormat.FULL, locale);
-                break;
-            case "LONG":
-                df = DateFormat.getDateInstance(DateFormat.LONG, locale);
-                break;
-            case "MEDIUM":
-                df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-                break;
-            case "SHORT":
-                df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
-                break;
-            default: //custom
-                df = new SimpleDateFormat(type);
-                break;
-        }
-
-        return df.format(date);
+            DateFormat df;
+            String s = type.toUpperCase();
+            switch (s) {
+                case "FULL":
+                    df = DateFormat.getDateInstance(DateFormat.FULL, locale);
+                    break;
+                case "LONG":
+                    df = DateFormat.getDateInstance(DateFormat.LONG, locale);
+                    break;
+                case "MEDIUM":
+                    df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+                    break;
+                case "SHORT":
+                    df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+                    break;
+                default: //custom
+                    try {
+                        df = new SimpleDateFormat(type);
+                    } catch (IllegalArgumentException e) {
+                        return "";
+                    }
+                    break;
+            }
+            return df.format(date);
     }
 
     public static String formatTime(String type, Date date) {
@@ -168,7 +172,11 @@ public class Settings {
                 df = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
                 break;
             default: //custom
-                df = new SimpleDateFormat(type);
+                try {
+                    df = new SimpleDateFormat(type);
+                } catch (IllegalArgumentException e) {
+                    return "";
+                }
                 break;
         }
 

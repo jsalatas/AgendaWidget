@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.*;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.*;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class DateFormatDialog extends Dialog {
     private String format;
@@ -30,7 +34,8 @@ public class DateFormatDialog extends Dialog {
         setContentView(R.layout.dialog_datetime_format);
 
         ListView l = (ListView) findViewById(R.id.lst_date_format);
-        DateTimeFormatListAdapter adapter = new DateTimeFormatListAdapter(getContext(), format, type);
+
+        DateTimeFormatListAdapter adapter = new DateTimeFormatListAdapter(getContext(), type);
         l.setAdapter(adapter);
         int selectedPos = -1;
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -54,12 +59,7 @@ public class DateFormatDialog extends Dialog {
         }
 
         l.setItemChecked(selectedPos, true);
-//        l.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                parent.setSelection(position);
-//            }
-//        });
+
 
         TextView tv = (TextView) findViewById(R.id.tvDateTimeFormatOk);
         tv.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,6 @@ public class DateFormatDialog extends Dialog {
             public void onClick(View v) {
                 ListView l = (ListView) findViewById(R.id.lst_date_format);
                 String selected = (String) l.getAdapter().getItem(l.getCheckedItemPosition());
-
                 callback.onFormatChosen(getDateTimeFormat(DateFormatDialog.this.findViewById(android.R.id.content), selected));
             }
         });
