@@ -1,16 +1,14 @@
 package gr.ictpro.jsalatas.agendawidget.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.Calendars;
 
 public class CalendarSelectionActivity extends Dialog {
@@ -30,7 +28,7 @@ public class CalendarSelectionActivity extends Dialog {
         if (checkForPermission(Manifest.permission.READ_CALENDAR)) {
             Calendars.refreshCalendarList();
         } else {
-            ActivityCompat.requestPermissions(AgentaWidgetApplication.getActivity(this.getContext()), new String[]{Manifest.permission.READ_CALENDAR}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR_INSIST);
+            ActivityCompat.requestPermissions(AgendaWidgetApplication.getActivity(this.getContext()), new String[]{Manifest.permission.READ_CALENDAR}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR_INSIST);
             cancel();
         }
     }
@@ -38,10 +36,10 @@ public class CalendarSelectionActivity extends Dialog {
     private boolean checkForPermission(String permission) {
         if (ContextCompat.checkSelfPermission(this.getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(AgentaWidgetApplication.getActivity(this.getContext()), permission)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(AgendaWidgetApplication.getActivity(this.getContext()), permission)) {
                 return false;
             } else {
-                ActivityCompat.requestPermissions(AgentaWidgetApplication.getActivity(this.getContext()), new String[]{permission}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR);
+                ActivityCompat.requestPermissions(AgendaWidgetApplication.getActivity(this.getContext()), new String[]{permission}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR);
             }
         }
         return true;

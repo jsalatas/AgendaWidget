@@ -1,8 +1,6 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -10,15 +8,15 @@ import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.ui.DateFormatDialog;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
-    private LayoutInflater inflater;
-    private SettingType type;
+    private final LayoutInflater inflater;
+    private final SettingType type;
 
     public DateTimeFormatListAdapter(Context context, SettingType type) {
         super(context, 0);
@@ -33,7 +31,7 @@ public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
         String item = getItem(position);
         final View v = inflater.inflate(R.layout.datetime_format_list_item, parent, false);
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
-        tvTitle.setText(AgentaWidgetApplication.getResourceString(item));
+        tvTitle.setText(AgendaWidgetApplication.getResourceString(item));
         Date currentTime = Calendar.getInstance().getTime();
 
         final TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
@@ -133,12 +131,4 @@ public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
 
         super.add(getContext().getString(R.string.custom_format));
     }
-
-    private static Activity getActivity(Context context) {
-        if (context == null) return null;
-        if (context instanceof Activity) return (Activity) context;
-        if (context instanceof ContextWrapper) return getActivity(((ContextWrapper)context).getBaseContext());
-        return null;
-    }
-
 }

@@ -1,13 +1,13 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
-public class Calendar {
-    private Long id;
+class Calendar {
+    private final Long id;
 
-    private String accountName;
+    private final String accountName;
 
-    private String name;
+    private final String name;
 
-    private int color;
+    private final int color;
 
     Calendar(Long id, String accountName, String name, int color) {
         this.id = id;

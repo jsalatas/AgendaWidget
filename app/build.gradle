@@ -36,7 +36,6 @@ dependencies {
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'xpp3', module: 'xpp3'
     }
-    //compile 'com.pes.materialcolorpicker:library:1.2.0'
     compile project(':colorPicker')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'

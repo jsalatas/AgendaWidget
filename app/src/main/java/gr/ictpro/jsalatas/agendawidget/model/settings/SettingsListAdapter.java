@@ -9,18 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class SettingsListAdapter extends ArrayAdapter<ListItem> {
 
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
 
     public SettingsListAdapter(Context context, List<ListItem> items) {
         super(context, 0, items);
@@ -38,7 +35,7 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
             v.setClickable(true);
 
             TextView tv = (TextView) v.findViewById(R.id.tvCategory);
-            tv.setText(AgentaWidgetApplication.getResourceString(((ListItemCategory) item).getCategory()));
+            tv.setText(AgendaWidgetApplication.getResourceString(((ListItemCategory) item).getCategory()));
         } else if (item instanceof ListItemSetting) {
             Setting setting = ((ListItemSetting) item).getSetting();
 
@@ -53,7 +50,7 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
             }
 
             TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
-            tvTitle.setText(AgentaWidgetApplication.getResourceString(setting.getTitle()));
+            tvTitle.setText(AgendaWidgetApplication.getResourceString(setting.getTitle()));
             Date currentTime = Calendar.getInstance().getTime();
 
             TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
@@ -62,7 +59,7 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
             } else if (setting.getType() == SettingType.TIME) {
                 tvDescription.setText(Settings.formatTime(setting.getValue(), currentTime));
             } else {
-                tvDescription.setText(AgentaWidgetApplication.getResourceString(setting.getDescription()));
+                tvDescription.setText(AgendaWidgetApplication.getResourceString(setting.getDescription()));
             }
             v.setClickable(false);
 

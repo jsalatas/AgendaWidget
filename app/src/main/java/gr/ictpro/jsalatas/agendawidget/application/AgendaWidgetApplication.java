@@ -9,14 +9,14 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
 import java.util.Locale;
 
-public class AgentaWidgetApplication extends Application {
+public class AgendaWidgetApplication extends Application {
     private static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        AgentaWidgetApplication.context = this.getApplicationContext();
-        Settings.initiallize(context);
+        AgendaWidgetApplication.context = this.getApplicationContext();
+        Settings.initialize(context);
     }
 
     public static Context getContext() {

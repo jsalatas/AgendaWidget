@@ -7,9 +7,6 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 public class AgendaWidgetService extends RemoteViewsService {
-    public AgendaWidgetService() {
-    }
-
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new AgendaWidgetRemoteViewsFactory(this.getApplicationContext(), intent);
@@ -18,8 +15,8 @@ public class AgendaWidgetService extends RemoteViewsService {
 }
 
 class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private Context appContext;
-    private int agendaWidgetId;
+    private final Context appContext;
+    private final int agendaWidgetId;
 
     AgendaWidgetRemoteViewsFactory(Context context, Intent intent) {
         appContext = context;

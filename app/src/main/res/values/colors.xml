@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#308E03</color>
-    <color name="colorDeselected">#A1D1A1</color>
     <color name="colorPrimaryDark">#005E00</color>
     <color name="colorAccent">#3ec400</color>
     <color name="colorWidgetActions">#FFFFFF</color>

@@ -7,8 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Calendars {
                 CalendarContract.Calendars.CALENDAR_COLOR
         };
 
-        final ContentResolver cr = AgentaWidgetApplication.getContext().getContentResolver();
+        final ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
         final Uri uri = CalendarContract.Calendars.CONTENT_URI;
         Cursor cur = cr.query(uri, EVENT_PROJECTION, null, null, null);
         final List<Calendar> result = new ArrayList<>();
@@ -46,7 +45,7 @@ public class Calendars {
     }
 
     private static boolean checkPermissions() {
-        int permissionCheck = ContextCompat.checkSelfPermission(AgentaWidgetApplication.getContext(), Manifest.permission.READ_CALENDAR);
+        int permissionCheck = ContextCompat.checkSelfPermission(AgendaWidgetApplication.getContext(), Manifest.permission.READ_CALENDAR);
         return permissionCheck != PackageManager.PERMISSION_DENIED;
     }
 

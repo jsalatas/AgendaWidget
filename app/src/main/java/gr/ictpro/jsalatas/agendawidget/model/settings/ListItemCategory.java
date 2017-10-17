@@ -1,7 +1,7 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 class ListItemCategory extends ListItem {
-    private String category;
+    private final String category;
 
     ListItemCategory(String category) {
         this.category = category;

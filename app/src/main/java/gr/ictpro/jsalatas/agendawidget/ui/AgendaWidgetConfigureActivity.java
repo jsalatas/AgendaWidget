@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +17,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.*;
 
 /**
@@ -29,14 +30,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Settings settings;
 
-    public AgendaWidgetConfigureActivity() {
-        super();
-    }
-
-    private SectionsPagerAdapter sectionsPagerAdapter;
-
     private ViewPager viewPager;
-
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -66,6 +60,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        SectionsPagerAdapter sectionsPagerAdapter;
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         viewPager = (ViewPager) findViewById(R.id.container);
@@ -109,7 +104,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_CALENDAR: {
                 // If request is cancelled, the result arrays are empty.
@@ -125,7 +120,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
 
-                    ListView l = (ListView) f.getView().findViewById(R.id.lst_settings).findViewById(R.id.lst_settings);
+                    ListView l = (ListView) f.getView().findViewById(R.id.lst_settings);
                     l.performItemClick(l.getAdapter().getView(1, null, null),
                             1, l.getAdapter().getItemId(1));
                 }
@@ -133,22 +128,16 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         }
     }
 
-    public Settings getSettings() {
+    private Settings getSettings() {
         return settings;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
-    }
-
+    @SuppressWarnings("WeakerAccess")
     public static class PlaceholderFragment extends Fragment {
         private static final String TAB_NUMBER = "tab_number";
         SettingTab settingTab;
 
-        public PlaceholderFragment() {
-        }
-
-        public static PlaceholderFragment newInstance(int tabNumber) {
+        static PlaceholderFragment newInstance(int tabNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(TAB_NUMBER, tabNumber);
@@ -175,8 +164,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                     settingTab = SettingTab.TASKS;
                     break;
             }
-            View rootView = inflater.inflate(fragment, container, false);
-            return rootView;
+            return inflater.inflate(fragment, container, false);
         }
 
         @Override
@@ -185,7 +173,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
 
             ListView l = (ListView) view.findViewById(R.id.lst_settings);
 
-            AgendaWidgetConfigureActivity activity = (AgendaWidgetConfigureActivity)AgentaWidgetApplication.getActivity(getContext());
+            AgendaWidgetConfigureActivity activity = (AgendaWidgetConfigureActivity) AgendaWidgetApplication.getActivity(getContext());
             Settings settings = activity.getSettings();
             l.setAdapter(new SettingsListAdapter(getContext(), settings.getListItems(settingTab)));
 
@@ -193,9 +181,9 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         }
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

@@ -5,23 +5,15 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.*;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.IBinder;
-import android.util.DisplayMetrics;
-import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Implementation of App Widget functionality.
@@ -94,19 +86,12 @@ public class AgendaWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.agenda_widget);
         views.setInt(R.id.widgetLayout, "setBackgroundColor", Color.parseColor(Settings.getStringPref(context, "backgroundColor", appWidgetId)));
         views.setInt(R.id.widgetLayoutShadow, "setBackgroundResource", Settings.getBoolPref(context, "dropShadow", appWidgetId)? android.R.drawable.dialog_holo_light_frame:R.drawable.widget_transparent);
-        RelativeLayout l = new RelativeLayout(context);
 
         Date currentTime = Calendar.getInstance().getTime();
-        Locale locale = AgentaWidgetApplication.getCurrentLocale();
-        DateFormat longDateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
 
-        DateFormat shortDateFormat = DateFormat.getDateInstance(DateFormat.SHORT, locale);
-        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
         views.setTextViewText(R.id.tvCurrentDate, Settings.formatDate(Settings.getStringPref(context, "longDateFormat", appWidgetId), currentTime));
         views.setTextViewText(R.id.shortDate, Settings.formatDate(Settings.getStringPref(context, "shortDateFormat", appWidgetId), currentTime));
         views.setTextViewText(R.id.shortTime, Settings.formatTime(Settings.getStringPref(context, "timeFormat", appWidgetId), currentTime));
-
-
 
         views.setInt(R.id.tvCurrentDate, "setTextColor", Color.parseColor(Settings.getStringPref(context, "headerColor", appWidgetId)));
         views.setInt(R.id.imgAdd, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
@@ -152,10 +137,6 @@ public class AgendaWidget extends AppWidgetProvider {
             context.stopService(new Intent(context, AgendaUpdateService.class));
             context.startService(new Intent(context, AgendaUpdateService.class));
         }
-
-        ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
         super.onReceive(context, intent);
     }
 
@@ -178,12 +159,6 @@ public class AgendaWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         context.stopService(new Intent(context, AgendaUpdateService.class));
-    }
-
-    private static float dpToPx(float dp){
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return Math.round(px);
     }
 }
 

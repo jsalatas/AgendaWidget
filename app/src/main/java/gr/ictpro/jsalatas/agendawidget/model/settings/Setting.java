@@ -1,11 +1,10 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root
-public class Setting {
+class Setting {
     @Attribute
     private String name;
     @Attribute

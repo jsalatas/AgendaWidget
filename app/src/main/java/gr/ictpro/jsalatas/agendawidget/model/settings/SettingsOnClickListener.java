@@ -8,18 +8,14 @@ import android.support.annotation.ColorInt;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.ui.CalendarSelectionActivity;
 import gr.ictpro.jsalatas.agendawidget.ui.DateFormatDialog;
 
-import java.util.Calendar;
-import java.util.Date;
-
 public class SettingsOnClickListener implements AdapterView.OnItemClickListener {
-    private Settings settings;
+    private final Settings settings;
 
     public SettingsOnClickListener(Settings settings) {
         this.settings = settings;

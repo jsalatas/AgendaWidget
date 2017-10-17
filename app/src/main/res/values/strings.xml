@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Agenda Widget</string>
-    <string name="appwidget_text">Agenda widget</string>
     <string name="save">Save</string>>
     <string name="help">Help</string>
     <string name="add">Add new</string>
@@ -53,5 +52,4 @@
         show indicator
     </string>
     <string name="custom_format_error">Format is invalid</string>
-    <string name="invalid_date_format_warning">Please select a valid format</string>
 </resources>

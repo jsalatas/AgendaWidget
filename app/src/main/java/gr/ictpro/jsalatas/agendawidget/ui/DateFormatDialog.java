@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.*;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.*;
-
-import java.util.Calendar;
-import java.util.Date;
 
 public class DateFormatDialog extends Dialog {
     private String format;
@@ -77,13 +73,13 @@ public class DateFormatDialog extends Dialog {
     }
 
     public static String getDateTimeFormat(View dialog, String item) {
-        if (item.equals(AgentaWidgetApplication.getContext().getString(R.string.full_format))) {
+        if (item.equals(AgendaWidgetApplication.getContext().getString(R.string.full_format))) {
             return "FULL";
-        } else if (item.equals(AgentaWidgetApplication.getContext().getString(R.string.long_format))) {
+        } else if (item.equals(AgendaWidgetApplication.getContext().getString(R.string.long_format))) {
             return "LONG";
-        } else if (item.equals(AgentaWidgetApplication.getContext().getString(R.string.medium_format))) {
+        } else if (item.equals(AgendaWidgetApplication.getContext().getString(R.string.medium_format))) {
             return "MEDIUM";
-        } else if (item.equals(AgentaWidgetApplication.getContext().getString(R.string.short_format))) {
+        } else if (item.equals(AgendaWidgetApplication.getContext().getString(R.string.short_format))) {
             return "SHORT";
         } else {
             EditText tvCustom = (EditText) dialog.findViewById(R.id.edtCustomFormat);

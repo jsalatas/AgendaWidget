@@ -2,9 +2,8 @@ package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.application.AgentaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -30,7 +29,7 @@ public class Settings {
     private Context context;
     private int widgetId;
 
-    public Settings() {
+    private Settings() {
         // Used for deserialization
     }
 
@@ -123,7 +122,7 @@ public class Settings {
         throw new IllegalArgumentException("No setting found with name " + name);
     }
 
-    public static void initiallize(Context context) {
+    public static void initialize(Context context) {
         Serializer serializer = new Persister();
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(context.getResources().openRawResource(R.raw.settings)));
@@ -134,7 +133,7 @@ public class Settings {
     }
 
     public static String formatDate(String type, Date date) {
-            Locale locale = AgentaWidgetApplication.getCurrentLocale();
+            Locale locale = AgendaWidgetApplication.getCurrentLocale();
 
             DateFormat df;
             String s = type.toUpperCase();
@@ -163,7 +162,7 @@ public class Settings {
     }
 
     public static String formatTime(String type, Date date) {
-        Locale locale = AgentaWidgetApplication.getCurrentLocale();
+        Locale locale = AgendaWidgetApplication.getCurrentLocale();
 
         DateFormat df;
         String s = type.toUpperCase();
