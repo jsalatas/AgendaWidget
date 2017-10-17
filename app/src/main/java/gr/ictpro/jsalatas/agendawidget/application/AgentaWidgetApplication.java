@@ -1,7 +1,9 @@
 package gr.ictpro.jsalatas.agendawidget.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Build;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
@@ -40,6 +42,13 @@ public class AgentaWidgetApplication extends Application {
         } else {
             return name;
         }
+    }
+
+    public static Activity getActivity(Context context) {
+        if (context == null) return null;
+        if (context instanceof Activity) return (Activity) context;
+        if (context instanceof ContextWrapper) return getActivity(((ContextWrapper)context).getBaseContext());
+        return null;
     }
 
 }

@@ -87,14 +87,15 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
                 @Override
                 public void onFormatChosen(String format) {
                     setting.setValue(format);
-                    TextView tvDescription = (TextView)v.findViewById(R.id.tvDescription);
-                    Date currentTime = Calendar.getInstance().getTime();
-                    if (setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.DATE_SHORT) {
-                        tvDescription.setText(Settings.formatDate(setting.getValue(), currentTime));
-                    } else if (setting.getType() == SettingType.TIME) {
-                        tvDescription.setText(Settings.formatTime(setting.getValue(), currentTime));
-                    }
+//                    TextView tvDescription = (TextView)v.findViewById(R.id.tvDescription);
+//                    Date currentTime = Calendar.getInstance().getTime();
+//                    if (setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.DATE_SHORT) {
+//                        tvDescription.setText(Settings.formatDate(setting.getValue(), currentTime));
+//                    } else if (setting.getType() == SettingType.TIME) {
+//                        tvDescription.setText(Settings.formatTime(setting.getValue(), currentTime));
+//                    }
                     df.cancel();
+                    v.invalidate();
                 }
             });
             df.show();

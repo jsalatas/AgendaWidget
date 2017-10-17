@@ -15,7 +15,8 @@
                 android:name="firebase_crash_collection_enabled"
                 android:value="@bool/FIREBASE_CRASH_ENABLED"/>
 
-        <activity android:name=".ui.AgendaWidgetConfigureActivity">
+        <activity android:name=".ui.AgendaWidgetConfigureActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
