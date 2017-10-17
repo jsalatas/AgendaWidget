@@ -26,7 +26,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
         ListItemSetting item = (ListItemSetting) parent.getItemAtPosition(position);
         final Setting setting = item.getSetting();
         if (setting.getType() == SettingType.BOOL) {
@@ -82,20 +82,12 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             cp.setButtonColor(view.getContext().getResources().getColor(R.color.colorPrimary));
         } else if (setting.getType() == SettingType.DATE_SHORT || setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.TIME) {
             final DateFormatDialog df = new DateFormatDialog((Activity) view.getContext(), setting.getValue(), setting.getType());
-            final View v = view;
             df.setCallback(new DateTimeFormatPickerCallback() {
                 @Override
                 public void onFormatChosen(String format) {
                     setting.setValue(format);
-//                    TextView tvDescription = (TextView)v.findViewById(R.id.tvDescription);
-//                    Date currentTime = Calendar.getInstance().getTime();
-//                    if (setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.DATE_SHORT) {
-//                        tvDescription.setText(Settings.formatDate(setting.getValue(), currentTime));
-//                    } else if (setting.getType() == SettingType.TIME) {
-//                        tvDescription.setText(Settings.formatTime(setting.getValue(), currentTime));
-//                    }
+                    ((SettingsListAdapter)parent.getAdapter()).notifyDataSetChanged();
                     df.cancel();
-                    v.invalidate();
                 }
             });
             df.show();
