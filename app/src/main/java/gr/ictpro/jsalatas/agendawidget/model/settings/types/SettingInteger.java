@@ -2,7 +2,6 @@ package gr.ictpro.jsalatas.agendawidget.model.settings.types;
 
 import android.view.View;
 import android.widget.AdapterView;
-import gr.ictpro.jsalatas.agendawidget.model.settings.Setting;
 
 public class SettingInteger extends Setting<Integer> {
     @Override

@@ -1,16 +1,13 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings.types;
 
 import android.app.Activity;
-import android.app.WallpaperManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.view.View;
 import android.widget.AdapterView;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.settings.Setting;
 
 public class SettingColor extends SettingInteger {
     @Override

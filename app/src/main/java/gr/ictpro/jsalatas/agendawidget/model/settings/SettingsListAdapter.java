@@ -1,7 +1,6 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.content.Context;
-import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class SettingsListAdapter extends ArrayAdapter<ListItem> {

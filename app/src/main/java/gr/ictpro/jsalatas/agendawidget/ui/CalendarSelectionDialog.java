@@ -20,7 +20,7 @@ import gr.ictpro.jsalatas.agendawidget.model.calendar.Calendars;
 
 public class CalendarSelectionDialog extends Dialog {
     private CalendarSelectionCallback callback;
-    private String selectedCalendars;
+    private final String selectedCalendars;
 
     public CalendarSelectionDialog(Context context, String selectedCalendars) {
         super(context);

@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingDateLong;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingDateShort;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingTime;

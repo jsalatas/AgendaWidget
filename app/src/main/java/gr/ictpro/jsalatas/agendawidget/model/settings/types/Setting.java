@@ -1,4 +1,4 @@
-package gr.ictpro.jsalatas.agendawidget.model.settings;
+package gr.ictpro.jsalatas.agendawidget.model.settings.types;
 
 import android.content.Context;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.model.settings.SettingTab;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
 
@@ -30,25 +31,25 @@ public abstract class Setting<T> {
         return name;
     }
 
-    SettingTab getTab() {
+    public SettingTab getTab() {
         return tab;
     }
 
-    String getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    protected String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    protected String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    protected String getStringValue() {return value != null? value : defaultValue;}
+    public String getStringValue() {return value != null? value : defaultValue;}
 
-    protected void setStringValue(String value) {
+    public void setStringValue(String value) {
         this.value = value;
     }
 

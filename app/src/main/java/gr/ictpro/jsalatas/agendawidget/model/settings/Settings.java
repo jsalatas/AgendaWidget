@@ -2,7 +2,6 @@ package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.*;

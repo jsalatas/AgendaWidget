@@ -8,6 +8,7 @@ import android.widget.*;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.*;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 
 public class DateFormatDialog extends Dialog {
     private String format;

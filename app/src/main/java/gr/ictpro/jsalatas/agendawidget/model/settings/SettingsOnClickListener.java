@@ -1,22 +1,13 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
-import android.app.Activity;
 import android.app.WallpaperManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.AdapterView;
-import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
-import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
-import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarSelectionCallback;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingBool;
-import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingColor;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingTransparentColor;
-import gr.ictpro.jsalatas.agendawidget.ui.CalendarSelectionDialog;
-import gr.ictpro.jsalatas.agendawidget.ui.DateFormatDialog;
 
 public class SettingsOnClickListener implements AdapterView.OnItemClickListener {
     private final Settings settings;
@@ -49,7 +40,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
 
         // After onClick
         if (setting instanceof SettingBool) {
-            if (setting.getName().equals("dropShadow") && (Boolean) setting.getValue()) {
+            if (setting.getName().equals("dropShadow") && Boolean.parseBoolean(setting.getStringValue())) {
                 Setting bgColor = settings.getSetting("backgroundColor");
                 int colorValue = Color.parseColor(bgColor.getStringValue());
                 int newColor = Color.rgb(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));

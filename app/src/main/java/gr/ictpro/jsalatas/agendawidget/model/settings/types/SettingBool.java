@@ -1,14 +1,12 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings.types;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
-import gr.ictpro.jsalatas.agendawidget.model.settings.Setting;
 
 public class SettingBool extends Setting<Boolean> {
     @Override
