@@ -7,7 +7,7 @@ class ListItemSetting extends ListItem {
         this.setting = setting;
     }
 
-    Setting getSetting() {
+    Setting<?> getSetting() {
         return setting;
     }
 }

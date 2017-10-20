@@ -2,9 +2,12 @@ package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.*;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.ElementListUnion;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -23,7 +26,16 @@ public class Settings {
     private static final String PREFS_NAME = "gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget";
     private static List<Setting> settingsList;
 
-    @ElementList(inline = true, entry = "setting")
+    @ElementListUnion({
+            @ElementList(entry = "Bool", inline = true, type = SettingBool.class),
+            @ElementList(entry = "Calendars", inline = true, type = SettingCalendars.class),
+            @ElementList(entry = "Color", inline = true, type = SettingColor.class),
+            @ElementList(entry = "DateLong", inline = true, type = SettingDateLong.class),
+            @ElementList(entry = "DateShort", inline = true, type = SettingDateShort.class),
+            @ElementList(entry = "Time", inline = true, type = SettingTime.class),
+            @ElementList(entry = "Integer", inline = true, type = SettingInteger.class),
+            @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
+    })
     private List<Setting> settings;
 
     private Context context;
@@ -49,14 +61,14 @@ public class Settings {
 
     private void loadSettingsValues() {
         for (Setting setting:settings) {
-            setting.setValue(getStringPref(context, setting.getName(), widgetId));
+            setting.setStringValue(getStringPref(context, setting.getName(), widgetId));
         }
     }
 
     public void saveSettingsValues() {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         for (Setting setting:settings) {
-            prefs.putString(setting.getName() + "_" + widgetId, setting.getValue());
+            prefs.putString(setting.getName() + "_" + widgetId, setting.getStringValue());
         }
         prefs.apply();
     }
@@ -92,7 +104,7 @@ public class Settings {
         prefs.apply();
     }
 
-    Setting getSetting(String name) {
+    Setting<?> getSetting(String name) {
         for(Setting setting: settings) {
             if(setting.getName().equals(name)) {
                 return setting;
@@ -116,7 +128,7 @@ public class Settings {
             if(setting.getName().equals(name)) {
                 // Value is null so we always get the default value
                 // TODO: Maybe I need to reconsider the whole approach
-                return setting.getValue();
+                return setting.getStringValue();
             }
         }
         throw new IllegalArgumentException("No setting found with name " + name);

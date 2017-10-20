@@ -39,28 +39,7 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
         } else if (item instanceof ListItemSetting) {
             Setting setting = ((ListItemSetting) item).getSetting();
 
-            if (setting.getType() == SettingType.BOOL) {
-                v = inflater.inflate(R.layout.settings_list_item_switch, parent, false);
-
-                SwitchCompat s = (SwitchCompat) v.findViewById(R.id.swcValue);
-                s.setChecked(Boolean.parseBoolean(setting.getValue()));
-                s.setTrackTintList(this.getContext().getResources().getColorStateList(R.drawable.switch_selector));
-            } else {
-                v = inflater.inflate(R.layout.settings_list_item, parent, false);
-            }
-
-            TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
-            tvTitle.setText(AgendaWidgetApplication.getResourceString(setting.getTitle()));
-            Date currentTime = Calendar.getInstance().getTime();
-
-            TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
-            if (setting.getType() == SettingType.DATE_LONG || setting.getType() == SettingType.DATE_SHORT) {
-                tvDescription.setText(Settings.formatDate(setting.getValue(), currentTime));
-            } else if (setting.getType() == SettingType.TIME) {
-                tvDescription.setText(Settings.formatTime(setting.getValue(), currentTime));
-            } else {
-                tvDescription.setText(AgendaWidgetApplication.getResourceString(setting.getDescription()));
-            }
+            v = setting.getView(this.getContext());
             v.setClickable(false);
 
             LinearLayout root = (LinearLayout) v.findViewById(R.id.root);
@@ -70,7 +49,6 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
                 root.setDividerDrawable(this.getContext().getResources().getDrawable(R.drawable.settings_divider));
             }
         }
-
 
         return v;
     }

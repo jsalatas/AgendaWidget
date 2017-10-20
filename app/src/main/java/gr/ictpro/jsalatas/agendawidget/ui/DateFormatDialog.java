@@ -11,17 +11,17 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.*;
 
 public class DateFormatDialog extends Dialog {
     private String format;
-    private SettingType type;
+    private Setting setting;
     private DateTimeFormatPickerCallback callback;
 
     private DateFormatDialog(Activity activity) {
         super(activity);
     }
 
-    public DateFormatDialog(Activity activity, String format, SettingType type) {
+    public DateFormatDialog(Activity activity, String format, Setting setting) {
         this(activity);
         this.format = format;
-        this.type = type;
+        this.setting = setting;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class DateFormatDialog extends Dialog {
 
         ListView l = (ListView) findViewById(R.id.lst_date_format);
 
-        DateTimeFormatListAdapter adapter = new DateTimeFormatListAdapter(getContext(), type);
+        DateTimeFormatListAdapter adapter = new DateTimeFormatListAdapter(getContext(), setting);
         l.setAdapter(adapter);
         int selectedPos = -1;
         for (int i = 0; i < adapter.getCount(); i++) {

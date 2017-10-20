@@ -9,6 +9,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingDateLong;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingDateShort;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingTime;
 import gr.ictpro.jsalatas.agendawidget.ui.DateFormatDialog;
 
 import java.util.Calendar;
@@ -16,11 +19,11 @@ import java.util.Date;
 
 public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
     private final LayoutInflater inflater;
-    private final SettingType type;
+    private final Setting setting;
 
-    public DateTimeFormatListAdapter(Context context, SettingType type) {
+    public DateTimeFormatListAdapter(Context context, Setting setting) {
         super(context, 0);
-        this.type = type;
+        this.setting = setting;
 
         fillItems();
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -36,23 +39,23 @@ public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
 
         final TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
         final View dialog = (View) parent.getParent();
-        String dateFormatExample ="";
-        if (type == SettingType.DATE_LONG || type == SettingType.DATE_SHORT) {
+        String dateFormatExample = "";
+        if (setting instanceof SettingDateLong || setting instanceof SettingDateShort) {
             dateFormatExample = Settings.formatDate(DateFormatDialog.getDateTimeFormat(dialog, item), currentTime);
-        } else if (type == SettingType.TIME) {
+        } else if (setting instanceof SettingTime) {
             dateFormatExample = Settings.formatTime(DateFormatDialog.getDateTimeFormat(dialog, item), currentTime);
         }
 
-        TextView tvOK = (TextView)dialog.findViewById(R.id.tvDateTimeFormatOk);
+        TextView tvOK = (TextView) dialog.findViewById(R.id.tvDateTimeFormatOk);
         final ListView lv = (ListView) parent;
 
-        if(!dateFormatExample.isEmpty()) {
+        if (!dateFormatExample.isEmpty()) {
             tvDescription.setText(dateFormatExample);
             tvDescription.setTextColor(getContext().getResources().getColor(R.color.colorDescriptionText));
             tvOK.setClickable(true);
             tvOK.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
         } else {
-            if(lv.getCheckedItemPosition() == position) {
+            if (lv.getCheckedItemPosition() == position) {
                 tvDescription.setText(R.string.custom_format_error);
                 tvDescription.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
                 tvOK.setClickable(false);
@@ -76,8 +79,8 @@ public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
                     editor.setCursorVisible(isChecked);
                     TextView tvCustomFormatHelp = (TextView) dialog.findViewById(R.id.tvDateTimeFormatHelp);
                     tvCustomFormatHelp.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                    if(isChecked) {
-                        String html = getContext().getString(type == SettingType.TIME ? R.string.custom_time_format_help : R.string.custom_date_format_help);
+                    if (isChecked) {
+                        String html = getContext().getString(setting instanceof SettingTime ? R.string.custom_time_format_help : R.string.custom_date_format_help);
                         tvCustomFormatHelp.setText(Html.fromHtml(html));
                     }
                     InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -114,19 +117,15 @@ public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
     }
 
     private void fillItems() {
-        switch (type) {
-            case DATE_LONG:
-                super.add(getContext().getString(R.string.full_format));
-                super.add(getContext().getString(R.string.long_format));
-                super.add(getContext().getString(R.string.medium_format));
-                break;
-            case DATE_SHORT:
-                super.add(getContext().getString(R.string.medium_format));
-                super.add(getContext().getString(R.string.short_format));
-                break;
-            case TIME:
-                super.add(getContext().getString(R.string.short_format));
-                break;
+        if (setting instanceof SettingDateLong) {
+            super.add(getContext().getString(R.string.full_format));
+            super.add(getContext().getString(R.string.long_format));
+            super.add(getContext().getString(R.string.medium_format));
+        } else if (setting instanceof SettingDateShort) {
+            super.add(getContext().getString(R.string.medium_format));
+            super.add(getContext().getString(R.string.short_format));
+        } else if (setting instanceof SettingTime) {
+            super.add(getContext().getString(R.string.short_format));
         }
 
         super.add(getContext().getString(R.string.custom_format));
