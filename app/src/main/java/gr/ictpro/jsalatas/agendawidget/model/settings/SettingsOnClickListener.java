@@ -11,7 +11,8 @@ import android.widget.AdapterView;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.ui.CalendarSelectionActivity;
+import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarSelectionCallback;
+import gr.ictpro.jsalatas.agendawidget.ui.CalendarSelectionDialog;
 import gr.ictpro.jsalatas.agendawidget.ui.DateFormatDialog;
 
 public class SettingsOnClickListener implements AdapterView.OnItemClickListener {
@@ -88,9 +89,15 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             });
             df.show();
         } else if (setting.getType() == SettingType.CALENDARS) {
-            final CalendarSelectionActivity cs = new CalendarSelectionActivity(view.getContext());
+            final CalendarSelectionDialog cs = new CalendarSelectionDialog(view.getContext(), setting.getValue());
             cs.show();
-            // TODO: add callback and handle result
+            cs.setCallback(new CalendarSelectionCallback() {
+                @Override
+                public void onCalendarSelect(String selectedCalendars) {
+                    setting.setValue(selectedCalendars);
+                    cs.cancel();
+                }
+            });
         }
 
     }

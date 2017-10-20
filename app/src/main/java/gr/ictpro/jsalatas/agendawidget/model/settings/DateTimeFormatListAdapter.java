@@ -67,7 +67,7 @@ public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
 
 
         if (item.equals(getContext().getString(R.string.custom_format))) {
-            RadioButton r = (RadioButton) v.findViewById(R.id.radio_button);
+            RadioButton r = (RadioButton) v.findViewById(R.id.compound_button);
             final EditText editor = (EditText) dialog.findViewById(R.id.edtCustomFormat);
             r.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

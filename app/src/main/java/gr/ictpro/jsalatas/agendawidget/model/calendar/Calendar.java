@@ -1,6 +1,6 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
-class Calendar {
+public class Calendar {
     private final Long id;
 
     private final String accountName;
@@ -20,7 +20,7 @@ class Calendar {
         return id;
     }
 
-    public String getAccountName() {
+    String getAccountName() {
         return accountName;
     }
 

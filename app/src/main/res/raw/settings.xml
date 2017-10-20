@@ -55,5 +55,5 @@
              title="@string/selected_calendars_prop"
              description="@string/selected_calendars_desc"
              type="CALENDARS"
-             defaultValue="SHORT"/>
+             defaultValue=""/>
 </settings>

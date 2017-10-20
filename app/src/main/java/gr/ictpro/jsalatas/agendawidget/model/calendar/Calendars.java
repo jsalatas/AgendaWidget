@@ -44,6 +44,10 @@ public class Calendars {
         calendarList = result;
     }
 
+    public static List<Calendar> getCalendarList() {
+        return calendarList;
+    }
+
     private static boolean checkPermissions() {
         int permissionCheck = ContextCompat.checkSelfPermission(AgendaWidgetApplication.getContext(), Manifest.permission.READ_CALENDAR);
         return permissionCheck != PackageManager.PERMISSION_DENIED;
