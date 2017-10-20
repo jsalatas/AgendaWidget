@@ -86,6 +86,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 //update the widget
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, AgendaWidget.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetId});
+                intent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
                 sendBroadcast(intent);
 
                 // create the return intent
@@ -108,11 +109,9 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_CALENDAR: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("PERMISSION", ">>>>>>>> READ_CALENDAR Granted!");
-                } else {
-                    Log.d("PERMISSION", ">>>>>>>> READ_CALENDAR Denied!");
-                }
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                } else {
+//                }
                 return;
             }
             case PERMISSIONS_REQUEST_READ_CALENDAR_INSIST: {

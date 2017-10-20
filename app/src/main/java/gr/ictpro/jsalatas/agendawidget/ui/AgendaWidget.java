@@ -20,6 +20,9 @@ import java.util.Date;
  * App Widget Configuration implemented in {@link AgendaWidgetConfigureActivity AgendaWidgetConfigureActivity}
  */
 public class AgendaWidget extends AppWidgetProvider {
+    static final String ACTION_FORCE_UPDATE = "gr.ictpro.jsalatas.agendawidget.action.FORCE_UPDATE";
+    private long lastUpdate;
+    private boolean onClickSet = false;
 
     public static class AgendaUpdateService extends Service {
         private static final String ACTION_UPDATE = "gr.ictpro.jsalatas.agendawidget.action.UPDATE";
@@ -82,7 +85,7 @@ public class AgendaWidget extends AppWidgetProvider {
     }
 
 
-    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    private void updateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.agenda_widget);
         views.setInt(R.id.widgetLayout, "setBackgroundColor", Color.parseColor(Settings.getStringPref(context, "backgroundColor", appWidgetId)));
         views.setInt(R.id.widgetLayoutShadow, "setBackgroundResource", Settings.getBoolPref(context, "dropShadow", appWidgetId)? android.R.drawable.dialog_holo_light_frame:R.drawable.widget_transparent);
@@ -90,6 +93,34 @@ public class AgendaWidget extends AppWidgetProvider {
         Date currentTime = Calendar.getInstance().getTime();
 
         views.setTextViewText(R.id.tvCurrentDate, Settings.formatDate(Settings.getStringPref(context, "longDateFormat", appWidgetId), currentTime));
+
+
+        // Update onClick Listeners (this needs to be done only once)
+        if(!onClickSet) {
+            onClickSet = true;
+            Uri data = Uri.withAppendedPath(Uri.parse("agenda://widget/id/"), String.valueOf(appWidgetId));
+
+            // Bind widget configuration button
+            Intent configIntent = new Intent(context, AgendaWidgetConfigureActivity.class);
+            configIntent.setData(data);
+            configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            views.setOnClickPendingIntent(R.id.imgSettings, pendingIntent);
+
+            // Bind update button
+            Intent refreshIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, AgendaWidget.class);
+            refreshIntent.setData(data);
+            refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
+
+            pendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.imgRefresh, pendingIntent);
+        }
+
+
+        // TODO: beyond this point update should happen only after the specified time expired
+
+
         views.setTextViewText(R.id.shortDate, Settings.formatDate(Settings.getStringPref(context, "shortDateFormat", appWidgetId), currentTime));
         views.setTextViewText(R.id.shortTime, Settings.formatTime(Settings.getStringPref(context, "timeFormat", appWidgetId), currentTime));
 
@@ -99,23 +130,9 @@ public class AgendaWidget extends AppWidgetProvider {
         views.setInt(R.id.imgSettings, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
 
 
-        Uri data = Uri.withAppendedPath(Uri.parse("agenda://widget/id/"), String.valueOf(appWidgetId));
 
-        // Bind widget configuration button
-        Intent configIntent = new Intent(context, AgendaWidgetConfigureActivity.class);
-        configIntent.setData(data);
-        configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        views.setOnClickPendingIntent(R.id.imgSettings, pendingIntent);
 
-        // Bind update button
-        Intent refreshIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, AgendaWidget.class);
-        refreshIntent.setData(data);
-        refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {appWidgetId});
-
-        pendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.imgRefresh, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -127,7 +144,7 @@ public class AgendaWidget extends AppWidgetProvider {
 
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            updateWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
@@ -136,6 +153,8 @@ public class AgendaWidget extends AppWidgetProvider {
         if(intent.getAction().equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
             context.stopService(new Intent(context, AgendaUpdateService.class));
             context.startService(new Intent(context, AgendaUpdateService.class));
+        } else if(intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && intent.getBooleanExtra(ACTION_FORCE_UPDATE, false)) {
+            lastUpdate = 0;
         }
         super.onReceive(context, intent);
     }

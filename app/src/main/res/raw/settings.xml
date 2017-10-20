@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
+    <setting name="updateFrequency"
+             tab="GENERAL"
+             category=""
+             title="@string/update_frequency_prop"
+             description=""
+             type="INT"
+             defaultValue="300000"/>
     <setting name="dropShadow"
              tab="GENERAL"
              category="@string/appearance"
