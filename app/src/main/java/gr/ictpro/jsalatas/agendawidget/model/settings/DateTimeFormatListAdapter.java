@@ -47,7 +47,7 @@ public class DateTimeFormatListAdapter extends ArrayAdapter<String> {
             dateFormatExample = Settings.formatTime(DateFormatDialog.getDateTimeFormat(dialog, item), currentTime);
         }
 
-        TextView tvOK = (TextView) dialog.findViewById(R.id.tvDateTimeFormatOk);
+        TextView tvOK = (TextView) dialog.findViewById(R.id.tvDialogOk);
         final ListView lv = (ListView) parent;
 
         if (!dateFormatExample.isEmpty()) {

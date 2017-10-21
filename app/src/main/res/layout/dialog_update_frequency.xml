@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/calendars_selection_root"
-              android:layout_width="350dp"
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:orientation="vertical"
               android:layout_margin="16dp">
-    <ListView android:id="@+id/lst_calendars_selection"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              android:choiceMode="multipleChoice"
-              android:layout_weight="1"/>
+
+<LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center_horizontal"
+                  android:orientation="horizontal">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:labelFor="@+id/editUpdateFrequency"
+                  android:text="@string/every"/>
+        <EditText android:id="@+id/editUpdateFrequency"
+                  android:layout_width="40dp"
+                  android:inputType="number"
+                  android:layout_height="wrap_content"/>
+        <android.support.v7.widget.AppCompatSpinner android:layout_width="wrap_content"
+                                                    android:entries="@array/update_frequency"
+                                                    android:layout_height="wrap_content"/>
+
+    </LinearLayout>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="horizontal">
@@ -28,4 +41,5 @@
                   android:layout_marginBottom="10dp"
                   android:text="@string/dialog_ok"/>
     </LinearLayout>
+
 </LinearLayout>

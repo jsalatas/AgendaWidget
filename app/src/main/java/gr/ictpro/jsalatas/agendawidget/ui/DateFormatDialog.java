@@ -9,26 +9,17 @@ import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.*;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
+import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 
-public class DateFormatDialog extends Dialog {
-    private String format;
-    private Setting setting;
-    private DateTimeFormatPickerCallback callback;
+public class DateFormatDialog extends SettingDialog<String> {
 
-    private DateFormatDialog(Activity activity) {
-        super(activity);
-    }
-
-    public DateFormatDialog(Activity activity, String format, Setting setting) {
-        this(activity);
-        this.format = format;
-        this.setting = setting;
+    public DateFormatDialog(Activity activity, Setting<String> setting) {
+        super(activity, setting, R.layout.dialog_datetime_format);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_datetime_format);
 
         ListView l = (ListView) findViewById(R.id.lst_date_format);
 
@@ -36,7 +27,7 @@ public class DateFormatDialog extends Dialog {
         l.setAdapter(adapter);
         int selectedPos = -1;
         for (int i = 0; i < adapter.getCount(); i++) {
-            if (getDateTimeFormat(findViewById(android.R.id.content), adapter.getItem(i)).equals(format)) {
+            if (getDateTimeFormat(findViewById(android.R.id.content), adapter.getItem(i)).equals(setting.getValue())) {
                 selectedPos = i;
                 break;
             }
@@ -46,7 +37,7 @@ public class DateFormatDialog extends Dialog {
             selectedPos = adapter.getCount() - 1;
             findViewById(R.id.tvDateTimeFormatHelp).setVisibility(View.VISIBLE);
             EditText editCustom = (EditText) findViewById(R.id.edtCustomFormat);
-            editCustom.setText(format);
+            editCustom.setText(setting.getValue());
             editCustom.setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.tvDateTimeFormatHelp).setVisibility(View.GONE);
@@ -56,21 +47,6 @@ public class DateFormatDialog extends Dialog {
         }
 
         l.setItemChecked(selectedPos, true);
-
-
-        TextView tv = (TextView) findViewById(R.id.tvDateTimeFormatOk);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ListView l = (ListView) findViewById(R.id.lst_date_format);
-                String selected = (String) l.getAdapter().getItem(l.getCheckedItemPosition());
-                callback.onFormatChosen(getDateTimeFormat(DateFormatDialog.this.findViewById(android.R.id.content), selected));
-            }
-        });
-    }
-
-    public void setCallback(DateTimeFormatPickerCallback callback) {
-        this.callback = callback;
     }
 
     public static String getDateTimeFormat(View dialog, String item) {
@@ -86,5 +62,16 @@ public class DateFormatDialog extends Dialog {
             EditText tvCustom = (EditText) dialog.findViewById(R.id.edtCustomFormat);
             return tvCustom.getText().toString();
         }
+    }
+
+    @Override
+    protected String getSetting() {
+        ListView l = (ListView) findViewById(R.id.lst_date_format);
+        if(l.getCheckedItemPosition() == l.getAdapter().getCount()-1 ) {
+            // custom is selected, return editor's value
+            EditText editCustom = (EditText) findViewById(R.id.edtCustomFormat);
+            return editCustom.getText().toString();
+        }
+        return getDateTimeFormat(findViewById(android.R.id.content), (String)l.getAdapter().getItem(l.getCheckedItemPosition()));
     }
 }

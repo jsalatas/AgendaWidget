@@ -3,11 +3,13 @@ package gr.ictpro.jsalatas.agendawidget.model.settings.types;
 import android.app.Activity;
 import android.view.View;
 import gr.ictpro.jsalatas.agendawidget.ui.DateFormatDialog;
+import gr.ictpro.jsalatas.agendawidget.ui.UpdateFrequencyDialog;
 import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 
-public class SettingDateLong extends SettingDateTime {
+public class SettingUpdateFrequency extends SettingLong {
     @Override
-    protected SettingDialog<String> getDialog(View view) {
-        return new DateFormatDialog((Activity) view.getContext(), this);
+    protected SettingDialog<Long> getDialog(View view) {
+        return new UpdateFrequencyDialog((Activity) view.getContext(), this);
     }
+
 }

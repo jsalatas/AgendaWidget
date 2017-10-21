@@ -1,4 +1,5 @@
 <resources>
+    <string name="update_frequency_prop">Update Frequency</string>
     <string name="app_name">Agenda Widget</string>
     <string name="save">Save</string>>
     <string name="help">Help</string>
@@ -10,7 +11,6 @@
     <string name="tab_tasks">Tasks</string>
 
     <!-- General Settings -->
-    <string name="update_frequency_prop">Update Frequency</string>
     <string name="appearance">Appearance</string>
     <string name="background_color_prop">Background Color</string>
     <string name="background_color_desc">The widget\'s background color.</string>
@@ -36,6 +36,7 @@
     <string name="medium_format">Medium</string>
     <string name="short_format">Short</string>
     <string name="custom_format">Custom</string>
+    <string name="custom_format_hint">Custom format string</string>
     <string name="custom_date_format_help">&lt;font color="#308E03"&gt;&lt;b&gt;Year Format:&lt;/b&gt;&lt;/font&gt; &lt;i&gt;&lt;b&gt;yy&lt;/b&gt;&lt;/i&gt;:
         2 digit number, &lt;i&gt;&lt;b&gt;yyyy&lt;/b&gt;&lt;/i&gt;: 4 digit number&lt;br /&gt;&lt;font color="#308E03"&gt;&lt;b&gt;Month
         Format:&lt;/b&gt;&lt;/font&gt; &lt;i&gt;&lt;b&gt;M&lt;/b&gt;&lt;/i&gt;: number, &lt;i&gt;&lt;b&gt;MM&lt;/b&gt;&lt;/i&gt;:
@@ -53,4 +54,7 @@
         show indicator
     </string>
     <string name="custom_format_error">Format is invalid</string>
+
+
+    <string name="every">Every</string>
 </resources>

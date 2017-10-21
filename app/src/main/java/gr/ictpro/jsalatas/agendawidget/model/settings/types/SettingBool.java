@@ -7,15 +7,16 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 
 public class SettingBool extends Setting<Boolean> {
     @Override
-    protected Boolean getValue() {
+    public Boolean getValue() {
         return Boolean.parseBoolean(getStringValue());
     }
 
     @Override
-    protected void setValue(Boolean value) {
+    public void setValue(Boolean value) {
         setStringValue(value.toString());
     }
 
@@ -42,5 +43,10 @@ public class SettingBool extends Setting<Boolean> {
         setValue(newValue);
         SwitchCompat s = (SwitchCompat) view.findViewById(R.id.swcValue);
         s.setChecked(newValue);
+    }
+
+    @Override
+    protected SettingDialog<Boolean> getDialog(View view) {
+        throw new IllegalArgumentException("No dialog needed for bool settings");
     }
 }

@@ -32,7 +32,7 @@ public class Settings {
             @ElementList(entry = "DateLong", inline = true, type = SettingDateLong.class),
             @ElementList(entry = "DateShort", inline = true, type = SettingDateShort.class),
             @ElementList(entry = "Time", inline = true, type = SettingTime.class),
-            @ElementList(entry = "Integer", inline = true, type = SettingInteger.class),
+            @ElementList(entry = "UpdateFrequency", inline = true, type = SettingUpdateFrequency.class),
             @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
     })
     private List<Setting> settings;

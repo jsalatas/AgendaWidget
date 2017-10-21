@@ -19,6 +19,7 @@
                   android:inputType="textNoSuggestions"
                   android:visibility="gone"
                   android:textCursorDrawable="@null"
+                  android:hint="@string/custom_format_hint"
                   android:text=""/>
         <TextView android:id="@+id/tvDateTimeFormatHelp"
                   android:layout_width="match_parent"
@@ -31,7 +32,7 @@
             <android.support.v4.widget.Space android:layout_width="0dp"
                                              android:layout_height="wrap_content"
                                              android:layout_weight="1"/>
-            <TextView android:id="@+id/tvDateTimeFormatOk"
+            <TextView android:id="@+id/tvDialogOk"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:gravity="end"

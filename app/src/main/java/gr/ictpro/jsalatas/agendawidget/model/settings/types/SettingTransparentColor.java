@@ -9,18 +9,19 @@ import android.widget.AdapterView;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import gr.ictpro.jsalatas.agendawidget.R;
+import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 
 public class SettingTransparentColor extends SettingInteger {
     private Drawable background;
     private Boolean transparent;
 
     @Override
-    protected Integer getValue() {
+    public Integer getValue() {
         return Color.parseColor(getStringValue());
     }
 
     @Override
-    protected void setValue(Integer value) {
+    public void setValue(Integer value) {
         setStringValue(String.format("#%08X", value));
     }
 
@@ -55,4 +56,10 @@ public class SettingTransparentColor extends SettingInteger {
     public void setTransparent(Boolean transparent) {
         this.transparent = transparent;
     }
+
+    @Override
+    protected SettingDialog<Integer> getDialog(View view) {
+        throw new IllegalArgumentException("Color Dialog is custom");
+    }
+
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
-    <Integer name="updateFrequency"
+    <UpdateFrequency name="updateFrequency"
              tab="GENERAL"
              category=""
              title="@string/update_frequency_prop"
