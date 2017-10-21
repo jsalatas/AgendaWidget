@@ -2,7 +2,7 @@
 <settings>
     <UpdateFrequency name="updateFrequency"
              tab="GENERAL"
-             category=""
+             category="@string/main"
              title="@string/update_frequency_prop"
              description=""
              defaultValue="300000"/>

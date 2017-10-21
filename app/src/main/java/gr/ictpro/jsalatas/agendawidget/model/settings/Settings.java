@@ -112,6 +112,12 @@ public class Settings {
         throw new IllegalArgumentException("No setting found with name " + name);
     }
 
+    public static Long getLongPref(Context context, String name, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return Long.parseLong(prefs.getString(name + "_" + appWidgetId, getDefaultPref(name)));
+    }
+
+
     public static String getStringPref(Context context, String name, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         return prefs.getString(name + "_" + appWidgetId, getDefaultPref(name));

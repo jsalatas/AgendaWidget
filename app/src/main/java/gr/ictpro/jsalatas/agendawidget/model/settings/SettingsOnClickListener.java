@@ -26,7 +26,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
             if (setting.getName().equals("backgroundColor") && Boolean.parseBoolean(settings.getSetting("dropShadow").getStringValue())) {
                 ((SettingTransparentColor) setting).setTransparent(true);
                 ((SettingTransparentColor) setting).setBackground(null);
-            } else {
+            } else if (setting.getName().equals("backgroundColor")) {
                 ((SettingTransparentColor) setting).setTransparent(false);
                 final WallpaperManager wallpaperManager = WallpaperManager.getInstance(view.getContext());
                 final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
@@ -44,7 +44,7 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
                 Setting bgColor = settings.getSetting("backgroundColor");
                 int colorValue = Color.parseColor(bgColor.getStringValue());
                 int newColor = Color.rgb(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
-                bgColor.setStringValue(String.valueOf(newColor));
+                bgColor.setStringValue(String.format("#%08X", newColor));
             }
         }
 

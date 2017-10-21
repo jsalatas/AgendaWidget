@@ -86,7 +86,7 @@ public abstract class Setting<T> {
 
     }
 
-    protected boolean shouldRefreshList() {
+    boolean shouldRefreshList() {
         return false;
     }
 

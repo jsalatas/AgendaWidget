@@ -7,14 +7,13 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.settings.SettingsListAdapter;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 
 abstract public class SettingDialog<T> extends Dialog {
     protected final Setting<T> setting;
     private @LayoutRes final int layoutResId;
 
-    public SettingDialog(Context context, Setting<T> setting, @LayoutRes int layoutResId) {
+    protected SettingDialog(Context context, Setting<T> setting, @LayoutRes int layoutResId) {
         super(context);
         this.layoutResId = layoutResId;
         this.setting = setting;
