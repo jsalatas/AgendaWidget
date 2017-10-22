@@ -2,6 +2,8 @@
     <string name="app_name">Agenda Widget</string>
     <string name="save">Save</string>>
     <string name="help">Help</string>
+    <string name="backup">Backup Settings</string>
+    <string name="restore">Restore Settings</string>
     <string name="add">Add new</string>
     <string name="refresh">Refresh</string>
     <string name="settings">Widget settings</string>
@@ -65,6 +67,15 @@
         show indicator
     </string>
     <string name="custom_format_error">Format is invalid</string>
+    <string name="backup_created">Settings successfully saved!</string>
+    <string name="backup_restored">Settings successfully restored!</string>
+    <string name="cannot_write_to_storage">Cannot write to External Storage.</string>
+    <string name="permission_to_external_storage_denied">Permission to external storage denied.</string>
+    <string name="backup_success">Backup Success</string>
+    <string name="restore_success">Restore Success</string>
+    <string name="backup_failed">Backup Failed</string>
+    <string name="restore_failed">Restore Failed</string>
+    <string name="error_occurred">An error has occurred:</string>
 
 
 </resources>

@@ -2,6 +2,7 @@ package gr.ictpro.jsalatas.agendawidget.model.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.ParcelFileDescriptor;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.*;
@@ -11,14 +12,10 @@ import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Root(name = "settings")
 public class Settings {
@@ -200,5 +197,20 @@ public class Settings {
         return df.format(date);
     }
 
+    public void saveSettings(FileDescriptor fd) throws Exception {
+        FileOutputStream outputStream = new FileOutputStream(fd);
+        Serializer serializer = new Persister();
+        serializer.write(new PersistentSettings(settings), outputStream);
+    }
+
+    public void loadSettings(FileDescriptor fd) throws Exception {
+        FileInputStream inputStream = new FileInputStream(fd);
+        Serializer serializer = new Persister();
+        PersistentSettings persistentSettings = serializer.read(PersistentSettings.class, inputStream);
+        Map<String, String> settingsMap = persistentSettings.getPersistentSettings();
+        for (String key: settingsMap.keySet()) {
+            getSetting(key).setStringValue(settingsMap.get(key));
+        }
+    }
 
 }

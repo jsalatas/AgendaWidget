@@ -1,15 +1,21 @@
 package gr.ictpro.jsalatas.agendawidget.ui;
 
+import android.Manifest;
 import android.appwidget.AppWidgetManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.TabLayout;
@@ -23,8 +29,16 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.*;
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
  */
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
-    static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
+    private static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
+    private static final int PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE = 2;
+    private static final int BACKUP_FILE_WRITE = 3;
+    private static final int BACKUP_FILE_READ = 4;
+    private boolean savingBackup;
 
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Settings settings;
 
@@ -96,6 +110,29 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
             case R.id.action_help:
                 // TODO: Show help activity
                 break;
+            case R.id.action_backup:
+                savingBackup = true;
+                String filename = "AgendaWidget_" + widgetId + ".xml";
+                try {
+                    saveSettings(filename);
+                } catch (RuntimeException e) {
+                    String dialogTitle = this.getString(R.string.backup_failed);
+                    String dialogText = getString(R.string.error_occurred) + System.getProperty("line.separator") + e.getMessage();
+                    int resId = R.drawable.ic_dialog_error;
+                    showAlert(resId, dialogTitle, dialogText);
+                }
+                break;
+            case R.id.action_restore:
+                savingBackup = false;
+                try {
+                    loadSettings();
+                } catch (RuntimeException e) {
+                    String dialogTitle = this.getString(R.string.restore_failed);
+                    String dialogText = getString(R.string.error_occurred) + System.getProperty("line.separator") + e.getMessage();
+                    int resId = R.drawable.ic_dialog_error;
+                    showAlert(resId, dialogTitle, dialogText);
+                }
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -114,9 +151,125 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                     l.performItemClick(l.getAdapter().getView(1, null, null),
                             1, l.getAdapter().getItemId(1));
                 }
+                break;
+            }
+            case PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (savingBackup) {
+                        String filename = "AgendaWidget_" + widgetId + ".xml";
+                        saveSettings(filename);
+                    } else {
+                        loadSettings();
+                    }
+                } else {
+                    String dialogTitle = this.getString(savingBackup ? R.string.backup_failed : R.string.restore_failed);
+                    String dialogText = getString(R.string.permission_to_external_storage_denied);
+                    int resId = R.drawable.ic_dialog_error;
+                    showAlert(resId, dialogTitle, dialogText);
+                }
+                break;
             }
         }
     }
+
+    private void saveSettings(String filename) {
+        if (!checkForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //Insist
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/xml");
+        intent.putExtra(Intent.EXTRA_TITLE, filename);
+
+        startActivityForResult(intent, BACKUP_FILE_WRITE);
+    }
+
+    private void loadSettings() {
+        if (!checkForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //Insist
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/xml");
+        //intent.putExtra(Intent.EXTRA_TITLE, "*.xml");
+
+        startActivityForResult(intent, BACKUP_FILE_READ);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String dialogTitle;
+        String dialogText;
+        int resId;
+        try {
+            if (requestCode == BACKUP_FILE_WRITE) {
+                ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(data.getData(), "w");
+                settings.saveSettings(pfd.getFileDescriptor());
+            } else if (requestCode == BACKUP_FILE_READ) {
+                ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(data.getData(), "r");
+                settings.loadSettings(pfd.getFileDescriptor());
+            }
+            dialogTitle = this.getString(savingBackup ? R.string.backup_success : R.string.restore_success);
+
+            dialogText = this.getString(savingBackup ? R.string.backup_created : R.string.backup_restored);
+            resId = R.drawable.ic_dialog_info;
+
+            if (!savingBackup) {
+                Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
+                ListView l = (ListView) f.getView().findViewById(R.id.lst_settings);
+                ((SettingsListAdapter) l.getAdapter()).notifyDataSetChanged();
+
+            }
+        } catch (Exception e) {
+            dialogTitle = this.getString(savingBackup ? R.string.backup_failed : R.string.restore_failed);
+            dialogText = getString(R.string.error_occurred) + System.getProperty("line.separator") + e.getMessage();
+            resId = R.drawable.ic_dialog_error;
+        }
+
+        showAlert(resId, dialogTitle, dialogText);
+    }
+
+    private void showAlert(int iconRes, String title, String message) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setIcon(iconRes);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, this.getString(R.string.dialog_ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private boolean checkForPermission(String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+
+            String[] permissions;
+            if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                permissions = PERMISSIONS_STORAGE;
+            } else {
+                permissions = new String[]{permission};
+            }
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                return false;
+            } else {
+                ActivityCompat.requestPermissions(this, permissions, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     private Settings getSettings() {
         return settings;
@@ -134,6 +287,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
             fragment.setArguments(args);
             return fragment;
         }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {

@@ -7,13 +7,19 @@
           app:showAsAction="ifRoom"
           android:icon="@drawable/ic_save"
           android:title="@string/save"/>
-
-
     <item android:id="@+id/action_help"
           android:orderInCategory="100"
           app:showAsAction="ifRoom"
           android:icon="@drawable/ic_help"
           android:title="@string/help"/>
+    <item android:id="@+id/action_backup"
+          android:orderInCategory="200"
+          app:showAsAction="never"
+          android:title="@string/backup"/>
+    <item android:id="@+id/action_restore"
+          android:orderInCategory="200"
+          app:showAsAction="never"
+          android:title="@string/restore"/>
 
 </menu>
 
