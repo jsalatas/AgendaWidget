@@ -62,4 +62,16 @@
                      title="@string/search_period_prop"
                      description=""
                      defaultValue="2678400000"/>
+    <Bool name="groupByDate"
+          tab="CALENDAR"
+          category="@string/calendar_options_category"
+          title="@string/group_by_date_prop"
+          description="@string/group_by_date_desc"
+          defaultValue="false"/>
+    <Bool name="repeatMultidayEvents"
+          tab="CALENDAR"
+          category="@string/calendar_options_category"
+          title="@string/repeat_multiday_events_prop"
+          description="@string/repeat_multiday_events_desc"
+          defaultValue="true"/>
 </settings>

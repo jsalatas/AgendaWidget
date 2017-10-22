@@ -35,6 +35,10 @@
     <string name="selected_calendars_desc">Selects the calendars that appear in the widget.</string>
     <string name="calendar_options_category">Calendar Options</string>
     <string name="search_period_prop">Search Period</string>
+    <string name="group_by_date_prop">Group by Date</string>
+    <string name="group_by_date_desc">Groups events by date, showing a common date header.</string>
+    <string name="repeat_multiday_events_prop">Repeat Multiple Day Events</string>
+    <string name="repeat_multiday_events_desc">If selected multiple day events are repeatedly shown in each day. Otherwise they are shown only in their first day.</string>
 
 
     <!-- datetime format dialog -->
