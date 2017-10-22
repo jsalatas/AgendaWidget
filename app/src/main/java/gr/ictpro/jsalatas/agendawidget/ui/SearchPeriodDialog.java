@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.InputFilter;
 import android.view.inputmethod.InputMethodManager;
@@ -16,18 +17,18 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 import gr.ictpro.jsalatas.agendawidget.utils.*;
 
-public class UpdateFrequencyDialog extends SettingDialog<Long> implements Dialog.OnShowListener {
+public class SearchPeriodDialog extends SettingDialog<Long> implements Dialog.OnShowListener {
     private final TimePeriodUtils tpu;
 
-    public enum UpdateFrequencyPeriod implements TimePeriodEnumInterface {
-        MINUTES (0, 1000L * 60),
-        HOURS (1, 1000L * 60 * 60),
-        DAYS (2, 1000L * 60 * 60 * 24);
+    public enum SearchPeriod implements TimePeriodEnumInterface {
+        DAYS (0, 1000L * 60 * 60 * 24),
+        MONTHS (1, 1000L * 60 * 60 * 24 * 31),
+        YEARS (2, 1000L * 60 * 60 * 24 * 365);
 
         private final int ord;
         private final long interval;
 
-        UpdateFrequencyPeriod (int ord, long interval) {
+        SearchPeriod (int ord, long interval) {
             this.interval = interval;
             this.ord = ord;
         }
@@ -44,17 +45,17 @@ public class UpdateFrequencyDialog extends SettingDialog<Long> implements Dialog
 
         @Override
         public TimePeriodEnumInterface getValue(int ordinal) {
-            return SearchPeriodDialog.SearchPeriod.values()[ordinal];
+            return SearchPeriod.values()[ordinal];
         }
     }
 
-    public UpdateFrequencyDialog(Activity activity, Setting<Long> setting) {
+    public SearchPeriodDialog(Activity activity, Setting<Long> setting) {
         super(activity, setting, R.layout.dialog_time_period);
 
         setOnShowListener(this);
 
-        String[] values = getContext().getResources().getStringArray(R.array.update_frequency);
-        this.tpu = new TimePeriodUtils(values, UpdateFrequencyPeriod.class);
+        String[] values = getContext().getResources().getStringArray(R.array.search_period);
+        this.tpu = new TimePeriodUtils(values, SearchPeriod.class);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class UpdateFrequencyDialog extends SettingDialog<Long> implements Dialog
         super.onCreate(savedInstanceState);
 
         TextView tvTimePeriodlabel = (TextView) findViewById(R.id.tvTimePeriodlabel);
-        tvTimePeriodlabel.setText(getContext().getString(R.string.every));
+        tvTimePeriodlabel.setText(getContext().getString(R.string.next));
 
         EditText editUnitValue = (EditText) findViewById(R.id.editTimePeriodUnit);
         editUnitValue.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "99")});
@@ -71,8 +72,7 @@ public class UpdateFrequencyDialog extends SettingDialog<Long> implements Dialog
         editUnitValue.addTextChangedListener(new EmptyTextWatcher(tvOK));
 
         AppCompatSpinner spinner = (AppCompatSpinner) findViewById(R.id.spinnerTimeUnit);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.update_frequency, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.search_period, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -95,4 +95,5 @@ public class UpdateFrequencyDialog extends SettingDialog<Long> implements Dialog
 
         return value * tpu.getBase(spinner.getSelectedItem().toString());
     }
+
 }

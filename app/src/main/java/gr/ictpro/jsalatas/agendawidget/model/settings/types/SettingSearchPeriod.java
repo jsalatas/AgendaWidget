@@ -12,10 +12,10 @@ import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 import gr.ictpro.jsalatas.agendawidget.utils.TimePeriod;
 import gr.ictpro.jsalatas.agendawidget.utils.TimePeriodUtils;
 
-public class SettingUpdateFrequency extends SettingLong {
+public class SettingSearchPeriod extends SettingLong {
     @Override
     protected SettingDialog<Long> getDialog(View view) {
-        return new UpdateFrequencyDialog((Activity) view.getContext(), this);
+        return new SearchPeriodDialog((Activity) view.getContext(), this);
     }
 
     @Override
@@ -29,11 +29,11 @@ public class SettingUpdateFrequency extends SettingLong {
 
         TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
 
-        String[] values = context.getResources().getStringArray(R.array.update_frequency);
-        TimePeriodUtils tpu = new TimePeriodUtils(values, UpdateFrequencyDialog.UpdateFrequencyPeriod.class);
+        String[] values = context.getResources().getStringArray(R.array.search_period);
+        TimePeriodUtils tpu = new TimePeriodUtils(values, SearchPeriodDialog.SearchPeriod.class);
 
         TimePeriod tp = tpu.getTimePeriod(getValue());
-        tvDescription.setText(AgendaWidgetApplication.getContext().getString(R.string.every) + " " + tp.getValue() + " " + tp.getTimeUnit());
+        tvDescription.setText(AgendaWidgetApplication.getContext().getString(R.string.next) + " " + tp.getValue() + " " + tp.getTimeUnit());
         return v;
     }
 

@@ -34,6 +34,7 @@ public class Settings {
             @ElementList(entry = "Time", inline = true, type = SettingTime.class),
             @ElementList(entry = "UpdateFrequency", inline = true, type = SettingUpdateFrequency.class),
             @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
+            @ElementList(entry = "SearchPeriod", inline = true, type = SettingSearchPeriod.class),
     })
     private List<Setting> settings;
 

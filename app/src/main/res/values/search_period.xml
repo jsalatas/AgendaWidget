@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="search_period">
+        <item>Day(s)</item>
+        <item>Month(s)</item>
+        <item>Year(s)</item>
+    </string-array>
+</resources>

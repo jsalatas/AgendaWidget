@@ -10,11 +10,11 @@
                   android:gravity="center_horizontal"
                   android:orientation="horizontal">
 
-        <TextView android:layout_width="wrap_content"
+        <TextView android:id="@+id/tvTimePeriodlabel"
+                android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:labelFor="@+id/editUpdateFrequency"
-                  android:text="@string/every"/>
-        <EditText android:id="@+id/editUpdateFrequency"
+                  android:labelFor="@+id/editTimePeriodUnit"/>
+        <EditText android:id="@+id/editTimePeriodUnit"
                   android:layout_width="40dp"
                   android:layout_marginStart="5dp"
                   android:gravity="end"
@@ -23,7 +23,6 @@
                   android:layout_height="wrap_content"/>
         <android.support.v7.widget.AppCompatSpinner android:id="@+id/spinnerTimeUnit"
                                                     android:layout_width="wrap_content"
-                                                    android:entries="@array/update_frequency"
                                                     android:layout_height="wrap_content"/>
 
     </LinearLayout>

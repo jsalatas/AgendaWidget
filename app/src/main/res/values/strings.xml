@@ -8,11 +8,14 @@
     <string name="tab_general">General</string>
     <string name="tab_calendar">Calendar</string>
     <string name="tab_tasks">Tasks</string>
+    <string name="every">Every</string>
+    <string name="next">Next</string>
+    <string name="dialog_ok">OK</string>
 
     <!-- General Settings -->
-    <string name="main">Main Options</string>
+    <string name="widget_options">Widget Options</string>
     <string name="update_frequency_prop">Update Frequency</string>
-    <string name="appearance">Appearance</string>
+    <string name="appearance_category">Appearance</string>
     <string name="background_color_prop">Background Color</string>
     <string name="background_color_desc">The widget\'s background color.</string>
     <string name="drop_shadow_prop">Drop Shadow</string>
@@ -25,13 +28,16 @@
     <string name="long_date_prop">Long Date</string>
     <string name="short_date_prop">Short Date</string>
     <string name="time_prop">Time</string>
+
+    <!-- Calendar Settings -->
     <string name="calendars_category">Calendars</string>
     <string name="selected_calendars_prop">Select Calendars</string>
     <string name="selected_calendars_desc">Selects the calendars that appear in the widget.</string>
+    <string name="calendar_options_category">Calendar Options</string>
+    <string name="search_period_prop">Search Period</string>
 
 
     <!-- datetime format dialog -->
-    <string name="dialog_ok">OK</string>
     <string name="full_format">Full</string>
     <string name="long_format">Long</string>
     <string name="medium_format">Medium</string>
@@ -57,5 +63,4 @@
     <string name="custom_format_error">Format is invalid</string>
 
 
-    <string name="every">Every</string>
 </resources>
