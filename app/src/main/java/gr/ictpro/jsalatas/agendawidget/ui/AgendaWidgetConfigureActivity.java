@@ -24,7 +24,6 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.*;
  */
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
-    static final int PERMISSIONS_REQUEST_READ_CALENDAR_INSIST = 2;
 
     private int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Settings settings;
@@ -107,13 +106,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_CALENDAR: {
-                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                } else {
-//                }
-                return;
-            }
-            case PERMISSIONS_REQUEST_READ_CALENDAR_INSIST: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
