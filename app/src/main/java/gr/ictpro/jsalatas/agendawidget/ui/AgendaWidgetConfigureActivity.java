@@ -29,7 +29,7 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.*;
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
  */
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
-    private static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
+    public static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE = 2;
     private static final int BACKUP_FILE_WRITE = 3;
     private static final int BACKUP_FILE_READ = 4;
