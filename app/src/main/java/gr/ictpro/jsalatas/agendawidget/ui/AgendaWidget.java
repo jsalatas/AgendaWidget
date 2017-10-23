@@ -12,10 +12,13 @@ import android.os.IBinder;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
+import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
+import gr.ictpro.jsalatas.agendawidget.model.calendar.Calendars;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Implementation of App Widget functionality.
@@ -137,6 +140,10 @@ public class AgendaWidget extends AppWidgetProvider {
             views.setInt(R.id.imgAdd, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
             views.setInt(R.id.imgRefresh, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
             views.setInt(R.id.imgSettings, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
+
+
+            List<CalendarEvent> calendarEvents = Calendars.getEvents(appWidgetId);
+
         }
 
         // Instruct the widget manager to update the widget

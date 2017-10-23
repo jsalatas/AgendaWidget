@@ -1,11 +1,18 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
 import android.support.annotation.ColorInt;
+import android.util.Log;
+import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Calendar;
 
 public class CalendarEvent implements Comparable<CalendarEvent> {
-    private final @ColorInt int color;
+    private final long id;
+
+    private final @ColorInt
+    int color;
 
     private final String title;
 
@@ -19,7 +26,8 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
 
     private final boolean allDay;
 
-    CalendarEvent(int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay) {
+    CalendarEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay) {
+        this.id = id;
         this.color = color;
         this.title = title;
         this.location = location;
@@ -29,7 +37,12 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
         this.allDay = allDay;
     }
 
-    public @ColorInt int getColor() {
+    public long getId() {
+        return id;
+    }
+
+    public @ColorInt
+    int getColor() {
         return color;
     }
 
@@ -86,6 +99,80 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
 
     @Override
     public int compareTo(CalendarEvent o) {
-        return 0;
+        Calendar startCalendarInstance = GregorianCalendar.getInstance();
+        Calendar oStartCalendarInstance = GregorianCalendar.getInstance();
+        startCalendarInstance.setTime(startDate);
+        oStartCalendarInstance.setTime(o.startDate);
+
+        // Check date part
+        if (startCalendarInstance.get(Calendar.YEAR) != oStartCalendarInstance.get(Calendar.YEAR) ||
+                startCalendarInstance.get(Calendar.MONTH) != oStartCalendarInstance.get(Calendar.MONTH) ||
+                startCalendarInstance.get(Calendar.DAY_OF_MONTH) != oStartCalendarInstance.get(Calendar.DAY_OF_MONTH)) {
+            return startDate.compareTo(o.startDate);
+        }
+
+        // All day events come first
+        if(allDay != o.allDay) {
+            return allDay ? -1 : 1;
+        }
+
+        if (startCalendarInstance.get(Calendar.HOUR_OF_DAY) != oStartCalendarInstance.get(Calendar.HOUR_OF_DAY) ||
+                startCalendarInstance.get(Calendar.MINUTE) != oStartCalendarInstance.get(Calendar.MINUTE)) {
+            return startDate.compareTo(o.startDate);
+        }
+
+        if(endDate.getTime() % (1000L * 60)  != o.endDate.getTime() % (1000L * 60)) {
+            return endDate.compareTo(o.endDate);
+        }
+
+        return title.compareTo(o.title);
+    }
+
+    public boolean isMultiday() {
+        Date now = GregorianCalendar.getInstance().getTime();
+        int days = DateUtils.daysBetween(now, endDate);
+
+        Log.d("Multiday", "    >>>>> " + days + " " + this.toString(now, endDate));
+        return days > 0;
+
+    }
+
+    public List<CalendarEvent> getMultidayEventsList() {
+        // TODO: implement method
+        List<CalendarEvent> res = new ArrayList<>();
+
+        Date now = GregorianCalendar.getInstance().getTime();
+        Date currentStart, currentEnd;
+        if(now.compareTo(startDate) > 0 && !DateUtils.isInSameDay(now, startDate)) {
+            currentStart = now;
+        } else {
+            currentStart = startDate;
+        }
+        currentEnd = DateUtils.dayCeil(currentStart);
+
+        int dateDiff = DateUtils.daysBetween(startDate, endDate) + 1;
+
+
+        for (int i=0; i<dateDiff; i++) {
+
+            CalendarEvent e = new CalendarEvent(id, color, title, location, description, currentStart, currentEnd,i!=0 && i!=dateDiff -1 || allDay);
+            res.add(e);
+            currentStart = DateUtils.nextDay(DateUtils.dayFloor(currentStart));
+            currentEnd = DateUtils.nextDay(DateUtils.dayCeil(currentEnd));
+        }
+
+        return res;
+    }
+
+
+    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
+
+    public String toString(Date from, Date to) {
+        return "from=" + df.format(from) +
+                " to=" + df.format(to) +
+                ":::: startDate=" + df.format(startDate) +
+                ", endDate=" + df.format(endDate) +
+                ", title='" + title + '\'' +
+                ", allDay=" + allDay;
     }
 }

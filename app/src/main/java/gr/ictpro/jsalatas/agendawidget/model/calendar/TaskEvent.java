@@ -1,14 +1,16 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TaskEvent extends CalendarEvent {
 
     private final int priority;
 
 
-    public TaskEvent(int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay, int priority) {
-        super(color, title, location, description, startDate, endDate, allDay);
+    public TaskEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay, int priority) {
+        super(id, color, title, location, description, startDate, endDate, allDay);
         this.priority = priority;
     }
 
@@ -46,4 +48,15 @@ public class TaskEvent extends CalendarEvent {
         }
         return super.compareTo(o);
     }
+
+    @Override
+    public boolean isMultiday() {
+        return false;
+    }
+
+    @Override
+    public List<CalendarEvent> getMultidayEventsList() {
+        return new ArrayList<>();
+    }
+
 }
