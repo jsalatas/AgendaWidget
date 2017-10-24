@@ -77,7 +77,11 @@ public class Calendars {
         java.util.Calendar calendarInstance = GregorianCalendar.getInstance();
         Date selectedRangeStart = calendarInstance.getTime();
         Long searchPeriod = Settings.getLongPref(AgendaWidgetApplication.getContext(), "searchPeriod", appWidgetId);
+
+        // CONFIRM: I believe I need to round down milliseconds' value to zero from the end time.
+        //          This will avoid cases that end time matches exactly the end time of an event.
         calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod);
+        calendarInstance.set(java.util.Calendar.MILLISECOND, 0);
         Date selectedRangeEnd = calendarInstance.getTime();
 
         sb = new StringBuilder();
