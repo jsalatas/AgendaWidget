@@ -50,12 +50,12 @@ public class TaskEvent extends CalendarEvent {
     }
 
     @Override
-    public boolean isMultiday() {
+    public boolean isMultiDay() {
         return false;
     }
 
     @Override
-    public List<CalendarEvent> getMultidayEventsList() {
+    public List<CalendarEvent> getMultidayEventsList(Date until) {
         return new ArrayList<>();
     }
 

@@ -1,10 +1,8 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
 import android.support.annotation.ColorInt;
-import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 
@@ -128,51 +126,62 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
         return title.compareTo(o.title);
     }
 
-    public boolean isMultiday() {
+    public boolean isMultiDay() {
         Date now = GregorianCalendar.getInstance().getTime();
-        int days = DateUtils.daysBetween(now, endDate);
+        Date currentStart;
 
-        Log.d("Multiday", "    >>>>> " + days + " " + this.toString(now, endDate));
-        return days > 0;
+        if(now.compareTo(startDate) > 0 && !DateUtils.isInSameDay(now, startDate)) {
+            currentStart = DateUtils.dayFloor(now);
+        } else {
+            currentStart = startDate;
+        }
 
+        int days = DateUtils.daysBetween(currentStart, endDate);
+
+        return days > 1;
     }
 
-    public List<CalendarEvent> getMultidayEventsList() {
-        // TODO: implement method
+    public List<CalendarEvent> getMultidayEventsList(Date until) {
         List<CalendarEvent> res = new ArrayList<>();
 
         Date now = GregorianCalendar.getInstance().getTime();
         Date currentStart, currentEnd;
         if(now.compareTo(startDate) > 0 && !DateUtils.isInSameDay(now, startDate)) {
-            currentStart = now;
+            currentStart = DateUtils.dayFloor(now);
         } else {
             currentStart = startDate;
         }
         currentEnd = DateUtils.dayCeil(currentStart);
 
-        int dateDiff = DateUtils.daysBetween(startDate, endDate) + 1;
+        int dateDiff = DateUtils.daysBetween(startDate, endDate);
 
 
         for (int i=0; i<dateDiff; i++) {
-
-            CalendarEvent e = new CalendarEvent(id, color, title, location, description, currentStart, currentEnd,i!=0 && i!=dateDiff -1 || allDay);
+            CalendarEvent e = new CalendarEvent(id, color, title, location, description, currentStart, currentEnd,DateUtils. isAllDay(currentStart, currentEnd));
             res.add(e);
             currentStart = DateUtils.nextDay(DateUtils.dayFloor(currentStart));
-            currentEnd = DateUtils.nextDay(DateUtils.dayCeil(currentEnd));
+            currentEnd = DateUtils.nextDay(DateUtils.dayFloor(currentEnd));
         }
+        if(until.compareTo(endDate) <= 0 && !DateUtils.isInSameDay(until, endDate)) {
+            currentEnd = until;
+        } else {
+            currentEnd = endDate;
+        }
+        CalendarEvent e = new CalendarEvent(id, color, title, location, description, currentStart, currentEnd, allDay);
+        res.add(e);
 
         return res;
     }
 
-
-    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
-
-    public String toString(Date from, Date to) {
-        return "from=" + df.format(from) +
-                " to=" + df.format(to) +
-                ":::: startDate=" + df.format(startDate) +
-                ", endDate=" + df.format(endDate) +
-                ", title='" + title + '\'' +
-                ", allDay=" + allDay;
-    }
+// Debug
+//    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
+//
+//    public String toString(Date from, Date to) {
+//        return "from=" + df.format(from) +
+//                " to=" + df.format(to) +
+//                ":::: startDate=" + df.format(startDate) +
+//                ", endDate=" + df.format(endDate) +
+//                ", title='" + title + '\'' +
+//                ", allDay=" + allDay;
+//    }
 }

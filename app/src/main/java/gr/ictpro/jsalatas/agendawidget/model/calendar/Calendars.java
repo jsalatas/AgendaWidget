@@ -9,11 +9,9 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 
-import java.sql.Time;
 import java.util.*;
 
 public class Calendars {
@@ -88,12 +86,10 @@ public class Calendars {
         sb.append("((").append(CalendarContract.Events.DTEND).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
         sb.append("(").append(CalendarContract.Events.DTEND).append(" <= ").append(selectedRangeEnd.getTime()).append(")))");
 
-        String selectedDateRangeFilter = sb.toString();
-
-        Log.d("Sync", ">>>>>>>>> sync events from " + CalendarEvent.df.format(selectedRangeStart) + " to " + CalendarEvent.df.format(selectedRangeEnd));
+// Debug
+//        Log.d("Sync", ">>>>>>>>> sync events from " + CalendarEvent.df.format(selectedRangeStart) + " to " + CalendarEvent.df.format(selectedRangeEnd));
 
         ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
-        Uri uri = CalendarContract.Events.CONTENT_URI;
 
         final String[] PROJECTION = new String[]{
                 CalendarContract.Instances._ID,
@@ -140,8 +136,6 @@ public class Calendars {
 
             // Assume current time zone for all day events
             if(allDay) {
-//                TimeZone tzStart = TimeZone.getTimeZone(cur.getString(5));
-//                TimeZone tzEnd = cur.getString(7) == null ? tzStart : TimeZone.getTimeZone(cur.getString(7));
                 calendarInstance.setTimeInMillis(startDate.getTime() - tzLocal.getOffset(startDate.getTime()));
                 startDate = calendarInstance.getTime();
                 calendarInstance.setTimeInMillis(endDate.getTime() - tzLocal.getOffset(endDate.getTime()));
@@ -149,8 +143,8 @@ public class Calendars {
             }
 
             CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
-            if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiday()) {
-                calendarEvents.addAll(e.getMultidayEventsList());
+            if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiDay()) {
+                calendarEvents.addAll(e.getMultidayEventsList(selectedRangeEnd));
             } else {
                 calendarEvents.add(e);
             }
@@ -158,9 +152,10 @@ public class Calendars {
         cur.close();
 
         Collections.sort(calendarEvents);
-        for (CalendarEvent c : calendarEvents) {
-            Log.d("Sync", "    >>>>> " + c.toString(selectedRangeStart, selectedRangeEnd));
-        }
+// Debug
+//        for (CalendarEvent c : calendarEvents) {
+//            Log.d("Sync", "    >>>>> " + c.toString(selectedRangeStart, selectedRangeEnd));
+//        }
         return calendarEvents;
     }
 
