@@ -37,7 +37,7 @@ public class TaskEvent extends CalendarEvent {
     }
 
     @Override
-    public int compareTo(CalendarEvent o) {
+    public int compareTo(EventItem o) {
         if(o instanceof TaskEvent) {
             int otherPriority = ((TaskEvent)o).priority;
             if (this.priority != otherPriority) {

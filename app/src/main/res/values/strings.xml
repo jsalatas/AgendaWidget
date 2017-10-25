@@ -13,6 +13,9 @@
     <string name="every">Every</string>
     <string name="next">Next</string>
     <string name="dialog_ok">OK</string>
+    <string name="start_of_day">start of day</string>
+    <string name="end_of_day">end of day</string>
+    <string name="all_day">all day</string>
 
     <!-- General Settings -->
     <string name="widget_options">Widget Options</string>
@@ -41,6 +44,9 @@
     <string name="group_by_date_desc">Groups events by date, showing a common date header.</string>
     <string name="repeat_multiday_events_prop">Repeat Multiple Day Events</string>
     <string name="repeat_multiday_events_desc">If selected multiple day events are repeatedly shown in each day. Otherwise they are shown only in their first day.</string>
+
+
+    <string name="calendar_appearance_category">Calendar Appearance</string>
 
 
     <!-- datetime format dialog -->

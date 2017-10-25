@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.*;
 
@@ -55,8 +57,8 @@ public class Calendars {
         return permissionCheck != PackageManager.PERMISSION_DENIED;
     }
 
-    public static List<CalendarEvent> getEvents(int appWidgetId) {
-        List<CalendarEvent> calendarEvents = new ArrayList<>();
+    public static List<EventItem> getEvents(int appWidgetId) {
+        List<EventItem> calendarEvents = new ArrayList<>();
         if (!checkPermissions()) {
             return calendarEvents;
         }
@@ -65,7 +67,7 @@ public class Calendars {
 
         String[] calendarsList = Settings.getStringPref(AgendaWidgetApplication.getContext(), "calendars", appWidgetId).split("@@@");
         StringBuilder sb = new StringBuilder();
-        for (String calendar: calendarsList) {
+        for (String calendar : calendarsList) {
             if (!sb.toString().isEmpty()) {
                 sb.append(" OR ");
             }
@@ -85,7 +87,7 @@ public class Calendars {
         Date selectedRangeEnd = calendarInstance.getTime();
 
         sb = new StringBuilder();
-        sb.append("(((").append(CalendarContract.Events.DTSTART).append(" >= ").append(selectedRangeStart.getTime()).append( ") AND ");
+        sb.append("(((").append(CalendarContract.Events.DTSTART).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
         sb.append("(").append(CalendarContract.Events.DTSTART).append(" <= ").append(selectedRangeEnd.getTime()).append(")) OR ");
         sb.append("((").append(CalendarContract.Events.DTEND).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
         sb.append("(").append(CalendarContract.Events.DTEND).append(" <= ").append(selectedRangeEnd.getTime()).append(")))");
@@ -139,12 +141,21 @@ public class Calendars {
             endDate = calendarInstance.getTime();
 
             // Assume current time zone for all day events
-            if(allDay) {
+            if (allDay) {
                 calendarInstance.setTimeInMillis(startDate.getTime() - tzLocal.getOffset(startDate.getTime()));
                 startDate = calendarInstance.getTime();
+
                 calendarInstance.setTimeInMillis(endDate.getTime() - tzLocal.getOffset(endDate.getTime()));
                 endDate = calendarInstance.getTime();
             }
+
+            if(startDate.compareTo(selectedRangeStart) < 0) {
+                if(allDay || !DateUtils.isInSameDay(startDate, selectedRangeStart)) {
+                    startDate = DateUtils.dayFloor(selectedRangeStart);
+                }
+            }
+
+
 
             CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
             if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiDay()) {
@@ -154,11 +165,34 @@ public class Calendars {
             }
         }
         cur.close();
+        Collections.sort(calendarEvents);
+
+        if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "groupByDate", appWidgetId)) {
+            // add dayGroups
+            List<EventItem> tmpCalendarEvents = new ArrayList<>();
+            Date headerDate = DateUtils.dayFloor(DateUtils.previousDay(selectedRangeStart));
+
+            for(EventItem e: calendarEvents) {
+                Date current = DateUtils.dayFloor(e.getStartDate());
+                if(current.compareTo(headerDate) != 0) {
+                    headerDate = current;
+                    if(headerDate.compareTo(DateUtils.dayFloor(selectedRangeStart)) < 0) {
+                        headerDate = DateUtils.dayFloor(selectedRangeStart);
+                    }
+                    tmpCalendarEvents.add(new DayGroup(headerDate));
+                }
+                tmpCalendarEvents.add(e);
+            }
+
+            calendarEvents = tmpCalendarEvents;
+
+        }
 
         Collections.sort(calendarEvents);
+
 // Debug
-//        for (CalendarEvent c : calendarEvents) {
-//            Log.d("Sync", "    >>>>> " + c.toString(selectedRangeStart, selectedRangeEnd));
+//        for (EventItem c : calendarEvents) {
+//            Log.d("Sync", "    >>>>> " + c);
 //        }
         return calendarEvents;
     }

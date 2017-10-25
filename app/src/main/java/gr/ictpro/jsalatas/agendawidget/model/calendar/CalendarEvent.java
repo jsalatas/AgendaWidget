@@ -3,10 +3,11 @@ package gr.ictpro.jsalatas.agendawidget.model.calendar;
 import android.support.annotation.ColorInt;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 
-public class CalendarEvent implements Comparable<CalendarEvent> {
+public class CalendarEvent implements EventItem {
     private final long id;
 
     private final @ColorInt
@@ -56,6 +57,7 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
         return description;
     }
 
+    @Override
     public Date getStartDate() {
         return startDate;
     }
@@ -96,34 +98,42 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
     }
 
     @Override
-    public int compareTo(CalendarEvent o) {
+    public int compareTo(EventItem o) {
+        if(o instanceof TaskEvent) {
+            return 1;
+        }
+
         Calendar startCalendarInstance = GregorianCalendar.getInstance();
         Calendar oStartCalendarInstance = GregorianCalendar.getInstance();
         startCalendarInstance.setTime(startDate);
-        oStartCalendarInstance.setTime(o.startDate);
+        oStartCalendarInstance.setTime(o.getStartDate());
 
         // Check date part
         if (startCalendarInstance.get(Calendar.YEAR) != oStartCalendarInstance.get(Calendar.YEAR) ||
                 startCalendarInstance.get(Calendar.MONTH) != oStartCalendarInstance.get(Calendar.MONTH) ||
                 startCalendarInstance.get(Calendar.DAY_OF_MONTH) != oStartCalendarInstance.get(Calendar.DAY_OF_MONTH)) {
-            return startDate.compareTo(o.startDate);
+            return startDate.compareTo(o.getStartDate());
+        } else if(o instanceof DayGroup) {
+            return 1;
         }
 
+        CalendarEvent other = (CalendarEvent) o;
+
         // All day events come first
-        if(allDay != o.allDay) {
+        if(allDay != other.allDay) {
             return allDay ? -1 : 1;
         }
 
         if (startCalendarInstance.get(Calendar.HOUR_OF_DAY) != oStartCalendarInstance.get(Calendar.HOUR_OF_DAY) ||
                 startCalendarInstance.get(Calendar.MINUTE) != oStartCalendarInstance.get(Calendar.MINUTE)) {
-            return startDate.compareTo(o.startDate);
+            return startDate.compareTo(other.startDate);
         }
 
-        if(endDate.getTime() % (1000L * 60)  != o.endDate.getTime() % (1000L * 60)) {
-            return endDate.compareTo(o.endDate);
+        if(endDate.getTime() % (1000L * 60)  != other.endDate.getTime() % (1000L * 60)) {
+            return endDate.compareTo(other.endDate);
         }
 
-        return title.compareTo(o.title);
+        return title.compareTo(other.title);
     }
 
     public boolean isMultiDay() {
@@ -174,14 +184,14 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
     }
 
 // Debug
-//    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
-//
-//    public String toString(Date from, Date to) {
-//        return "from=" + df.format(from) +
-//                " to=" + df.format(to) +
-//                ":::: startDate=" + df.format(startDate) +
-//                ", endDate=" + df.format(endDate) +
-//                ", title='" + title + '\'' +
-//                ", allDay=" + allDay;
-//    }
+    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
+
+    public String toString(Date from, Date to) {
+        return "from=" + df.format(from) +
+                " to=" + df.format(to) +
+                ":::: startDate=" + df.format(startDate) +
+                ", endDate=" + df.format(endDate) +
+                ", title='" + title + '\'' +
+                ", allDay=" + allDay;
+    }
 }

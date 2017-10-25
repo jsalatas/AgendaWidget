@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class DateUtils {
     public static int daysBetween(Date d1, Date d2) {
@@ -62,10 +63,24 @@ public class DateUtils {
         }
         Calendar d1Calendar = GregorianCalendar.getInstance();
         d1Calendar.setTimeInMillis(d1.getTime());
+        TimeZone tzStart =  d1Calendar.getTimeZone();
+        Calendar d2Calendar = GregorianCalendar.getInstance();
+        d2Calendar.setTimeInMillis(d1.getTime());
+        TimeZone tzEnd =  d2Calendar.getTimeZone();
 
-        return (d2.getTime() - d1.getTime() == 1000 * 60 * 60 * 24) &&
+        int offset = tzStart.getOffset(d1.getTime()) - tzEnd.getOffset(d2.getTime());
+
+        return (d2.getTime() - d1.getTime() == 1000 * 60 * 60 * 24 + offset) &&
                 d1Calendar.get(Calendar.HOUR_OF_DAY) == 0 &&
                 d1Calendar.get(Calendar.MINUTE) == 0 &&
                 d1Calendar.get(Calendar.SECOND) == 0;
+    }
+
+    public static Date previousDay(Date d) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTimeInMillis(d.getTime());
+        calendar.add(Calendar.DATE, -1);
+
+        return calendar.getTime();
     }
 }

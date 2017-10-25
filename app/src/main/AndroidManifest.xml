@@ -39,7 +39,9 @@
                     android:resource="@xml/agenda_widget_info"/>
         </receiver>
 
-        <service android:name=".service.AgendaWidgetService">
+        <service android:name=".service.AgendaWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" >
         </service>
         <service
                 android:name=".ui.AgendaWidget$AgendaUpdateService"

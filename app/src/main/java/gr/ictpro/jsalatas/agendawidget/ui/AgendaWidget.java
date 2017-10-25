@@ -9,12 +9,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.Calendars;
+import gr.ictpro.jsalatas.agendawidget.model.calendar.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.service.AgendaWidgetService;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -94,6 +97,7 @@ public class AgendaWidget extends AppWidgetProvider {
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.agenda_widget);
+
         views.setInt(R.id.widgetLayout, "setBackgroundColor", Color.parseColor(Settings.getStringPref(context, "backgroundColor", appWidgetId)));
         views.setInt(R.id.widgetLayoutShadow, "setBackgroundResource", Settings.getBoolPref(context, "dropShadow", appWidgetId) ? android.R.drawable.dialog_holo_light_frame : R.drawable.widget_transparent);
 
@@ -132,9 +136,8 @@ public class AgendaWidget extends AppWidgetProvider {
 
         long now = Calendar.getInstance().getTimeInMillis();
         if (now - values.lastUpdate + 60000 >= Settings.getLongPref(context, "updateFrequency", appWidgetId)) {
+            Log.d("Widget", "    >>>>> updating list");
             values.lastUpdate = Calendar.getInstance().getTimeInMillis();
-            views.setTextViewText(R.id.shortDate, Settings.formatDate(Settings.getStringPref(context, "shortDateFormat", appWidgetId), currentTime));
-            views.setTextViewText(R.id.shortTime, Settings.formatTime(Settings.getStringPref(context, "timeFormat", appWidgetId), currentTime));
 
             views.setInt(R.id.tvCurrentDate, "setTextColor", Color.parseColor(Settings.getStringPref(context, "headerColor", appWidgetId)));
             views.setInt(R.id.imgAdd, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
@@ -142,8 +145,14 @@ public class AgendaWidget extends AppWidgetProvider {
             views.setInt(R.id.imgSettings, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
 
 
-            List<CalendarEvent> calendarEvents = Calendars.getEvents(appWidgetId);
+            Intent svcIntent = new Intent(context, AgendaWidgetService.class);
+            svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+            views.setRemoteAdapter(R.id.lvEvents, svcIntent);
 
+            // This forces the widget to replace its factory and get updated
+            //appWidgetManager.updateAppWidget(appWidgetId, null);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lvEvents);
         }
 
         // Instruct the widget manager to update the widget
@@ -152,12 +161,11 @@ public class AgendaWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateWidget(context, appWidgetManager, appWidgetId);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
