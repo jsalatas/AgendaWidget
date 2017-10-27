@@ -5,6 +5,7 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.*;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ public class AgendaWidget extends AppWidgetProvider {
 
         private final static IntentFilter intentFilter;
 
+        private final static IntentFilter calendarIntentFilter;
+
         static {
             intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_TIME_TICK);
@@ -50,40 +53,61 @@ public class AgendaWidget extends AppWidgetProvider {
             intentFilter.addAction(Intent.ACTION_USER_PRESENT);
             intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
             intentFilter.addAction(ACTION_UPDATE);
+
+            calendarIntentFilter = new IntentFilter();
+            calendarIntentFilter.addAction(Intent.ACTION_PROVIDER_CHANGED);
+            calendarIntentFilter.addDataScheme("content");
+            calendarIntentFilter.addDataAuthority("com.android.calendar", null);
+        }
+
+        private void sendUpdate(Context context, Intent intent) {
+            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+            Intent widgetUpdateIntent = new Intent();
+            widgetUpdateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            widgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+            if (!intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+                widgetUpdateIntent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
+            }
+
+            sendBroadcast(widgetUpdateIntent);
         }
 
         private final BroadcastReceiver agendaChangedReceiver = new
                 BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
-                        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-                        Intent widgetUpdateIntent = new Intent();
-                        widgetUpdateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                        widgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-                        if (!intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-                            widgetUpdateIntent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
-                        }
+                        sendUpdate(context, intent);
+                    }
+                };
 
-                        sendBroadcast(widgetUpdateIntent);
+        private final BroadcastReceiver calendarChangedReceiver = new
+                BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        sendUpdate(context, intent);
                     }
                 };
 
         @Override
         public void onDestroy() {
             unregisterReceiver(agendaChangedReceiver);
+            unregisterReceiver(calendarChangedReceiver);
             super.onDestroy();
         }
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
+            registerReceiver(calendarChangedReceiver, calendarIntentFilter);
+
             registerReceiver(agendaChangedReceiver, intentFilter);
             if (intent != null && intent.getAction() != null) {
                 if (intent.getAction().equals(ACTION_UPDATE)) {
                     agendaChangedReceiver.onReceive(this, intent);
                 }
             }
+
 
             return START_STICKY;
         }
