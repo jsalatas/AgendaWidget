@@ -9,20 +9,19 @@ import android.database.ContentObserver;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
-import gr.ictpro.jsalatas.agendawidget.model.calendar.Calendars;
-import gr.ictpro.jsalatas.agendawidget.model.calendar.EventItem;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 import gr.ictpro.jsalatas.agendawidget.service.AgendaWidgetService;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Implementation of App Widget functionality.
@@ -36,12 +35,30 @@ public class AgendaWidget extends AppWidgetProvider {
         private long lastUpdate = 0;
     }
 
+    public static class CalendarObserver extends ContentObserver {
+        public CalendarObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            this.onChange(selfChange,null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_PROVIDER_CHANGED);
+            sendUpdate(AgendaWidgetApplication.getContext(), intent);
+        }
+
+    }
     public static class AgendaUpdateService extends Service {
         private static final String ACTION_UPDATE = "gr.ictpro.jsalatas.agendawidget.action.UPDATE";
 
         private final static IntentFilter intentFilter;
 
-        private final static IntentFilter calendarIntentFilter;
+        private final static CalendarObserver calendarObserver = new CalendarObserver (new Handler());
 
         static {
             intentFilter = new IntentFilter();
@@ -53,25 +70,6 @@ public class AgendaWidget extends AppWidgetProvider {
             intentFilter.addAction(Intent.ACTION_USER_PRESENT);
             intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
             intentFilter.addAction(ACTION_UPDATE);
-
-            calendarIntentFilter = new IntentFilter();
-            calendarIntentFilter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-            calendarIntentFilter.addDataScheme("content");
-            calendarIntentFilter.addDataAuthority("com.android.calendar", null);
-        }
-
-        private void sendUpdate(Context context, Intent intent) {
-            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-            Intent widgetUpdateIntent = new Intent();
-            widgetUpdateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            widgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-            if (!intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-                widgetUpdateIntent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
-            }
-
-            sendBroadcast(widgetUpdateIntent);
         }
 
         private final BroadcastReceiver agendaChangedReceiver = new
@@ -82,25 +80,16 @@ public class AgendaWidget extends AppWidgetProvider {
                     }
                 };
 
-        private final BroadcastReceiver calendarChangedReceiver = new
-                BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        sendUpdate(context, intent);
-                    }
-                };
-
         @Override
         public void onDestroy() {
             unregisterReceiver(agendaChangedReceiver);
-            unregisterReceiver(calendarChangedReceiver);
+            getContentResolver().unregisterContentObserver(calendarObserver);
             super.onDestroy();
         }
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
-            registerReceiver(calendarChangedReceiver, calendarIntentFilter);
-
+            getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
             registerReceiver(agendaChangedReceiver, intentFilter);
             if (intent != null && intent.getAction() != null) {
                 if (intent.getAction().equals(ACTION_UPDATE)) {
@@ -116,6 +105,20 @@ public class AgendaWidget extends AppWidgetProvider {
         public IBinder onBind(Intent intent) {
             return null;
         }
+    }
+
+    public static void sendUpdate(Context context, Intent intent) {
+        ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+        Intent widgetUpdateIntent = new Intent();
+        widgetUpdateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        widgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+        if (!intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+            widgetUpdateIntent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
+        }
+
+        context.sendBroadcast(widgetUpdateIntent);
     }
 
 
@@ -154,7 +157,6 @@ public class AgendaWidget extends AppWidgetProvider {
 
         pendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.imgRefresh, pendingIntent);
-
 
         // TODO: beyond this point update should happen only after the specified time expired
 
