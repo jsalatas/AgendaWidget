@@ -36,7 +36,7 @@ public class AgendaWidget extends AppWidgetProvider {
     }
 
     public static class CalendarObserver extends ContentObserver {
-        public CalendarObserver(Handler handler) {
+        CalendarObserver(Handler handler) {
             super(handler);
         }
 
@@ -107,7 +107,7 @@ public class AgendaWidget extends AppWidgetProvider {
         }
     }
 
-    public static void sendUpdate(Context context, Intent intent) {
+    static void sendUpdate(Context context, Intent intent) {
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
@@ -158,11 +158,14 @@ public class AgendaWidget extends AppWidgetProvider {
         pendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.imgRefresh, pendingIntent);
 
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        PendingIntent calendarIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setPendingIntentTemplate(R.id.lvEvents, calendarIntent);
+
         // TODO: beyond this point update should happen only after the specified time expired
 
         long now = Calendar.getInstance().getTimeInMillis();
         if (now - values.lastUpdate + 60000 >= Settings.getLongPref(context, "updateFrequency", appWidgetId)) {
-            Log.d("Widget", "    >>>>> updating list");
             values.lastUpdate = Calendar.getInstance().getTimeInMillis();
 
             views.setInt(R.id.tvCurrentDate, "setTextColor", Color.parseColor(Settings.getStringPref(context, "headerColor", appWidgetId)));

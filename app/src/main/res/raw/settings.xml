@@ -25,6 +25,12 @@
              title="@string/header_color_prop"
              description="@string/header_color_desc"
              defaultValue="#FFFFFF"/>
+    <Color name="eventsColor"
+           tab="GENERAL"
+           category="@string/appearance_category"
+           title="@string/events_color_prop"
+           description="@string/events_color_desc"
+           defaultValue="#FFFFFF"/>
     <Color name="controlColor"
              tab="GENERAL"
              category="@string/appearance_category"

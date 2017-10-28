@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.TabLayout;
+import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
 import gr.ictpro.jsalatas.agendawidget.R;
@@ -29,7 +30,7 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.*;
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
  */
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
-    public static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
+    static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE = 2;
     private static final int BACKUP_FILE_WRITE = 3;
     private static final int BACKUP_FILE_READ = 4;
@@ -116,6 +117,8 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 try {
                     saveSettings(filename);
                 } catch (RuntimeException e) {
+                    Log.d("permissions", ">>>>>>>>> 1");
+
                     String dialogTitle = this.getString(R.string.backup_failed);
                     String dialogText = getString(R.string.error_occurred) + System.getProperty("line.separator") + e.getMessage();
                     int resId = R.drawable.ic_dialog_error;
@@ -161,11 +164,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                     } else {
                         loadSettings();
                     }
-                } else {
-                    String dialogTitle = this.getString(savingBackup ? R.string.backup_failed : R.string.restore_failed);
-                    String dialogText = getString(R.string.permission_to_external_storage_denied);
-                    int resId = R.drawable.ic_dialog_error;
-                    showAlert(resId, dialogTitle, dialogText);
                 }
                 break;
             }
@@ -229,6 +227,8 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
 
             }
         } catch (Exception e) {
+            Log.d("permissions", ">>>>>>>>> 3");
+
             dialogTitle = this.getString(savingBackup ? R.string.backup_failed : R.string.restore_failed);
             dialogText = getString(R.string.error_occurred) + System.getProperty("line.separator") + e.getMessage();
             resId = R.drawable.ic_dialog_error;

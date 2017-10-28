@@ -98,7 +98,7 @@ public class Calendars {
         ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
 
         final String[] PROJECTION = new String[]{
-                CalendarContract.Instances._ID,
+                CalendarContract.Instances.EVENT_ID,
                 CalendarContract.Instances.CALENDAR_COLOR,
                 CalendarContract.Instances.TITLE,
                 CalendarContract.Instances.EVENT_LOCATION,
@@ -149,14 +149,6 @@ public class Calendars {
                 endDate = calendarInstance.getTime();
             }
 
-            if(startDate.compareTo(selectedRangeStart) < 0) {
-                if(allDay || !DateUtils.isInSameDay(startDate, selectedRangeStart)) {
-                    startDate = DateUtils.dayFloor(selectedRangeStart);
-                }
-            }
-
-
-
             CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
             if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiDay()) {
                 calendarEvents.addAll(e.getMultidayEventsList(selectedRangeEnd));
@@ -175,11 +167,14 @@ public class Calendars {
             for(EventItem e: calendarEvents) {
                 Date current = DateUtils.dayFloor(e.getStartDate());
                 if(current.compareTo(headerDate) != 0) {
-                    headerDate = current;
+                    headerDate = DateUtils.dayFloor(current);
                     if(headerDate.compareTo(DateUtils.dayFloor(selectedRangeStart)) < 0) {
                         headerDate = DateUtils.dayFloor(selectedRangeStart);
                     }
-                    tmpCalendarEvents.add(new DayGroup(headerDate));
+                    DayGroup dg = new DayGroup(headerDate);
+                    if(!tmpCalendarEvents.contains(dg)) {
+                        tmpCalendarEvents.add(dg);
+                    }
                 }
                 tmpCalendarEvents.add(e);
             }

@@ -14,10 +14,17 @@ public class DateUtils {
             d1 = d2;
             d2 = tmp;
         }
+        Calendar d1Calendar = GregorianCalendar.getInstance();
+        d1Calendar.setTimeInMillis(d1.getTime());
+        TimeZone tzStart =  d1Calendar.getTimeZone();
+        Calendar d2Calendar = GregorianCalendar.getInstance();
+        d2Calendar.setTimeInMillis(d1.getTime());
+        TimeZone tzEnd =  d2Calendar.getTimeZone();
 
-        return Math.round((d2.getTime() - d1.getTime()) / (1000L * 60 * 60 * 24));
+        int offset = tzStart.getOffset(d1.getTime()) - tzEnd.getOffset(d2.getTime());
+
+        return Math.round((d2.getTime() - d1.getTime() - offset) / (1000L * 60 * 60 * 24));
     }
-
 
     public static Date dayFloor(Date d) {
         Calendar calendar = GregorianCalendar.getInstance();

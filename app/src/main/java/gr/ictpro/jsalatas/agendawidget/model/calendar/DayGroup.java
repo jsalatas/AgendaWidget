@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
 public class DayGroup implements EventItem  {
     private final Date startDate;
 
-    public DayGroup(Date startDate) {
+    DayGroup(Date startDate) {
         this.startDate = startDate;
     }
 
@@ -33,5 +33,20 @@ public class DayGroup implements EventItem  {
 
 
         return startDate.compareTo(((DayGroup) o).startDate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DayGroup dayGroup = (DayGroup) o;
+
+        return startDate.equals(dayGroup.startDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return startDate.hashCode();
     }
 }

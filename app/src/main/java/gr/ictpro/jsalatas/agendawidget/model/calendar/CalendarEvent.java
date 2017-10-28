@@ -112,7 +112,16 @@ public class CalendarEvent implements EventItem {
         if (startCalendarInstance.get(Calendar.YEAR) != oStartCalendarInstance.get(Calendar.YEAR) ||
                 startCalendarInstance.get(Calendar.MONTH) != oStartCalendarInstance.get(Calendar.MONTH) ||
                 startCalendarInstance.get(Calendar.DAY_OF_MONTH) != oStartCalendarInstance.get(Calendar.DAY_OF_MONTH)) {
-            return startDate.compareTo(o.getStartDate());
+            if(o instanceof DayGroup) {
+                Date now = DateUtils.dayFloor(GregorianCalendar.getInstance().getTime());
+                if(startDate.compareTo(now) < 0 && DateUtils.dayFloor(now).compareTo(DateUtils.dayFloor(o.getStartDate())) == 0) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else {
+                return startDate.compareTo(o.getStartDate());
+            }
         } else if(o instanceof DayGroup) {
             return 1;
         }
@@ -137,6 +146,7 @@ public class CalendarEvent implements EventItem {
     }
 
     public boolean isMultiDay() {
+        // TODO: an event that starts a date and ends on a different one, should always be considered as mutliday
         Date now = GregorianCalendar.getInstance().getTime();
         Date currentStart;
 
@@ -148,7 +158,7 @@ public class CalendarEvent implements EventItem {
 
         int days = DateUtils.daysBetween(currentStart, endDate);
 
-        return days > 1;
+        return days > 0 & !isAllDay();
     }
 
     public List<CalendarEvent> getMultidayEventsList(Date until) {
@@ -163,11 +173,11 @@ public class CalendarEvent implements EventItem {
         }
         currentEnd = DateUtils.dayCeil(currentStart);
 
-        int dateDiff = DateUtils.daysBetween(startDate, endDate);
+        int dateDiff = DateUtils.daysBetween(currentStart, endDate);
 
 
         for (int i=0; i<dateDiff; i++) {
-            CalendarEvent e = new CalendarEvent(id, color, title, location, description, currentStart, currentEnd,DateUtils. isAllDay(currentStart, currentEnd));
+            CalendarEvent e = new CalendarEvent(id, color, title, location, description, currentStart, currentEnd, DateUtils.isAllDay(currentStart, currentEnd));
             res.add(e);
             currentStart = DateUtils.nextDay(DateUtils.dayFloor(currentStart));
             currentEnd = DateUtils.nextDay(DateUtils.dayFloor(currentEnd));
@@ -183,15 +193,19 @@ public class CalendarEvent implements EventItem {
         return res;
     }
 
-// Debug
-    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
-
-    public String toString(Date from, Date to) {
-        return "from=" + df.format(from) +
-                " to=" + df.format(to) +
-                ":::: startDate=" + df.format(startDate) +
-                ", endDate=" + df.format(endDate) +
-                ", title='" + title + '\'' +
-                ", allDay=" + allDay;
+    public boolean containsDate(Date d) {
+        return startDate.compareTo(d)<=0 && endDate.compareTo(d) >= 0;
     }
+
+// Debug
+//    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
+//
+//    public String toString(Date from, Date to) {
+//        return "from=" + df.format(from) +
+//                " to=" + df.format(to) +
+//                ":::: startDate=" + df.format(startDate) +
+//                ", endDate=" + df.format(endDate) +
+//                ", title='" + title + '\'' +
+//                ", allDay=" + allDay;
+//    }
 }
