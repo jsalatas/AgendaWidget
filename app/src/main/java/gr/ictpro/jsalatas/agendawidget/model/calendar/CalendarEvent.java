@@ -196,16 +196,4 @@ public class CalendarEvent implements EventItem {
     public boolean containsDate(Date d) {
         return startDate.compareTo(d)<=0 && endDate.compareTo(d) >= 0;
     }
-
-// Debug
-//    static SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mma z");
-//
-//    public String toString(Date from, Date to) {
-//        return "from=" + df.format(from) +
-//                " to=" + df.format(to) +
-//                ":::: startDate=" + df.format(startDate) +
-//                ", endDate=" + df.format(endDate) +
-//                ", title='" + title + '\'' +
-//                ", allDay=" + allDay;
-//    }
 }

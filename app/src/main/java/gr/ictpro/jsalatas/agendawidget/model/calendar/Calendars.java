@@ -92,9 +92,6 @@ public class Calendars {
         sb.append("((").append(CalendarContract.Events.DTEND).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
         sb.append("(").append(CalendarContract.Events.DTEND).append(" <= ").append(selectedRangeEnd.getTime()).append(")))");
 
-// Debug
-//        Log.d("Sync", ">>>>>>>>> sync events from " + CalendarEvent.df.format(selectedRangeStart) + " to " + CalendarEvent.df.format(selectedRangeEnd));
-
         ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
 
         final String[] PROJECTION = new String[]{
@@ -185,10 +182,6 @@ public class Calendars {
 
         Collections.sort(calendarEvents);
 
-// Debug
-//        for (EventItem c : calendarEvents) {
-//            Log.d("Sync", "    >>>>> " + c);
-//        }
         return calendarEvents;
     }
 
