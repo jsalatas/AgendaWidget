@@ -10,4 +10,6 @@
     <color name="colorGray">#dddddd</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorRed">#FF0000</color>
+    <color name="colorDisabledItem">#A0A0A0</color>
+    <color name="colorDisabledItemDescription">#B0B0B0</color>
 </resources>

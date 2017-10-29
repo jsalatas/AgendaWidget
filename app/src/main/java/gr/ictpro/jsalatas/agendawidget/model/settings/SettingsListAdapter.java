@@ -37,7 +37,7 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
         } else if (item instanceof ListItemSetting) {
             Setting setting = ((ListItemSetting) item).getSetting();
 
-            v = setting.getView(this.getContext());
+            v = setting.getView(this.getContext(), isEnabled(position));
             v.setClickable(false);
 
             LinearLayout root = (LinearLayout) v.findViewById(R.id.root);
@@ -49,5 +49,31 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
         }
 
         return v;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        if(getItem(position) instanceof ListItemSetting) {
+                if(((ListItemSetting) getItem(position)).getSetting().getName().equals("notesMaxLines")) {
+                    int index = indexOf("showNotes");
+                    if(index != -1) {
+                        return Boolean.parseBoolean(((ListItemSetting) getItem(index)).getSetting().getStringValue());
+                    }
+                }
+
+        }
+        return true;
+    }
+
+    private int indexOf(String settingName) {
+        for(int i=0; i< getCount(); i++) {
+            if (getItem(i) instanceof ListItemSetting) {
+                ListItemSetting item = (ListItemSetting) getItem(i);
+                if(item.getSetting().getName().equals(settingName)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 }

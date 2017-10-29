@@ -2,8 +2,12 @@ package gr.ictpro.jsalatas.agendawidget.model.settings.types;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.ColorInt;
+import android.text.Layout;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
@@ -60,7 +64,7 @@ public abstract class Setting<T> {
 
     public abstract void setValue(T value);
 
-    public View getView(Context context) {
+    public View getView(Context context, boolean isEnabled) {
         View v = View.inflate(context, R.layout.settings_list_item, null);
 
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
@@ -69,7 +73,20 @@ public abstract class Setting<T> {
         TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
         tvDescription.setText(AgendaWidgetApplication.getResourceString(getDescription()));
 
+        setEnabled(v, isEnabled);
         return v;
+    }
+
+    void setEnabled(View v, boolean isEnabled) {
+        TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
+        TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
+        LinearLayout root = (LinearLayout) v.findViewById(R.id.root);
+
+        @ColorInt int titleColor = v.getContext().getResources().getColor(isEnabled ? R.color.colorText: R.color.colorDisabledItem);
+        tvTitle.setTextColor(titleColor);
+
+        @ColorInt int descriptionColor = v.getContext().getResources().getColor(isEnabled ? R.color.colorDescriptionText: R.color.colorDisabledItemDescription);
+        tvDescription.setTextColor(descriptionColor);
     }
 
     public void onClick(final AdapterView<?> parent, View view) {

@@ -45,6 +45,8 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
                 int colorValue = Color.parseColor(bgColor.getStringValue());
                 int newColor = Color.rgb(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue));
                 bgColor.setStringValue(String.format("#%08X", newColor));
+            } else if (setting.getName().equals("showNotes")) {
+                ((SettingsListAdapter) parent.getAdapter()).notifyDataSetChanged();
             }
         }
 

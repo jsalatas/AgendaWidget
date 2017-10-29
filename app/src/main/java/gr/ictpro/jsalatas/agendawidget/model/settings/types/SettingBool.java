@@ -21,7 +21,7 @@ public class SettingBool extends Setting<Boolean> {
     }
 
     @Override
-    public View getView(Context context) {
+    public View getView(Context context, boolean isEnabled) {
         View v = View.inflate(context, R.layout.settings_list_item_switch, null);
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
         tvTitle.setText(AgendaWidgetApplication.getResourceString(getTitle()));
@@ -33,6 +33,8 @@ public class SettingBool extends Setting<Boolean> {
         s.setChecked(getValue());
         s.setTrackTintList(context.getResources().getColorStateList(R.drawable.switch_selector));
 
+        s.setEnabled(isEnabled);
+        setEnabled(v, isEnabled);
         return v;
 
     }

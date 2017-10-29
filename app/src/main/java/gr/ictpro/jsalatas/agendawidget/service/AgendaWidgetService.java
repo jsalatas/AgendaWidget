@@ -120,6 +120,7 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 addSpace = true;
             }
             if (calendarEvent.isAllDay()) {
+                // TODO: I'm not sure if I want to see "(all day)". Maybe make it an option
                 if (addSpace) {
                     sb.append(" ");
                 }
@@ -165,7 +166,7 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
             v.setInt(R.id.imgNotes, "setColorFilter", locationNotesColor);
 
 
-            if (Settings.getBoolPref(appContext, "showLocation", appWidgetId) && !calendarEvent.getLocation().isEmpty()) {
+            if (Settings.getBoolPref(appContext, "showLocation", appWidgetId) && calendarEvent.getLocation() != null && !calendarEvent.getLocation().isEmpty()) {
                 v.setTextViewText(R.id.tvLocation, calendarEvent.getLocation());
                 v.setInt(R.id.tvLocation, "setVisibility", View.VISIBLE);
                 v.setInt(R.id.imgLocation, "setVisibility", View.VISIBLE);
@@ -175,7 +176,7 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 v.setInt(R.id.imgLocation, "setVisibility", View.GONE);
             }
 
-            if (Settings.getBoolPref(appContext, "showNotes", appWidgetId) && !calendarEvent.getDescription().isEmpty()) {
+            if (Settings.getBoolPref(appContext, "showNotes", appWidgetId) && calendarEvent.getDescription() != null && !calendarEvent.getDescription().isEmpty()) {
                 v.setTextViewText(R.id.tvNotes, calendarEvent.getDescription());
                 v.setInt(R.id.tvNotes, "setVisibility", View.VISIBLE);
                 v.setInt(R.id.imgNotes, "setVisibility", View.VISIBLE);

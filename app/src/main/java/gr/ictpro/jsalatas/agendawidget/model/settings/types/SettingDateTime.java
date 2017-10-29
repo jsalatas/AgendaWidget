@@ -11,8 +11,8 @@ import java.util.Date;
 
 abstract class SettingDateTime extends SettingString {
     @Override
-    public View getView(Context context) {
-        View v = super.getView(context);
+    public View getView(Context context, boolean isEnabled) {
+        View v = super.getView(context, isEnabled);
         Date currentTime = Calendar.getInstance().getTime();
 
         TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
