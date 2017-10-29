@@ -149,8 +149,12 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                     Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
 
                     ListView l = (ListView) f.getView().findViewById(R.id.lst_settings);
-                    l.performItemClick(l.getAdapter().getView(1, null, null),
-                            1, l.getAdapter().getItemId(1));
+                    SettingsListAdapter adapter = (SettingsListAdapter) l.getAdapter();
+                    int index = adapter.indexOf("calendars");
+                    if (index != -1) {
+                        l.performItemClick(l.getAdapter().getView(index, null, null),
+                                index, l.getAdapter().getItemId(index));
+                    }
                 }
                 break;
             }
@@ -161,6 +165,21 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                         saveSettings(filename);
                     } else {
                         loadSettings();
+                    }
+                }
+                break;
+            }
+            case PERMISSIONS_REQUEST_READ_TASK: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
+
+                    ListView l = (ListView) f.getView().findViewById(R.id.lst_settings);
+                    SettingsListAdapter adapter = (SettingsListAdapter) l.getAdapter();
+                    int index = adapter.indexOf("tasks");
+                    if (index != -1) {
+                        l.performItemClick(l.getAdapter().getView(index, null, null),
+                                index, l.getAdapter().getItemId(index));
                     }
                 }
                 break;

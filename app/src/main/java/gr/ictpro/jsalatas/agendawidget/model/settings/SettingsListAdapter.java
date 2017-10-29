@@ -65,7 +65,7 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
         return true;
     }
 
-    private int indexOf(String settingName) {
+    public int indexOf(String settingName) {
         for(int i=0; i< getCount(); i++) {
             if (getItem(i) instanceof ListItemSetting) {
                 ListItemSetting item = (ListItemSetting) getItem(i);
