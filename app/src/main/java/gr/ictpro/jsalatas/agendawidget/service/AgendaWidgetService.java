@@ -118,12 +118,13 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 }
                 addSpace = true;
             }
-            if (calendarEvent.isAllDay() && Settings.getBoolPref(appContext, "showAllDay", appWidgetId)) {
-                // TODO: I'm not sure if I want to see "(all day)". Maybe make it an option
-                if (addSpace) {
-                    sb.append(" ");
+            if (calendarEvent.isAllDay()) {
+                if(Settings.getBoolPref(appContext, "showAllDay", appWidgetId)) {
+                    if (addSpace) {
+                        sb.append(" ");
+                    }
+                    sb.append("(").append(appContext.getString(R.string.all_day)).append(")");
                 }
-                sb.append("(").append(appContext.getString(R.string.all_day)).append(")");
             } else {
                 sb.append(" -");
             }

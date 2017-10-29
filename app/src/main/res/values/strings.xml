@@ -62,7 +62,7 @@
     <string name="repeat_multiday_events_desc">If selected multiple day events are repeatedly shown in each day. Otherwise they are shown only in their first day.</string>
 
     <string name="layout_options_category">Layout Options</string>
-    <string name="show_all_day_prop">Point out All Day Events</string>
+    <string name="show_all_day_prop">Indicate All Day Events</string>
     <string name="show_all_day_desc">When selected, the \"(all day)\" literal will be added next to an event, to explicitly indicate that it is an all day event.</string>
     <string name="show_location_prop">Show Event\'s Location</string>
     <string name="show_location_desc">Show event\'s location on a separate line.</string>
