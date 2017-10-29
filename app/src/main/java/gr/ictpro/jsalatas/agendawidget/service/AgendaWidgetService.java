@@ -1,17 +1,17 @@
 package gr.ictpro.jsalatas.agendawidget.service;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
-import android.util.Log;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
@@ -19,7 +19,6 @@ import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.*;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
-import gr.ictpro.jsalatas.agendawidget.ui.AgendaWidgetConfigureActivity;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -86,43 +85,42 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
         } else if (item instanceof CalendarEvent) {
             // FIXME: This is a mess. I wish I would know how to make it cleaner :\
             // TODO: number of lines
-            v = new RemoteViews(appContext.getPackageName(), R.layout.calendar_event_one_line_layout);
+            v = new RemoteViews(appContext.getPackageName(), R.layout.calendar_event_layout);
             CalendarEvent calendarEvent = (CalendarEvent) item;
 
-            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, calendarEvent.getId());
-
-            Intent intent = new Intent(Intent.ACTION_VIEW).setData(uri);
-
-            v.setOnClickFillInIntent(R.id.viewCalendarEvent, intent);
-
             v.setInt(R.id.viewCalendarColor, "setBackgroundColor", calendarEvent.getColor());
-
             Date now = GregorianCalendar.getInstance().getTime();
 
-            @ColorInt int color = calendarEvent.containsDate(now) || DateUtils.isInSameDay(calendarEvent.getStartDate(), now) || DateUtils.isInSameDay(calendarEvent.getEndDate(), now) ?
-                    AgendaWidgetApplication.getContext().getResources().getColor(R.color.colorRed) : Color.parseColor(Settings.getStringPref(AgendaWidgetApplication.getContext(), "eventsColor", appWidgetId));
-            v.setInt(R.id.tvDate, "setTextColor", color);
-            v.setInt(R.id.tvTitle, "setTextColor", color);
+            boolean isToday = calendarEvent.containsDate(now) ||
+                    DateUtils.isInSameDay(calendarEvent.getStartDate(), now) ||
+                    DateUtils.isInSameDay(calendarEvent.getEndDate(), now);
+
+            @ColorInt int dateTitleColor = Color.parseColor(isToday ?
+                    Settings.getStringPref(AgendaWidgetApplication.getContext(), "todayDateTitleColor", appWidgetId) :
+                    Settings.getStringPref(AgendaWidgetApplication.getContext(), "dateTitleColor", appWidgetId));
+
+            v.setInt(R.id.tvDate, "setTextColor", dateTitleColor);
+            v.setInt(R.id.tvTitle, "setTextColor", dateTitleColor);
 
             StringBuilder sb = new StringBuilder();
             boolean startIsToday = DateUtils.isInSameDay(calendarEvent.getStartDate(), now);
             boolean addSpace = false;
-            if(startIsToday && !calendarEvent.isAllDay()) {
+            if (startIsToday && !calendarEvent.isAllDay()) {
                 sb.append(Settings.formatDate(Settings.getStringPref(appContext, "timeFormat", appWidgetId), calendarEvent.getStartDate()));
-            } else if(calendarEvent.getStartDate().compareTo(now)>0) {
-                if(!Settings.getBoolPref(appContext, "groupByDate", appWidgetId)) {
+            } else if (calendarEvent.getStartDate().compareTo(now) > 0) {
+                if (!Settings.getBoolPref(appContext, "groupByDate", appWidgetId)) {
                     sb.append(Settings.formatDate(Settings.getStringPref(appContext, "shortDateFormat", appWidgetId), calendarEvent.getStartDate()));
                 }
-                if(!calendarEvent.isAllDay() && DateUtils.dayFloor(calendarEvent.getStartDate()).compareTo(calendarEvent.getStartDate()) !=0) {
-                    if(!Settings.getBoolPref(appContext, "groupByDate", appWidgetId)) {
+                if (!calendarEvent.isAllDay() && DateUtils.dayFloor(calendarEvent.getStartDate()).compareTo(calendarEvent.getStartDate()) != 0) {
+                    if (!Settings.getBoolPref(appContext, "groupByDate", appWidgetId)) {
                         sb.append(" ");
                     }
                     sb.append(Settings.formatDate(Settings.getStringPref(appContext, "timeFormat", appWidgetId), calendarEvent.getStartDate()));
                 }
                 addSpace = true;
             }
-            if(calendarEvent.isAllDay()) {
-                if(addSpace) {
+            if (calendarEvent.isAllDay()) {
+                if (addSpace) {
                     sb.append(" ");
                 }
                 sb.append("(").append(appContext.getString(R.string.all_day)).append(")");
@@ -130,31 +128,69 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 sb.append(" -");
             }
 
-
-
             boolean endIsToday = DateUtils.isInSameDay(calendarEvent.getEndDate(), now);
-            if(endIsToday && !calendarEvent.isAllDay()) {
+            if (endIsToday && !calendarEvent.isAllDay()) {
                 sb.append(" ").append(Settings.formatDate(Settings.getStringPref(appContext, "timeFormat", appWidgetId), calendarEvent.getEndDate()));
-            } else if(!calendarEvent.isAllDay()){
-                if(!DateUtils.isInSameDay(calendarEvent.getStartDate(), calendarEvent.getEndDate()) && !Settings.getBoolPref(appContext, "repeatMultidayEvents", appWidgetId)) {
+            } else if (!calendarEvent.isAllDay()) {
+                if (!DateUtils.isInSameDay(calendarEvent.getStartDate(), calendarEvent.getEndDate()) && !Settings.getBoolPref(appContext, "repeatMultidayEvents", appWidgetId)) {
                     sb.append(" ").append(Settings.formatDate(Settings.getStringPref(appContext, "shortDateFormat", appWidgetId), calendarEvent.getEndDate()));
                 }
-                if(DateUtils.dayFloor(calendarEvent.getEndDate()).compareTo(calendarEvent.getEndDate()) !=0) {
+                if (DateUtils.dayFloor(calendarEvent.getEndDate()).compareTo(calendarEvent.getEndDate()) != 0) {
                     sb.append(" ");
                     sb.append(Settings.formatDate(Settings.getStringPref(appContext, "timeFormat", appWidgetId), calendarEvent.getEndDate()));
                 }
             }
 
-            if(sb.toString().endsWith("-")) {
+            if (sb.toString().endsWith("-")) {
                 sb.append(" ");
             }
             sb.append(":");
 
-            v.setTextViewText(R.id.tvDate, sb.toString());
+            SpannableString spanDate = new SpannableString(sb.toString());
+            SpannableString spanTitle = new SpannableString(calendarEvent.getTitle());
+            if (Settings.getBoolPref(appContext, "todayBold", appWidgetId) && isToday) {
+                spanDate.setSpan(new StyleSpan(Typeface.BOLD), 0, sb.toString().length(), 0);
+                spanTitle.setSpan(new StyleSpan(Typeface.BOLD), 0, calendarEvent.getTitle().length(), 0);
+            }
+            v.setTextViewText(R.id.tvDate, spanDate);
+            v.setTextViewText(R.id.tvTitle, spanTitle);
 
-            v.setTextViewText(R.id.tvTitle, calendarEvent.getTitle());
+            @ColorInt int locationNotesColor = Color.parseColor(isToday ?
+                    Settings.getStringPref(AgendaWidgetApplication.getContext(), "todayLocationNotesColor", appWidgetId) :
+                    Settings.getStringPref(AgendaWidgetApplication.getContext(), "locationNotesColor", appWidgetId));
 
+            v.setInt(R.id.tvLocation, "setTextColor", locationNotesColor);
+            v.setInt(R.id.imgLocation, "setColorFilter", locationNotesColor);
+            v.setInt(R.id.tvNotes, "setTextColor", locationNotesColor);
+            v.setInt(R.id.imgNotes, "setColorFilter", locationNotesColor);
+
+
+            if (Settings.getBoolPref(appContext, "showLocation", appWidgetId) && !calendarEvent.getLocation().isEmpty()) {
+                v.setTextViewText(R.id.tvLocation, calendarEvent.getLocation());
+                v.setInt(R.id.tvLocation, "setVisibility", View.VISIBLE);
+                v.setInt(R.id.imgLocation, "setVisibility", View.VISIBLE);
+            } else {
+                v.setTextViewText(R.id.tvLocation, "");
+                v.setInt(R.id.tvLocation, "setVisibility", View.GONE);
+                v.setInt(R.id.imgLocation, "setVisibility", View.GONE);
+            }
+
+            if (Settings.getBoolPref(appContext, "showNotes", appWidgetId) && !calendarEvent.getDescription().isEmpty()) {
+                v.setTextViewText(R.id.tvNotes, calendarEvent.getDescription());
+                v.setInt(R.id.tvNotes, "setVisibility", View.VISIBLE);
+                v.setInt(R.id.imgNotes, "setVisibility", View.VISIBLE);
+                v.setInt(R.id.tvNotes, "setMaxLines", Settings.getIntPref(appContext, "notesMaxLines", appWidgetId));
+            } else {
+                v.setTextViewText(R.id.tvNotes, "");
+                v.setInt(R.id.tvNotes, "setVisibility", View.GONE);
+                v.setInt(R.id.imgNotes, "setVisibility", View.GONE);
+            }
+
+            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, calendarEvent.getId());
+            Intent intent = new Intent(Intent.ACTION_VIEW).setData(uri);
+            v.setOnClickFillInIntent(R.id.viewCalendarEvent, intent);
         }
+
 
         return v;
     }

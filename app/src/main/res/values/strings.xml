@@ -13,6 +13,10 @@
     <string name="every">Every</string>
     <string name="next">Next</string>
     <string name="dialog_ok">OK</string>
+    <string name="number_of_lines">Number of lines</string>
+    <string name="unlimited">No limit</string>
+    <string name="location">location</string>
+    <string name="notes">notes</string>
 <!--
     <string name="start_of_day">start of day</string>
     <string name="end_of_day">end of day</string>
@@ -29,10 +33,18 @@
     <string name="drop_shadow_desc">Drop a shadow around the widget. It disables widget\'s transparency.</string>
     <string name="header_color_prop">Header Color</string>
     <string name="header_color_desc">The color of the header\'s date.</string>
-    <string name="events_color_prop">Event Color</string>
-    <string name="events_color_desc">The color of the event items.</string>
     <string name="control_color_prop">Controls Color</string>
     <string name="control_color_desc">The color of the widget\'s control buttons.</string>
+    <string name="date_title_color_prop">Title and Date Color</string>
+    <string name="date_title_color_desc">The color of the events\' title and date (1st line).</string>
+    <string name="location_notes_color_prop">Location and Notes Color</string>
+    <string name="location_notes_color_desc">The color of the events\' location and notes (2nd and 3rd lines).</string>
+    <string name="today_bold_prop">Today\'s Events Bold</string>
+    <string name="today_bold_desc">Use bold font for today\'s events title and date (1st line).</string>
+    <string name="today_date_title_color_prop">Today\'s Title and Date Color</string>
+    <string name="today_date_title_color_desc">The color of the today\'s events title and date (1st line).</string>
+    <string name="today_location_notes_color_prop">Today\'s Location and Notes Color</string>
+    <string name="today_location_notes_color_desc">The color of the today\'s events location and notes (2nd and 3rd lines).</string>
     <string name="datettime_format">Date and Time Format</string>
     <string name="long_date_prop">Long Date</string>
     <string name="short_date_prop">Short Date</string>
@@ -48,6 +60,14 @@
     <string name="group_by_date_desc">Groups events by date, showing a common date header.</string>
     <string name="repeat_multiday_events_prop">Repeat Multiple Day Events</string>
     <string name="repeat_multiday_events_desc">If selected multiple day events are repeatedly shown in each day. Otherwise they are shown only in their first day.</string>
+
+    <string name="layout_options_category">Layout Options</string>
+    <string name="show_location_prop">Show Event\'s Location</string>
+    <string name="show_location_desc">Show event\'s location on a separate line.</string>
+    <string name="show_notes_prop">Show Event\'s Notes</string>
+    <string name="show_notes_desc">Show event\'s notes on a separate line.</string>
+    <string name="notes_number_of_lines_prop">Event\'s Notes Number of Lines</string>
+    <string name="notes_number_of_lines_desc">Maximum number of lines to use for showing the event\'s notes.</string>
 
 
     <string name="calendar_appearance_category">Calendar Appearance</string>

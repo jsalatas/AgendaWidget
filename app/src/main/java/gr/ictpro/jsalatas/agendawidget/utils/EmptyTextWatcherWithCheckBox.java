@@ -2,25 +2,25 @@ package gr.ictpro.jsalatas.agendawidget.utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 
-public class EmptyTextWatcher implements TextWatcher {
-    final TextView tvOK;
+public class EmptyTextWatcherWithCheckBox extends EmptyTextWatcher {
+    private final CheckBox checkbox;
 
-    public EmptyTextWatcher(TextView tvOK) {
-        super();
-        this.tvOK = tvOK;
+    public EmptyTextWatcherWithCheckBox(CheckBox checkbox, TextView tvOK) {
+        super(tvOK);
+        this.checkbox = checkbox;
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        if(s.toString().isEmpty()) {
-            tvOK.setClickable(false);
-            tvOK.setTextColor(tvOK.getContext().getResources().getColor(R.color.colorGray));
-        } else {
+        if (checkbox.isChecked()) {
             tvOK.setClickable(true);
             tvOK.setTextColor(tvOK.getContext().getResources().getColor(R.color.colorPrimary));
+        } else {
+            super.afterTextChanged(s);
         }
     }
 

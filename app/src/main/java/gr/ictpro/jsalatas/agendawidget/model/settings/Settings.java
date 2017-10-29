@@ -28,10 +28,11 @@ public class Settings {
             @ElementList(entry = "Color", inline = true, type = SettingColor.class),
             @ElementList(entry = "DateLong", inline = true, type = SettingDateLong.class),
             @ElementList(entry = "DateShort", inline = true, type = SettingDateShort.class),
-            @ElementList(entry = "Time", inline = true, type = SettingTime.class),
-            @ElementList(entry = "UpdateFrequency", inline = true, type = SettingUpdateFrequency.class),
-            @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
+            @ElementList(entry = "NumberOfLines", inline = true, type = SettingNumberOfLines.class),
             @ElementList(entry = "SearchPeriod", inline = true, type = SettingSearchPeriod.class),
+            @ElementList(entry = "Time", inline = true, type = SettingTime.class),
+            @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
+            @ElementList(entry = "UpdateFrequency", inline = true, type = SettingUpdateFrequency.class),
     })
     private List<Setting> settings;
 
@@ -115,6 +116,10 @@ public class Settings {
         return Long.parseLong(prefs.getString(name + "_" + appWidgetId, getDefaultPref(name)));
     }
 
+    public static Integer getIntPref(Context context, String name, int appWidgetId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
+        return Integer.parseInt(prefs.getString(name + "_" + appWidgetId, getDefaultPref(name)));
+    }
 
     public static String getStringPref(Context context, String name, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);

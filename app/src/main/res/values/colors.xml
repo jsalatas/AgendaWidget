@@ -3,7 +3,7 @@
     <color name="colorPrimary">#308E03</color>
     <color name="colorPrimaryDark">#005E00</color>
     <color name="colorAccent">#3ec400</color>
-    <color name="colorWidgetActions">#FFFFFF</color>
+    <color name="colorWidgetIcons">#FFFFFF</color>
     <color name="colorText">#333333</color>
     <color name="colorDescriptionText">#777777</color>
     <color name="colorDivider">#dddddd</color>
