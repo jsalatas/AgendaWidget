@@ -29,6 +29,7 @@ public class Settings {
             @ElementList(entry = "DateShort", inline = true, type = SettingDateShort.class),
             @ElementList(entry = "NumberOfLines", inline = true, type = SettingNumberOfLines.class),
             @ElementList(entry = "SearchPeriod", inline = true, type = SettingSearchPeriod.class),
+            @ElementList(entry = "Tasks", inline = true, type = SettingTasks.class),
             @ElementList(entry = "Time", inline = true, type = SettingTime.class),
             @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
             @ElementList(entry = "UpdateFrequency", inline = true, type = SettingUpdateFrequency.class),

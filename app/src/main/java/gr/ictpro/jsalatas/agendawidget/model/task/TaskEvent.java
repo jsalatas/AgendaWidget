@@ -1,4 +1,7 @@
-package gr.ictpro.jsalatas.agendawidget.model.calendar;
+package gr.ictpro.jsalatas.agendawidget.model.task;
+
+import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
+import gr.ictpro.jsalatas.agendawidget.model.calendar.EventItem;
 
 import java.util.ArrayList;
 import java.util.Date;

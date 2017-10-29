@@ -1,9 +1,9 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
 import android.support.annotation.ColorInt;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 
@@ -25,7 +25,7 @@ public class CalendarEvent implements EventItem {
 
     private final boolean allDay;
 
-    CalendarEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay) {
+    protected CalendarEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay) {
         this.id = id;
         this.color = color;
         this.title = title;

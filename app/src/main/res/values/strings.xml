@@ -72,6 +72,11 @@
     <string name="notes_number_of_lines_desc">Maximum number of lines to use for showing the event\'s notes.</string>
 
 
+    <!-- Task Settings -->
+    <string name="tasks_category">Tasks</string>
+    <string name="selected_tasks_prop">Select Tasks</string>
+    <string name="selected_tasks_desc">Selects the tasks that appear in the widget.</string>
+
     <!-- datetime format dialog -->
     <string name="full_format">Full</string>
     <string name="long_format">Long</string>

@@ -128,4 +128,12 @@
           title="@string/notes_number_of_lines_prop"
           description="@string/notes_number_of_lines_desc"
           defaultValue="1"/>
+    <!-- Tasks Settings -->
+    <Tasks name="tasks"
+               tab="TASKS"
+               category="@string/tasks_category"
+               title="@string/selected_tasks_prop"
+               description="@string/selected_tasks_desc"
+               defaultValue=""/>
+
 </settings>

@@ -9,7 +9,7 @@ public class Calendar {
 
     private final int color;
 
-    Calendar(Long id, String accountName, String name, int color) {
+    protected Calendar(Long id, String accountName, String name, int color) {
         this.id = id;
         this.accountName = accountName;
         this.name = name;
@@ -20,7 +20,7 @@ public class Calendar {
         return id;
     }
 
-    String getAccountName() {
+    public String getAccountName() {
         return accountName;
     }
 

@@ -14,11 +14,11 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.*;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.ArrayList;

@@ -31,8 +31,9 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.*;
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE = 2;
-    private static final int BACKUP_FILE_WRITE = 3;
-    private static final int BACKUP_FILE_READ = 4;
+    static final int PERMISSIONS_REQUEST_READ_TASK = 3;
+    private static final int BACKUP_FILE_WRITE = 4;
+    private static final int BACKUP_FILE_READ = 5;
     private boolean savingBackup;
 
     private static String[] PERMISSIONS_STORAGE = {
