@@ -204,6 +204,9 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         String dialogTitle;
         String dialogText;
         int resId;
+        if(data == null) {
+            return;
+        }
         try {
             if (requestCode == BACKUP_FILE_WRITE) {
                 ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(data.getData(), "w");
