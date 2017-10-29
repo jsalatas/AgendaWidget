@@ -2,6 +2,7 @@ package gr.ictpro.jsalatas.agendawidget.utils;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.widget.EditText;
 
 public class InputFilterMinMax implements InputFilter {
 
@@ -14,14 +15,24 @@ public class InputFilterMinMax implements InputFilter {
 
     @Override
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+        String destination = dest.toString();
         try {
-            int input = Integer.parseInt(dest.toString() + source.toString());
+            StringBuilder sb = new StringBuilder();
+            if(dstart > 0) {
+                sb.append(destination.substring(0, dstart));
+            }
+            sb.append(source);
+            if(dend < destination.length()) {
+                sb.append(destination.substring(dend));
+            }
+
+            int input = Integer.parseInt(sb.toString());
             if (isInRange(min, max, input))
                 return null;
         } catch (NumberFormatException nfe) {
             // do nothing
         }
-        return "";
+        return destination.substring(dstart, dend);
     }
 
     private boolean isInRange(int a, int b, int c) {
