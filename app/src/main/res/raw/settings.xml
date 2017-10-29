@@ -104,8 +104,12 @@
           title="@string/repeat_multiday_events_prop"
           description="@string/repeat_multiday_events_desc"
           defaultValue="true"/>
-
-
+    <Bool name="showAllDay"
+          tab="CALENDAR"
+          category="@string/layout_options_category"
+          title="@string/show_all_day_prop"
+          description="@string/show_all_day_desc"
+          defaultValue="false"/>
     <Bool name="showLocation"
           tab="CALENDAR"
           category="@string/layout_options_category"

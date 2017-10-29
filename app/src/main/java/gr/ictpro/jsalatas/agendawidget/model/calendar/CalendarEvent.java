@@ -108,7 +108,7 @@ public class CalendarEvent implements EventItem {
         startCalendarInstance.setTime(startDate);
         oStartCalendarInstance.setTime(o.getStartDate());
 
-        // Check date part
+        // Date part
         if (startCalendarInstance.get(Calendar.YEAR) != oStartCalendarInstance.get(Calendar.YEAR) ||
                 startCalendarInstance.get(Calendar.MONTH) != oStartCalendarInstance.get(Calendar.MONTH) ||
                 startCalendarInstance.get(Calendar.DAY_OF_MONTH) != oStartCalendarInstance.get(Calendar.DAY_OF_MONTH)) {
@@ -146,7 +146,6 @@ public class CalendarEvent implements EventItem {
     }
 
     public boolean isMultiDay() {
-        // TODO: an event that starts a date and ends on a different one, should always be considered as mutliday
         Date now = GregorianCalendar.getInstance().getTime();
         Date currentStart;
 

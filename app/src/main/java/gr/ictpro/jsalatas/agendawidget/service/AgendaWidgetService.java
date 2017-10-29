@@ -84,7 +84,6 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
         } else if (item instanceof CalendarEvent) {
             // FIXME: This is a mess. I wish I would know how to make it cleaner :\
-            // TODO: number of lines
             v = new RemoteViews(appContext.getPackageName(), R.layout.calendar_event_layout);
             CalendarEvent calendarEvent = (CalendarEvent) item;
 
@@ -119,7 +118,7 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 }
                 addSpace = true;
             }
-            if (calendarEvent.isAllDay()) {
+            if (calendarEvent.isAllDay() && Settings.getBoolPref(appContext, "showAllDay", appWidgetId)) {
                 // TODO: I'm not sure if I want to see "(all day)". Maybe make it an option
                 if (addSpace) {
                     sb.append(" ");

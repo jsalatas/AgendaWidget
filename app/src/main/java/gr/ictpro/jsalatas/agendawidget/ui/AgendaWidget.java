@@ -161,8 +161,6 @@ public class AgendaWidget extends AppWidgetProvider {
         PendingIntent calendarIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.lvEvents, calendarIntent);
 
-        // TODO: beyond this point update should happen only after the specified time expired
-
         long now = Calendar.getInstance().getTimeInMillis();
         if (now - values.lastUpdate + 60000 >= Settings.getLongPref(context, "updateFrequency", appWidgetId)) {
             values.lastUpdate = Calendar.getInstance().getTimeInMillis();
