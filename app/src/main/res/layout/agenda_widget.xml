@@ -53,6 +53,7 @@
                          android:scaleType="fitCenter"/>
         </LinearLayout>
         <ListView android:id="@+id/lvEvents"
+                  android:scrollbarThumbVertical="@drawable/scrollbar"
                   android:layout_below="@id/layoutHeader"
                   android:layout_width="match_parent"
                   android:layout_height="fill_parent"
