@@ -1,7 +1,5 @@
 package gr.ictpro.jsalatas.agendawidget.utils;
 
-import android.util.Log;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;

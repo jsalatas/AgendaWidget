@@ -19,7 +19,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.TabLayout;
-import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
 import gr.ictpro.jsalatas.agendawidget.R;
@@ -117,8 +116,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 try {
                     saveSettings(filename);
                 } catch (RuntimeException e) {
-                    Log.d("permissions", ">>>>>>>>> 1");
-
                     String dialogTitle = this.getString(R.string.backup_failed);
                     String dialogText = getString(R.string.error_occurred) + System.getProperty("line.separator") + e.getMessage();
                     int resId = R.drawable.ic_dialog_error;
@@ -227,8 +224,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
 
             }
         } catch (Exception e) {
-            Log.d("permissions", ">>>>>>>>> 3");
-
             dialogTitle = this.getString(savingBackup ? R.string.backup_failed : R.string.restore_failed);
             dialogText = getString(R.string.error_occurred) + System.getProperty("line.separator") + e.getMessage();
             resId = R.drawable.ic_dialog_error;
