@@ -1,7 +1,9 @@
 package gr.ictpro.jsalatas.agendawidget.model.task;
 
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
-import gr.ictpro.jsalatas.agendawidget.model.calendar.EventItem;
+import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,8 +45,10 @@ public class TaskEvent extends CalendarEvent {
     public int compareTo(EventItem o) {
         if(o instanceof TaskEvent) {
             int otherPriority = ((TaskEvent)o).priority;
-            if (this.priority != otherPriority) {
+            if (this.priority == 0 && otherPriority != 0) {
                 return this.priority - otherPriority;
+            } else if (this.priority != otherPriority) {
+                return otherPriority - this.priority;
             }
         } else {
             return -1;
@@ -60,6 +64,22 @@ public class TaskEvent extends CalendarEvent {
     @Override
     public List<CalendarEvent> getMultidayEventsList(Date until) {
         return new ArrayList<>();
+    }
+
+    public @ColorInt int getPriorityColor() {
+        String coloStr = "#888888";
+        if(priority > 5) {
+            // low
+            coloStr = "#00AA00";
+        } else if (priority == 5) {
+            // medium
+            coloStr = "#FF8000";
+        } else if (priority> 0 && priority < 5) {
+            // high
+            coloStr = "#FF0000";
+        }
+
+        return Color.parseColor(coloStr);
     }
 
 }
