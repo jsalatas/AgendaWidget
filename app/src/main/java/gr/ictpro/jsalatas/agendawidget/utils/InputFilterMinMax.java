@@ -30,7 +30,7 @@ public class InputFilterMinMax implements InputFilter {
             if (isInRange(min, max, input))
                 return null;
         } catch (NumberFormatException nfe) {
-            // do nothing
+            return "";
         }
         return destination.substring(dstart, dend);
     }
