@@ -9,11 +9,16 @@
               android:layout_marginBottom="0.5dp"
               android:paddingEnd="5dp">
 
-    <LinearLayout android:id="@+id/viewCalendarColor"
-                  android:layout_width="5dp"
-                  android:orientation="vertical"
-                  android:layout_height="match_parent"/>
-
+    <ImageButton android:id="@+id/imgTaskPriority"
+                 android:layout_width="5dp"
+                 android:layout_height="12sp"
+                 android:layout_marginTop="3sp"
+                 android:layout_marginBottom="4sp"
+                 android:contentDescription="@string/priority"
+                 android:background="@android:color/transparent"
+                 android:src="@drawable/ic_task_priority"
+                 android:clickable="false"
+                 android:scaleType="fitCenter"/>
 
         <include layout="@layout/event_layout" />
 

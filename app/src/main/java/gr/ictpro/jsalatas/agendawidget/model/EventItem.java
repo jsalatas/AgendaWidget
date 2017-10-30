@@ -1,4 +1,4 @@
-package gr.ictpro.jsalatas.agendawidget.model.calendar;
+package gr.ictpro.jsalatas.agendawidget.model;
 
 import java.util.Date;
 

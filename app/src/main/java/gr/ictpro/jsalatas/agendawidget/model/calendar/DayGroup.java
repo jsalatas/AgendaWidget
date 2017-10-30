@@ -1,10 +1,12 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
+import gr.ictpro.jsalatas.agendawidget.model.EventItem;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class DayGroup implements EventItem  {
+public class DayGroup implements EventItem {
     private final Date startDate;
 
     DayGroup(Date startDate) {

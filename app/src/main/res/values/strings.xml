@@ -17,6 +17,7 @@
     <string name="unlimited">No limit</string>
     <string name="location">location</string>
     <string name="notes">notes</string>
+    <string name="priority">priority</string>
 <!--
     <string name="start_of_day">start of day</string>
     <string name="end_of_day">end of day</string>

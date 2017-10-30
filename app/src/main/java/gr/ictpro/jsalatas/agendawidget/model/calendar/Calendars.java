@@ -10,6 +10,8 @@ import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
+import gr.ictpro.jsalatas.agendawidget.model.EventItem;
+import gr.ictpro.jsalatas.agendawidget.model.Events;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
@@ -122,7 +124,6 @@ public class Calendars {
         ContentUris.appendId(builder, selectedRangeEnd.getTime());
 
         Cursor cur = cr.query(builder.build(), PROJECTION, selection, null, null);
-        TimeZone tzLocal = TimeZone.getDefault();
 
         while (cur.moveToNext()) {
             id = cur.getLong(0);
@@ -136,16 +137,9 @@ public class Calendars {
             calendarInstance.setTimeInMillis(cur.getLong(8));
             endDate = calendarInstance.getTime();
 
-            // Assume current time zone for all day events
-            if (allDay) {
-                calendarInstance.setTimeInMillis(startDate.getTime() - tzLocal.getOffset(startDate.getTime()));
-                startDate = calendarInstance.getTime();
-
-                calendarInstance.setTimeInMillis(endDate.getTime() - tzLocal.getOffset(endDate.getTime()));
-                endDate = calendarInstance.getTime();
-            }
-
             CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
+            Events.adjustAllDayEvents(e);
+
             if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiDay()) {
                 calendarEvents.addAll(e.getMultidayEventsList(selectedRangeEnd));
             } else {
@@ -178,8 +172,6 @@ public class Calendars {
             calendarEvents = tmpCalendarEvents;
 
         }
-
-        Collections.sort(calendarEvents);
 
         return calendarEvents;
     }
