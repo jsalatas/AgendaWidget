@@ -128,51 +128,62 @@ public class Tasks {
         long endRange = selectedRangeEnd.getTime();
 
         sb = new StringBuilder();
-        // DTSTART >= startRange and DTSTART <= endRange
-        sb.append("(((")
-                .append(TaskContract.TaskColumns.DTSTART).append(">=").append(startRange)
-                .append(" AND ")
-                .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
-                .append(")")
-                .append(" or ")
-                // DUE >= startRange and DUE <= endRange
-                .append("(")
-                .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
-                .append(" AND ")
-                .append(TaskContract.TaskColumns.DUE).append("<=").append(endRange)
-                .append(")")
-                .append(" or ")
-                // DSTART <= startRange and DUE => endRange
-                .append("(")
-                .append(TaskContract.TaskColumns.DTSTART).append("<=").append(startRange)
-                .append(" AND ")
-                .append(TaskContract.TaskColumns.DUE).append(">=").append(endRange)
-                .append(")")
-                .append(" or ")
-                //  DSTART = 0 and (DUE = 0 OR DUE >= startRange)
-                .append("(")
-                .append(TaskContract.TaskColumns.DTSTART).append(" is null")
-                .append(" AND (")
-                .append(TaskContract.TaskColumns.DUE).append(" is null")
-                .append(" or ")
-                .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
-                .append("))")
-                .append(" or ")
-                // DUE = 0 and (DTSTART = 0 OR DTSTART <= endRange)
-                .append("(")
-                .append(TaskContract.TaskColumns.DUE).append(" is null")
-                .append(" AND (")
-                .append(TaskContract.TaskColumns.DTSTART).append(" is null")
-                .append(" or ")
-                .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
-                .append(")))")
-        // TODO: add overdue according to the chosen settting
+        if(Settings.getBoolPref(AgendaWidgetApplication.getContext(), "useCalendarSearchPeriod", appWidgetId)) {
+            // DTSTART >= startRange and DTSTART <= endRange
+            sb.append("((((")
+                    .append(TaskContract.TaskColumns.DTSTART).append(">=").append(startRange)
+                    .append(" AND ")
+                    .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
+                    .append(")")
+                    .append(" or ")
+                    // DUE >= startRange and DUE <= endRange
+                    .append("(")
+                    .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
+                    .append(" AND ")
+                    .append(TaskContract.TaskColumns.DUE).append("<=").append(endRange)
+                    .append(")")
+                    .append(" or ")
+                    // DSTART <= startRange and DUE => endRange
+                    .append("(")
+                    .append(TaskContract.TaskColumns.DTSTART).append("<=").append(startRange)
+                    .append(" AND ")
+                    .append(TaskContract.TaskColumns.DUE).append(">=").append(endRange)
+                    .append(")")
+                    .append(" or ")
+                    //  DSTART = 0 and (DUE = 0 OR DUE >= startRange)
+                    .append("(")
+                    .append(TaskContract.TaskColumns.DTSTART).append(" is null")
+                    .append(" AND (")
+                    .append(TaskContract.TaskColumns.DUE).append(" is null")
+                    .append(" or ")
+                    .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
+                    .append("))")
+                    .append(" or ")
+                    // DUE = 0 and (DTSTART = 0 OR DTSTART <= endRange)
+                    .append("(")
+                    .append(TaskContract.TaskColumns.DUE).append(" is null")
+                    .append(" AND (")
+                    .append(TaskContract.TaskColumns.DTSTART).append(" is null")
+                    .append(" or ")
+                    .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
+                    .append(")))")
+                    .append(" or (")
+                    .append(TaskContract.TaskColumns.DUE).append("<=").append(startRange)
+                    .append("))");
 
-                .append(" or (")
-                .append(TaskContract.TaskColumns.DUE).append("<=").append(startRange)
-                .append("))")
-
-                .append(" AND (")
+        } else {
+            sb.append("((")
+                    .append(TaskContract.TaskColumns.DUE).append(" is null")
+                    .append(" or ")
+                    .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
+                    .append(")");
+        }
+        if(Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showOverdueTasks", appWidgetId)) {
+            sb.append(" or (")
+                    .append(TaskContract.TaskColumns.DUE).append("<").append(startRange)
+                    .append(")");
+        }
+        sb.append(") AND (")
                 .append(TaskContract.TaskColumns.COMPLETED).append(" is null")
                 .append(" or ")
                 .append(TaskContract.TaskColumns.COMPLETED).append("=0")
@@ -208,7 +219,6 @@ public class Tasks {
 
             TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
             Events.adjustAllDayEvents(e);
-            Log.d("TASK", ">>>>>>>>" + e.getStartDate());
             taskEvents.add(e);
         }
         cur.close();

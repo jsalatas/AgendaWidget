@@ -135,5 +135,17 @@
                title="@string/selected_tasks_prop"
                description="@string/selected_tasks_desc"
                defaultValue=""/>
+    <Bool name="showOverdueTasks"
+          tab="TASKS"
+          category="@string/task_options_category"
+          title="@string/show_overdue_tasks_prop"
+          description="@string/show_overdue_tasks_desc"
+          defaultValue="false"/>
+    <Bool name="useCalendarSearchPeriod"
+          tab="TASKS"
+          category="@string/task_options_category"
+          title="@string/use_calendar_search_period_prop"
+          description="@string/use_calendar_search_period_desc"
+          defaultValue="false"/>
 
 </settings>
