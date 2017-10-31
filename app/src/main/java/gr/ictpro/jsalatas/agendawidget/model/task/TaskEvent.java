@@ -45,7 +45,7 @@ public class TaskEvent extends CalendarEvent {
     public int compareTo(EventItem o) {
         if(o instanceof TaskEvent) {
             int otherPriority = ((TaskEvent)o).priority;
-            if (this.priority == 0 && otherPriority != 0) {
+            if (this.priority != 0 && otherPriority != 0) {
                 return this.priority - otherPriority;
             } else if (this.priority != otherPriority) {
                 return otherPriority - this.priority;
