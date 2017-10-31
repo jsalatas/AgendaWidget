@@ -149,27 +149,23 @@ public class Tasks {
                 .append(TaskContract.TaskColumns.DUE).append(">=").append(endRange)
                 .append(")")
                 .append(" or ")
-                //  DSTART = 0 and (DUE = 0 OR (DTSTART <= endRange and DUE >= endRange)
+                //  DSTART = 0 and (DUE = 0 OR DUE >= startRange)
                 .append("(")
                 .append(TaskContract.TaskColumns.DTSTART).append(" is null")
                 .append(" AND (")
                 .append(TaskContract.TaskColumns.DUE).append(" is null")
-                .append(" or (")
-                .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
-                .append(" AND ")
-                .append(TaskContract.TaskColumns.DUE).append(">=").append(endRange)
-                .append(")))")
                 .append(" or ")
-                // DUE = 0 and (DTSTART = 0 OR (DTSTART <= startRange and DUE >= startRange)
+                .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
+                .append("))")
+                .append(" or ")
+                // DUE = 0 and (DTSTART = 0 OR DTSTART <= endRange)
                 .append("(")
                 .append(TaskContract.TaskColumns.DUE).append(" is null")
                 .append(" AND (")
                 .append(TaskContract.TaskColumns.DTSTART).append(" is null")
-                .append(" or (")
-                .append(TaskContract.TaskColumns.DTSTART).append("<=").append(startRange)
-                .append(" AND ")
-                .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
-                .append("))))")
+                .append(" or ")
+                .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
+                .append(")))")
         // TODO: add overdue according to the chosen settting
 
                 .append(" or (")
@@ -181,8 +177,6 @@ public class Tasks {
                 .append(" or ")
                 .append(TaskContract.TaskColumns.COMPLETED).append("=0")
                 .append(")");
-
-
 
         Log.d("TASK", ">>>>>>>>> " + sb.toString());
 
@@ -207,13 +201,14 @@ public class Tasks {
 
             Log.d("TASK", ">>>>>>>>> title: " + title +
                     ", allday: " + allDay +
-                    ", start: " + cur.getLong(6) +
+                    ", start: " + cur.getLong(6) + " " + startDate  +
                     ", end: " + cur.getLong(7) +
                     ", priority: " + priority +
                     ", completed: " + cur.getLong(10));
 
             TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
             Events.adjustAllDayEvents(e);
+            Log.d("TASK", ">>>>>>>>" + e.getStartDate());
             taskEvents.add(e);
         }
         cur.close();
