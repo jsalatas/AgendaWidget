@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.Events;
@@ -189,8 +188,6 @@ public class Tasks {
                 .append(TaskContract.TaskColumns.COMPLETED).append("=0")
                 .append(")");
 
-        Log.d("TASK", ">>>>>>>>> " + sb.toString());
-
         String selection = "(" + selectedAccountsFilter + ") AND (" + sb.toString() + ")";
 
         final Uri uri = Uri.parse(TaskContract.BASE_URI + TaskContract.Tasks.CONTENT_URI);
@@ -209,13 +206,6 @@ public class Tasks {
             calendarInstance.setTimeInMillis(cur.getLong(7));
             endDate = calendarInstance.getTime();
             priority = cur.getInt(9);
-
-            Log.d("TASK", ">>>>>>>>> title: " + title +
-                    ", allday: " + allDay +
-                    ", start: " + cur.getLong(6) + " " + startDate  +
-                    ", end: " + cur.getLong(7) +
-                    ", priority: " + priority +
-                    ", completed: " + cur.getLong(10));
 
             TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
             Events.adjustAllDayEvents(e);
