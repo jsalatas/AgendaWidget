@@ -36,7 +36,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     private static final int BACKUP_FILE_READ = 5;
     private boolean savingBackup;
 
-    private static String[] PERMISSIONS_STORAGE = {
+    private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
@@ -99,7 +99,6 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 //update the widget
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, AgendaWidget.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetId});
-                intent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
                 sendBroadcast(intent);
 
                 // create the return intent

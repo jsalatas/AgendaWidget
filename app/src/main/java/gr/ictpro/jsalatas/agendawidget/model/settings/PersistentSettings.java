@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PersistentSettings {
+class PersistentSettings {
     @ElementMap(entry="setting", key="key", attribute=true, inline=true)
     private Map<String, String> persistentSettings;
 

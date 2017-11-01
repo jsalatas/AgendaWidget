@@ -14,7 +14,6 @@
               android:layout_height="wrap_content"
               android:textColor="@color/colorWhite"
               android:textSize="13sp"
-              android:textStyle="bold"
-              android:text="10/24"/>
+              android:textStyle="bold"/>
 
 </LinearLayout>

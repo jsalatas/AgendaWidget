@@ -28,14 +28,7 @@ import java.util.Date;
  * App Widget Configuration implemented in {@link AgendaWidgetConfigureActivity AgendaWidgetConfigureActivity}
  */
 public class AgendaWidget extends AppWidgetProvider {
-    static final String ACTION_FORCE_UPDATE = "gr.ictpro.jsalatas.agendawidget.action.FORCE_UPDATE";
-    private static final SparseArray<WidgetValues> widgetValues = new SparseArray<>();
-
-    private static class WidgetValues {
-        private long lastUpdate = 0;
-    }
-
-    public static class EventObserver extends ContentObserver {
+    static class EventObserver extends ContentObserver {
         EventObserver(Handler handler) {
             super(handler);
         }
@@ -63,7 +56,6 @@ public class AgendaWidget extends AppWidgetProvider {
 
         static {
             intentFilter = new IntentFilter();
-//            intentFilter.addAction(Intent.ACTION_TIME_TICK);
             intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
             intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
             intentFilter.addAction(Intent.ACTION_DREAMING_STOPPED);
@@ -84,8 +76,8 @@ public class AgendaWidget extends AppWidgetProvider {
         @Override
         public void onDestroy() {
             unregisterReceiver(agendaChangedReceiver);
-            getContentResolver().unregisterContentObserver(calendarObserver);
             getContentResolver().unregisterContentObserver(taskObserver);
+            getContentResolver().unregisterContentObserver(calendarObserver);
             super.onDestroy();
         }
 
@@ -110,16 +102,13 @@ public class AgendaWidget extends AppWidgetProvider {
         }
     }
 
-    static void sendUpdate(Context context, Intent intent) {
+    private static void sendUpdate(Context context, Intent intent) {
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
         Intent widgetUpdateIntent = new Intent();
         widgetUpdateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         widgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-        if (!intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-            widgetUpdateIntent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
-        }
 
         context.sendBroadcast(widgetUpdateIntent);
     }
@@ -135,11 +124,6 @@ public class AgendaWidget extends AppWidgetProvider {
 
         views.setTextViewText(R.id.tvCurrentDate, Settings.formatDate(Settings.getStringPref(context, "longDateFormat", appWidgetId), currentTime));
 
-        if (widgetValues.indexOfKey(appWidgetId) < 0) {
-            widgetValues.put(appWidgetId, new WidgetValues());
-        }
-        WidgetValues values = widgetValues.get(appWidgetId);
-
         Uri data = Uri.withAppendedPath(Uri.parse("agenda://widget/id/"), String.valueOf(appWidgetId));
 
         // Bind widget configuration button
@@ -154,7 +138,6 @@ public class AgendaWidget extends AppWidgetProvider {
         Intent refreshIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, AgendaWidget.class);
         refreshIntent.setData(data);
         refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
-        refreshIntent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
 
         refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
 
@@ -165,25 +148,20 @@ public class AgendaWidget extends AppWidgetProvider {
         PendingIntent calendarIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.lvEvents, calendarIntent);
 
-        long now = Calendar.getInstance().getTimeInMillis();
-        if (now - values.lastUpdate + 60000 >= Settings.getLongPref(context, "updateFrequency", appWidgetId)) {
-            values.lastUpdate = Calendar.getInstance().getTimeInMillis();
-
-            views.setInt(R.id.tvCurrentDate, "setTextColor", Color.parseColor(Settings.getStringPref(context, "headerColor", appWidgetId)));
-            views.setInt(R.id.imgAdd, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
-            views.setInt(R.id.imgRefresh, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
-            views.setInt(R.id.imgSettings, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
+        views.setInt(R.id.tvCurrentDate, "setTextColor", Color.parseColor(Settings.getStringPref(context, "headerColor", appWidgetId)));
+        views.setInt(R.id.imgAdd, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
+        views.setInt(R.id.imgRefresh, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
+        views.setInt(R.id.imgSettings, "setColorFilter", Color.parseColor(Settings.getStringPref(context, "controlColor", appWidgetId)));
 
 
-            Intent svcIntent = new Intent(context, AgendaWidgetService.class);
-            svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            views.setRemoteAdapter(R.id.lvEvents, svcIntent);
+        Intent svcIntent = new Intent(context, AgendaWidgetService.class);
+        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        views.setRemoteAdapter(R.id.lvEvents, svcIntent);
 
-            // This forces the widget to replace its factory and get updated
-            //appWidgetManager.updateAppWidget(appWidgetId, null);
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lvEvents);
-        }
+        // This forces the widget to replace its factory and get updated
+        //appWidgetManager.updateAppWidget(appWidgetId, null);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lvEvents);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -203,25 +181,8 @@ public class AgendaWidget extends AppWidgetProvider {
         if (intent.getAction().equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
             context.stopService(new Intent(context, AgendaUpdateService.class));
             context.startService(new Intent(context, AgendaUpdateService.class));
-        } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && intent.getBooleanExtra(ACTION_FORCE_UPDATE, false)) {
-            resetLastUpdate(intent);
         }
         super.onReceive(context, intent);
-    }
-
-    private void resetLastUpdate(Intent intent) {
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            int[] appWidgetIds = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-            if (appWidgetIds != null && appWidgetIds.length > 0) {
-                for (int appWidgetId : appWidgetIds) {
-                    if (widgetValues.indexOfKey(appWidgetId) < 0) {
-                        widgetValues.put(appWidgetId, new WidgetValues());
-                    }
-                    widgetValues.get(appWidgetId).lastUpdate = 0;
-                }
-            }
-        }
     }
 
     @Override
@@ -230,7 +191,6 @@ public class AgendaWidget extends AppWidgetProvider {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
             Settings.deletePrefs(context, appWidgetId);
-            widgetValues.remove(appWidgetId);
         }
     }
 

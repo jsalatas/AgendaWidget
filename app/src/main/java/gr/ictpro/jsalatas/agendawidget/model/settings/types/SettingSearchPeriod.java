@@ -7,7 +7,6 @@ import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.ui.SearchPeriodDialog;
-import gr.ictpro.jsalatas.agendawidget.ui.UpdateFrequencyDialog;
 import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 import gr.ictpro.jsalatas.agendawidget.utils.TimePeriod;
 import gr.ictpro.jsalatas.agendawidget.utils.TimePeriodUtils;

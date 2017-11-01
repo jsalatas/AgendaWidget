@@ -32,7 +32,6 @@ public class Settings {
             @ElementList(entry = "Tasks", inline = true, type = SettingTasks.class),
             @ElementList(entry = "Time", inline = true, type = SettingTime.class),
             @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
-            @ElementList(entry = "UpdateFrequency", inline = true, type = SettingUpdateFrequency.class),
     })
     private List<Setting> settings;
 
