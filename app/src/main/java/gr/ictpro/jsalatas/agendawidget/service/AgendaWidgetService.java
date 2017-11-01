@@ -182,7 +182,8 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
             v.setInt(R.id.imgNotes, "setColorFilter", locationNotesColor);
 
 
-            if (Settings.getBoolPref(appContext, "showLocation", appWidgetId) && calendarEvent.getLocation() != null && !calendarEvent.getLocation().isEmpty()) {
+            boolean showLocation = calendarEvent instanceof TaskEvent && !Settings.getBoolPref(appContext, "useCalendarLayoutOptions", appWidgetId) ? Settings.getBoolPref(appContext, "showLocationTasks", appWidgetId): Settings.getBoolPref(appContext, "showLocation", appWidgetId);
+            if (showLocation && calendarEvent.getLocation() != null && !calendarEvent.getLocation().isEmpty()) {
                 v.setTextViewText(R.id.tvLocation, calendarEvent.getLocation());
                 v.setInt(R.id.tvLocation, "setVisibility", View.VISIBLE);
                 v.setInt(R.id.imgLocation, "setVisibility", View.VISIBLE);
@@ -192,11 +193,13 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 v.setInt(R.id.imgLocation, "setVisibility", View.GONE);
             }
 
-            if (Settings.getBoolPref(appContext, "showNotes", appWidgetId) && calendarEvent.getDescription() != null && !calendarEvent.getDescription().isEmpty()) {
+            boolean showNotes = calendarEvent instanceof TaskEvent && !Settings.getBoolPref(appContext, "useCalendarLayoutOptions", appWidgetId) ? Settings.getBoolPref(appContext, "showNotesTasks", appWidgetId): Settings.getBoolPref(appContext, "showNotes", appWidgetId);
+            if (showNotes && calendarEvent.getDescription() != null && !calendarEvent.getDescription().isEmpty()) {
                 v.setTextViewText(R.id.tvNotes, calendarEvent.getDescription());
                 v.setInt(R.id.tvNotes, "setVisibility", View.VISIBLE);
                 v.setInt(R.id.imgNotes, "setVisibility", View.VISIBLE);
-                v.setInt(R.id.tvNotes, "setMaxLines", Settings.getIntPref(appContext, "notesMaxLines", appWidgetId));
+                int notesMaxLines = calendarEvent instanceof TaskEvent && !Settings.getBoolPref(appContext, "useCalendarLayoutOptions", appWidgetId) ? Settings.getIntPref(appContext, "notesMaxLinesTasks", appWidgetId): Settings.getIntPref(appContext, "notesMaxLines", appWidgetId);
+                v.setInt(R.id.tvNotes, "setMaxLines", notesMaxLines);
             } else {
                 v.setTextViewText(R.id.tvNotes, "");
                 v.setInt(R.id.tvNotes, "setVisibility", View.GONE);

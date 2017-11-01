@@ -78,13 +78,13 @@
     <string name="tasks_category">Tasks</string>
     <string name="selected_tasks_prop">Select Tasks</string>
     <string name="selected_tasks_desc">Selects the tasks that appear in the widget.</string>
-
     <string name="task_options_category">Task Options</string>
-
     <string name="show_overdue_tasks_prop">Show Overdue Tasks</string>
     <string name="show_overdue_tasks_desc">When selected, it will treat overdue tasks as today\'s.</string>
     <string name="use_calendar_search_period_prop">Use Calendar\'s Search Period</string>
     <string name="use_calendar_search_period_desc">When selected, it will not display tasks with both start and due dates after the search period.</string>
+    <string name="use_calendar_layout_options_prop">Use Calendar\'s Layout Options</string>
+    <string name="use_calendar_layout_options_desc">Use same layout options with calendar events when applicable.</string>
 
     <!-- datetime format dialog -->
     <string name="full_format">Full</string>

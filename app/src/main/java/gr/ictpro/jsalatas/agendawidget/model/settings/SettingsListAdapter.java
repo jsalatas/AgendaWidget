@@ -10,6 +10,7 @@ import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingBool;
 
 import java.util.List;
 
@@ -54,12 +55,25 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
     @Override
     public boolean isEnabled(int position) {
         if(getItem(position) instanceof ListItemSetting) {
-                if(((ListItemSetting) getItem(position)).getSetting().getName().equals("notesMaxLines")) {
-                    int index = indexOf("showNotes");
-                    if(index != -1) {
-                        return Boolean.parseBoolean(((ListItemSetting) getItem(index)).getSetting().getStringValue());
+            Setting setting = ((ListItemSetting) getItem(position)).getSetting();
+            String disabledByItems = setting.getDisabledBy();
+            if(disabledByItems != null) {
+                String[] disabledByList = disabledByItems.split(",");
+                for (String disabledBy : disabledByList) {
+                    Boolean negate = disabledBy.startsWith("!");
+                    int index = indexOf(negate?disabledBy.substring(1): disabledBy);
+                    if (index != -1) {
+                        if(isEnabled(index)) {
+                            Boolean val = Boolean.parseBoolean(((ListItemSetting) getItem(index)).getSetting().getStringValue());
+                            boolean enabled = negate?!val:val;
+                            if(!enabled && setting instanceof SettingBool) {
+                                ((SettingBool) setting).setValue(false);
+                            }
+                            return enabled;
+                        }
                     }
                 }
+            }
 
         }
         return true;

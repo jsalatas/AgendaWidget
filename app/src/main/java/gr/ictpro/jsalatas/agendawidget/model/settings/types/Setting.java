@@ -31,6 +31,8 @@ public abstract class Setting<T> {
     private String description;
     @Attribute
     private String defaultValue;
+    @Attribute (required = false)
+    private String disabledBy;
 
     private String value;
 
@@ -52,6 +54,10 @@ public abstract class Setting<T> {
 
     String getDescription() {
         return description;
+    }
+
+    public String getDisabledBy() {
+        return disabledBy;
     }
 
     public String getStringValue() {return value != null? value : defaultValue;}
