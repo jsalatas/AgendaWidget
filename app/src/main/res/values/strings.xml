@@ -25,8 +25,10 @@
     <string name="all_day">all day</string>
 
     <!-- General Settings -->
+<!--
     <string name="widget_options">Widget Options</string>
     <string name="update_frequency_prop">Update Frequency</string>
+-->
     <string name="appearance_category">Appearance</string>
     <string name="background_color_prop">Background Color</string>
     <string name="background_color_desc">The widget\'s background color.</string>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <settings>
     <!-- General Settings -->
+<!--
     <UpdateFrequency name="updateFrequency"
                      tab="GENERAL"
                      category="@string/widget_options"
                      title="@string/update_frequency_prop"
                      description=""
                      defaultValue="300000"/>
+-->
     <Bool name="dropShadow"
           tab="GENERAL"
           category="@string/appearance_category"

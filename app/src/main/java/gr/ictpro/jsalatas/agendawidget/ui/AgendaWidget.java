@@ -17,6 +17,7 @@ import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.task.opentasks.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.service.AgendaWidgetService;
 
 import java.util.Calendar;
@@ -34,8 +35,8 @@ public class AgendaWidget extends AppWidgetProvider {
         private long lastUpdate = 0;
     }
 
-    public static class CalendarObserver extends ContentObserver {
-        CalendarObserver(Handler handler) {
+    public static class EventObserver extends ContentObserver {
+        EventObserver(Handler handler) {
             super(handler);
         }
 
@@ -57,11 +58,12 @@ public class AgendaWidget extends AppWidgetProvider {
 
         private final static IntentFilter intentFilter;
 
-        private final static CalendarObserver calendarObserver = new CalendarObserver (new Handler());
+        private final static EventObserver calendarObserver = new EventObserver(new Handler());
+        private final static EventObserver taskObserver = new EventObserver(new Handler());
 
         static {
             intentFilter = new IntentFilter();
-            intentFilter.addAction(Intent.ACTION_TIME_TICK);
+//            intentFilter.addAction(Intent.ACTION_TIME_TICK);
             intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
             intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
             intentFilter.addAction(Intent.ACTION_DREAMING_STOPPED);
@@ -83,12 +85,14 @@ public class AgendaWidget extends AppWidgetProvider {
         public void onDestroy() {
             unregisterReceiver(agendaChangedReceiver);
             getContentResolver().unregisterContentObserver(calendarObserver);
+            getContentResolver().unregisterContentObserver(taskObserver);
             super.onDestroy();
         }
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
             getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
+            getContentResolver().registerContentObserver(Uri.parse(TaskContract.BASE_URI), true, taskObserver);
             registerReceiver(agendaChangedReceiver, intentFilter);
             if (intent != null && intent.getAction() != null) {
                 if (intent.getAction().equals(ACTION_UPDATE)) {
