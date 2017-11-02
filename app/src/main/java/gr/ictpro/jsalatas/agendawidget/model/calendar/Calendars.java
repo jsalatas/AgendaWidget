@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.Events;
@@ -77,21 +78,16 @@ public class Calendars {
 
         String selectedAccountsFilter = sb.toString();
 
+        TimeZone tzLocal = TimeZone.getDefault();
+
         java.util.Calendar calendarInstance = GregorianCalendar.getInstance();
-        Date selectedRangeStart = calendarInstance.getTime();
+        calendarInstance.setTimeInMillis(calendarInstance.getTimeInMillis() + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
+
+        Date selectedRangeStart = DateUtils.dayFloor(calendarInstance.getTime());
         Long searchPeriod = Settings.getLongPref(AgendaWidgetApplication.getContext(), "searchPeriod", appWidgetId);
 
-        // CONFIRM: I believe I need to round down milliseconds' value to zero from the end time.
-        //          This will avoid cases that end time matches exactly the end time of an event.
-        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod);
-        calendarInstance.set(java.util.Calendar.MILLISECOND, 0);
-        Date selectedRangeEnd = calendarInstance.getTime();
-
-        sb = new StringBuilder();
-        sb.append("(((").append(CalendarContract.Events.DTSTART).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
-        sb.append("(").append(CalendarContract.Events.DTSTART).append(" <= ").append(selectedRangeEnd.getTime()).append(")) OR ");
-        sb.append("((").append(CalendarContract.Events.DTEND).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
-        sb.append("(").append(CalendarContract.Events.DTEND).append(" <= ").append(selectedRangeEnd.getTime()).append(")))");
+        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
+        Date selectedRangeEnd = DateUtils.dayEnd(calendarInstance.getTime());
 
         ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
 
@@ -125,6 +121,8 @@ public class Calendars {
 
         Cursor cur = cr.query(builder.build(), PROJECTION, selection, null, null);
 
+        Date now = GregorianCalendar.getInstance().getTime();
+        Log.d("CALENDAR", ">>>>>>>>>>>>>>> update: " + now);
         while (cur.moveToNext()) {
             id = cur.getLong(0);
             color = cur.getInt(1);
@@ -137,13 +135,15 @@ public class Calendars {
             calendarInstance.setTimeInMillis(cur.getLong(8));
             endDate = calendarInstance.getTime();
 
-            CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
-            Events.adjustAllDayEvents(e);
+            if(allDay || (!allDay && now.compareTo(endDate)<=0)) {
+                CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
+                Events.adjustAllDayEvents(e);
 
-            if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiDay()) {
-                calendarEvents.addAll(e.getMultidayEventsList(selectedRangeEnd));
-            } else {
-                calendarEvents.add(e);
+                if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiDay()) {
+                    calendarEvents.addAll(e.getMultidayEventsList(selectedRangeEnd));
+                } else {
+                    calendarEvents.add(e);
+                }
             }
         }
         cur.close();

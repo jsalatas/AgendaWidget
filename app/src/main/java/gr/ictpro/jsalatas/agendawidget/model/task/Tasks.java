@@ -12,6 +12,7 @@ import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.Events;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 import gr.ictpro.jsalatas.agendawidget.model.task.opentasks.TaskContract;
+import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.*;
 
@@ -81,15 +82,16 @@ public class Tasks {
 
         String selectedAccountsFilter = sb.toString();
 
+        TimeZone tzLocal = TimeZone.getDefault();
+
         java.util.Calendar calendarInstance = GregorianCalendar.getInstance();
-        Date selectedRangeStart = calendarInstance.getTime();
+        calendarInstance.setTimeInMillis(calendarInstance.getTimeInMillis() + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
+
+        Date selectedRangeStart = DateUtils.dayFloor(calendarInstance.getTime());
         Long searchPeriod = Settings.getLongPref(AgendaWidgetApplication.getContext(), "searchPeriod", appWidgetId);
 
-        // CONFIRM: I believe I need to round down milliseconds' value to zero from the end time.
-        //          This will avoid cases that end time matches exactly the end time of an event.
-        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod);
-        calendarInstance.set(java.util.Calendar.MILLISECOND, 0);
-        Date selectedRangeEnd = calendarInstance.getTime();
+        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
+        Date selectedRangeEnd = DateUtils.dayEnd(calendarInstance.getTime());
 
         sb = new StringBuilder();
         sb.append("(((").append(CalendarContract.Events.DTSTART).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
@@ -194,6 +196,7 @@ public class Tasks {
         Cursor cur = cr.query(uri, TASK_PROJECTION, selection, null, null);
 
 
+        Date now = GregorianCalendar.getInstance().getTime();
         while (cur.moveToNext()) {
             id = cur.getLong(0);
             color = cur.getInt(1);
@@ -207,9 +210,11 @@ public class Tasks {
             endDate = calendarInstance.getTime();
             priority = cur.getInt(9);
 
-            TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
-            Events.adjustAllDayEvents(e);
-            taskEvents.add(e);
+            if(allDay  || endDate.getTime() == 0 || (!allDay && now.compareTo(endDate)<=0)) {
+                TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
+                Events.adjustAllDayEvents(e);
+                taskEvents.add(e);
+            }
         }
         cur.close();
 

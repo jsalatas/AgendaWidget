@@ -28,6 +28,12 @@ import java.util.Date;
  * App Widget Configuration implemented in {@link AgendaWidgetConfigureActivity AgendaWidgetConfigureActivity}
  */
 public class AgendaWidget extends AppWidgetProvider {
+    private static final SparseArray<WidgetValues> widgetValues = new SparseArray<>();
+
+    private static class WidgetValues {
+        private long nextUpdate = 0;
+    }
+
     static class EventObserver extends ContentObserver {
         EventObserver(Handler handler) {
             super(handler);
@@ -56,6 +62,7 @@ public class AgendaWidget extends AppWidgetProvider {
 
         static {
             intentFilter = new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_TIME_TICK);
             intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
             intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
             intentFilter.addAction(Intent.ACTION_DREAMING_STOPPED);
@@ -109,6 +116,9 @@ public class AgendaWidget extends AppWidgetProvider {
         Intent widgetUpdateIntent = new Intent();
         widgetUpdateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         widgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+        if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+            // TODO: check for any events that should be added/removed
+        }
 
         context.sendBroadcast(widgetUpdateIntent);
     }
@@ -123,6 +133,12 @@ public class AgendaWidget extends AppWidgetProvider {
         Date currentTime = Calendar.getInstance().getTime();
 
         views.setTextViewText(R.id.tvCurrentDate, Settings.formatDate(Settings.getStringPref(context, "longDateFormat", appWidgetId), currentTime));
+
+        // TODO: check for any events that should be added/removed
+        if (widgetValues.indexOfKey(appWidgetId) < 0) {
+            widgetValues.put(appWidgetId, new WidgetValues());
+        }
+        WidgetValues values = widgetValues.get(appWidgetId);
 
         Uri data = Uri.withAppendedPath(Uri.parse("agenda://widget/id/"), String.valueOf(appWidgetId));
 
@@ -191,6 +207,7 @@ public class AgendaWidget extends AppWidgetProvider {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
             Settings.deletePrefs(context, appWidgetId);
+            widgetValues.remove(appWidgetId);
         }
     }
 

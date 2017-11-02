@@ -40,6 +40,13 @@ public class DateUtils {
         return nextDay(dayFloor(d));
     }
 
+    public static Date dayEnd(Date d) {
+        Calendar c = GregorianCalendar.getInstance();
+        c.setTime(nextDay(dayFloor(d)));
+        c.add(Calendar.MILLISECOND, -1);
+        return c.getTime();
+    }
+
     public static Date nextDay(Date d) {
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTimeInMillis(d.getTime());
