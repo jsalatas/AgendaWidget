@@ -22,6 +22,7 @@ import gr.ictpro.jsalatas.agendawidget.model.calendar.*;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
 import gr.ictpro.jsalatas.agendawidget.model.task.opentasks.TaskContract;
+import gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -59,6 +60,12 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
             events = new ArrayList<>();
         } else {
             events = Events.getEvents(appWidgetId);
+            Long earliestEnd = Events.getEarliestEnd(events);
+
+            if (AgendaWidget.widgetValues.indexOfKey(appWidgetId) < 0) {
+                AgendaWidget.widgetValues.put(appWidgetId, new AgendaWidget.WidgetValues());
+            }
+            AgendaWidget.widgetValues.get(appWidgetId).nextUpdate = earliestEnd;
         }
     }
 

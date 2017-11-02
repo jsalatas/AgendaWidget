@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.Events;
@@ -122,7 +121,6 @@ public class Calendars {
         Cursor cur = cr.query(builder.build(), PROJECTION, selection, null, null);
 
         Date now = GregorianCalendar.getInstance().getTime();
-        Log.d("CALENDAR", ">>>>>>>>>>>>>>> update: " + now);
         while (cur.moveToNext()) {
             id = cur.getLong(0);
             color = cur.getInt(1);
@@ -135,7 +133,7 @@ public class Calendars {
             calendarInstance.setTimeInMillis(cur.getLong(8));
             endDate = calendarInstance.getTime();
 
-            if(allDay || (!allDay && now.compareTo(endDate)<=0)) {
+            if(allDay || now.compareTo(endDate)<=0) {
                 CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
                 Events.adjustAllDayEvents(e);
 

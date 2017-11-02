@@ -36,4 +36,19 @@ public class Events {
         }
 
     }
+
+    public static Long getEarliestEnd(List<EventItem> events) {
+        Calendar c = GregorianCalendar.getInstance();
+        c.setTimeInMillis(Long.MAX_VALUE);
+        for (EventItem i: events) {
+            if(i instanceof CalendarEvent) {
+                CalendarEvent ce =(CalendarEvent) i;
+                if(ce.getEndDate().getTime() > 0 && ce.getEndDate().compareTo(c.getTime())<0) {
+                    c.setTime(ce.getEndDate());
+                }
+            }
+        }
+
+        return c.getTimeInMillis();
+    }
 }
