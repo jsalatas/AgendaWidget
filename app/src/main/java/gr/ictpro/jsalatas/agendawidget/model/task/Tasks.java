@@ -11,7 +11,6 @@ import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.Events;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
-import gr.ictpro.jsalatas.agendawidget.model.task.opentasks.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.*;
@@ -24,16 +23,20 @@ public class Tasks {
         if (!checkPermissions()) {
             return;
         }
+        //TODO: Get actual setting
+        //TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId);
+        TaskContract tasks = TaskProvider.getTaskContract("gr.ictpro.jsalatas.agendawidget.model.task.providers.OpenTaskProvider");
+
         final String[] TASK_PROJECTION = new String[]{
-                TaskContract.TaskListColumns._ID,
-                TaskContract.TaskListColumns.ACCOUNT_NAME,
-                TaskContract.TaskListColumns.LIST_NAME,
-                TaskContract.TaskListColumns.LIST_COLOR,
-                TaskContract.TaskListColumns.SYNC_ENABLED
+                tasks.getListId(),
+                tasks.getListAccountName(),
+                tasks.getListName(),
+                tasks.getListColor(),
+                tasks.getListSyncEnabled()
         };
 
         final ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
-        final Uri uri = Uri.parse(TaskContract.BASE_URI + TaskContract.TaskList.CONTENT_URI);
+        final Uri uri = Uri.parse(tasks.getTaskListsURI());
         Cursor cur = cr.query(uri, TASK_PROJECTION, null, null, null);
         final List<Task> result = new ArrayList<>();
 
@@ -71,48 +74,50 @@ public class Tasks {
 
         refreshTaskList();
 
+        //TODO: Get actual setting
+        //TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId);
+        TaskContract tasks = TaskProvider.getTaskContract("gr.ictpro.jsalatas.agendawidget.model.task.providers.OpenTaskProvider");
+
         String[] tasksList = Settings.getStringPref(AgendaWidgetApplication.getContext(), "tasks", appWidgetId).split("@@@");
         StringBuilder sb = new StringBuilder();
         for (String task : tasksList) {
             if (!sb.toString().isEmpty()) {
                 sb.append(" OR ");
             }
-            sb.append(TaskContract.TaskColumns.LIST_ID).append(" = ").append(task);
+            sb.append(tasks.getItemListId()).append(" = ").append(task);
         }
 
         String selectedAccountsFilter = sb.toString();
 
+        Date now = GregorianCalendar.getInstance().getTime();
+
+
         TimeZone tzLocal = TimeZone.getDefault();
 
         java.util.Calendar calendarInstance = GregorianCalendar.getInstance();
-        calendarInstance.setTimeInMillis(calendarInstance.getTimeInMillis() + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
-
         Date selectedRangeStart = DateUtils.dayFloor(calendarInstance.getTime());
+        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
+        selectedRangeStart = DateUtils.dayFloor(calendarInstance.getTime());
+
         Long searchPeriod = Settings.getLongPref(AgendaWidgetApplication.getContext(), "searchPeriod", appWidgetId);
 
-        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
+        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod);
         Date selectedRangeEnd = DateUtils.dayEnd(calendarInstance.getTime());
-
-        sb = new StringBuilder();
-        sb.append("(((").append(CalendarContract.Events.DTSTART).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
-        sb.append("(").append(CalendarContract.Events.DTSTART).append(" <= ").append(selectedRangeEnd.getTime()).append(")) OR ");
-        sb.append("((").append(CalendarContract.Events.DTEND).append(" >= ").append(selectedRangeStart.getTime()).append(") AND ");
-        sb.append("(").append(CalendarContract.Events.DTEND).append(" <= ").append(selectedRangeEnd.getTime()).append(")))");
 
         final ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
 
         final String[] TASK_PROJECTION = new String[]{
-                TaskContract.TaskColumns._ID,
-                TaskContract.TaskColumns.TASK_COLOR,
-                TaskContract.TaskColumns.TITLE,
-                TaskContract.TaskColumns.LOCATION,
-                TaskContract.TaskColumns.DESCRIPTION,
-                TaskContract.TaskColumns.TZ,
-                TaskContract.TaskColumns.DTSTART,
-                TaskContract.TaskColumns.DUE,
-                TaskContract.TaskColumns.IS_ALLDAY,
-                TaskContract.TaskColumns.PRIORITY,
-                TaskContract.TaskColumns.COMPLETED,
+                tasks.getItemId(),
+                tasks.getItemTaskColor(),
+                tasks.getItemTitle(),
+                tasks.getItemLocation(),
+                tasks.getItemDescription(),
+                tasks.getItemTz(),
+                tasks.getItemDtstart(),
+                tasks.getItemDue(),
+                tasks.getItemIsAllday(),
+                tasks.getItemPriority(),
+                tasks.getItemCompleted(),
         };
 
         long id;
@@ -129,74 +134,80 @@ public class Tasks {
         long endRange = selectedRangeEnd.getTime();
 
         sb = new StringBuilder();
-        if(Settings.getBoolPref(AgendaWidgetApplication.getContext(), "useCalendarSearchPeriod", appWidgetId)) {
+        final String dtStart = tasks.getItemDtstart();
+        final String due = tasks.getItemDue();
+
+        // FIXME: This is a mess :(
+        if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "useCalendarSearchPeriod", appWidgetId)) {
             // DTSTART >= startRange and DTSTART <= endRange
             sb.append("((((")
-                    .append(TaskContract.TaskColumns.DTSTART).append(">=").append(startRange)
+                    .append(dtStart).append(">=").append(startRange)
                     .append(" AND ")
-                    .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
+                    .append(dtStart).append("<=").append(endRange)
                     .append(")")
                     .append(" or ")
                     // DUE >= startRange and DUE <= endRange
                     .append("(")
-                    .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
+                    .append(due).append(">=").append(startRange)
                     .append(" AND ")
-                    .append(TaskContract.TaskColumns.DUE).append("<=").append(endRange)
+                    .append(due).append("<=").append(endRange)
                     .append(")")
                     .append(" or ")
                     // DSTART <= startRange and DUE => endRange
                     .append("(")
-                    .append(TaskContract.TaskColumns.DTSTART).append("<=").append(startRange)
+                    .append(dtStart).append("<=").append(startRange)
                     .append(" AND ")
-                    .append(TaskContract.TaskColumns.DUE).append(">=").append(endRange)
+                    .append(due).append(">=").append(endRange)
                     .append(")")
                     .append(" or ")
-                    //  DSTART = 0 and (DUE = 0 OR DUE >= startRange)
+                    //  DSTART = 0 and (DUE = 0 OR DUE <= endRange)
                     .append("(")
-                    .append(TaskContract.TaskColumns.DTSTART).append(" is null")
+                    .append(dtStart).append(" is null")
                     .append(" AND (")
-                    .append(TaskContract.TaskColumns.DUE).append(" is null")
+                    .append(due).append(" is null")
                     .append(" or ")
-                    .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
+                    .append(due).append("<=").append(endRange)
                     .append("))")
                     .append(" or ")
                     // DUE = 0 and (DTSTART = 0 OR DTSTART <= endRange)
                     .append("(")
-                    .append(TaskContract.TaskColumns.DUE).append(" is null")
+                    .append(due).append(" is null")
                     .append(" AND (")
-                    .append(TaskContract.TaskColumns.DTSTART).append(" is null")
+                    .append(dtStart).append(" is null")
                     .append(" or ")
-                    .append(TaskContract.TaskColumns.DTSTART).append("<=").append(endRange)
+                    .append(dtStart).append("<=").append(endRange)
                     .append(")))")
                     .append(" or (")
-                    .append(TaskContract.TaskColumns.DUE).append("<=").append(startRange)
+                    .append(due).append("<=").append(startRange)
                     .append("))");
 
         } else {
-            sb.append("((")
-                    .append(TaskContract.TaskColumns.DUE).append(" is null")
+            sb.append("(")
+                    .append(due).append(" is null")
                     .append(" or ")
-                    .append(TaskContract.TaskColumns.DUE).append(">=").append(startRange)
-                    .append(")");
+                    .append(due).append(">=").append(startRange);
         }
-        if(Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showOverdueTasks", appWidgetId)) {
+        if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showOverdueTasks", appWidgetId)) {
             sb.append(" or (")
-                    .append(TaskContract.TaskColumns.DUE).append("<").append(startRange)
+                    .append(due).append("<").append(startRange)
                     .append(")");
         }
         sb.append(") AND (")
-                .append(TaskContract.TaskColumns.COMPLETED).append(" is null")
+                .append(dtStart).append(" is null")
                 .append(" or ")
-                .append(TaskContract.TaskColumns.COMPLETED).append("=0")
+                .append(dtStart).append("<=").append(now.getTime());
+        sb.append(") AND (")
+                .append(tasks.getItemCompleted()).append(" is null")
+                .append(" or ")
+                .append(tasks.getItemCompleted()).append("=0")
                 .append(")");
 
         String selection = "(" + selectedAccountsFilter + ") AND (" + sb.toString() + ")";
 
-        final Uri uri = Uri.parse(TaskContract.BASE_URI + TaskContract.Tasks.CONTENT_URI);
+        final Uri uri = Uri.parse(tasks.getTasksURI());
         Cursor cur = cr.query(uri, TASK_PROJECTION, selection, null, null);
 
 
-        Date now = GregorianCalendar.getInstance().getTime();
         while (cur.moveToNext()) {
             id = cur.getLong(0);
             color = cur.getInt(1);
@@ -210,9 +221,13 @@ public class Tasks {
             endDate = calendarInstance.getTime();
             priority = cur.getInt(9);
 
-            if(allDay  || endDate.getTime() == 0 || (!allDay && now.compareTo(endDate)<=0)) {
-                TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
-                Events.adjustAllDayEvents(e);
+            TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
+            Events.adjustAllDayEvents(e);
+
+            if ((allDay && now.compareTo(DateUtils.dayCeil(e.getEndDate())) < 0)
+                    || (!allDay && now.compareTo(e.getEndDate()) <= 0)
+                    || e.getEndDate().getTime() == 0
+                    || (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showOverdueTasks", appWidgetId) && now.compareTo(e.getEndDate()) > 0)) {
                 taskEvents.add(e);
             }
         }

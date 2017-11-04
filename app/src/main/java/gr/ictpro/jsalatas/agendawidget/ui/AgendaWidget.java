@@ -17,11 +17,15 @@ import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
-import gr.ictpro.jsalatas.agendawidget.model.task.opentasks.TaskContract;
+import gr.ictpro.jsalatas.agendawidget.model.task.Task;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
 import gr.ictpro.jsalatas.agendawidget.service.AgendaWidgetService;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Implementation of App Widget functionality.
@@ -35,8 +39,8 @@ public class AgendaWidget extends AppWidgetProvider {
         public long nextUpdate = 0;
     }
 
-    static class EventObserver extends ContentObserver {
-        EventObserver(Handler handler) {
+    static class CalendarObserver extends ContentObserver {
+        CalendarObserver(Handler handler) {
             super(handler);
         }
 
@@ -51,7 +55,26 @@ public class AgendaWidget extends AppWidgetProvider {
             intent.setAction(Intent.ACTION_PROVIDER_CHANGED);
             sendUpdate(AgendaWidgetApplication.getContext(), intent);
         }
+    }
 
+    static class TaskObserver extends ContentObserver {
+        final String uri;
+        TaskObserver(Handler handler, String uri) {
+            super(handler);
+            this.uri = uri;
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            this.onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_PROVIDER_CHANGED);
+            sendUpdate(AgendaWidgetApplication.getContext(), intent);
+        }
     }
 
     public static class AgendaUpdateService extends Service {
@@ -59,8 +82,8 @@ public class AgendaWidget extends AppWidgetProvider {
 
         private final static IntentFilter intentFilter;
 
-        private final static EventObserver calendarObserver = new EventObserver(new Handler());
-        private final static EventObserver taskObserver = new EventObserver(new Handler());
+        private final static CalendarObserver calendarObserver = new CalendarObserver(new Handler());
+        private final static TaskObserver[] taskObservers;
 
         static {
             intentFilter = new IntentFilter();
@@ -69,7 +92,39 @@ public class AgendaWidget extends AppWidgetProvider {
             intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
             intentFilter.addAction(Intent.ACTION_SCREEN_ON);
             intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
+            intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
             intentFilter.addAction(ACTION_UPDATE);
+
+            // initialize taskObservers
+            List<String> taskProviderURIs = new ArrayList<>();
+            List<TaskContract> taskProviders = TaskProvider.getProviders();
+            for(TaskContract t: taskProviders) {
+                if(providerExists(t)) {
+                    taskProviderURIs.add(t.getBaseURI());
+                }
+            }
+
+            taskObservers = new TaskObserver[taskProviderURIs.size()];
+            int i = 0;
+            for(String uri: taskProviderURIs) {
+
+                taskObservers[i] = new TaskObserver(new Handler(), uri);
+                i++;
+            }
+        }
+
+        private static boolean providerExists(TaskContract taskProvider) {
+            boolean exists ;
+            ContentProviderClient taskClient = AgendaWidgetApplication.getContext().getContentResolver().acquireContentProviderClient(taskProvider.getBaseURI());
+            if (taskClient == null) {
+                exists = false;
+            }
+            else {
+                taskClient.release();
+                exists = true;
+            }
+
+            return exists;
         }
 
         private final BroadcastReceiver agendaChangedReceiver = new
@@ -83,7 +138,9 @@ public class AgendaWidget extends AppWidgetProvider {
         @Override
         public void onDestroy() {
             unregisterReceiver(agendaChangedReceiver);
-            getContentResolver().unregisterContentObserver(taskObserver);
+            for(TaskObserver taskObserver: taskObservers) {
+                getContentResolver().unregisterContentObserver(taskObserver);
+            }
             getContentResolver().unregisterContentObserver(calendarObserver);
             super.onDestroy();
         }
@@ -91,7 +148,9 @@ public class AgendaWidget extends AppWidgetProvider {
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
             getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
-            getContentResolver().registerContentObserver(Uri.parse(TaskContract.BASE_URI), true, taskObserver);
+            for(TaskObserver taskObserver: taskObservers) {
+                getContentResolver().registerContentObserver(Uri.parse(taskObserver.uri), true, taskObserver);
+            }
             registerReceiver(agendaChangedReceiver, intentFilter);
             if (intent != null && intent.getAction() != null) {
                 if (intent.getAction().equals(ACTION_UPDATE)) {

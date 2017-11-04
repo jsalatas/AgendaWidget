@@ -20,8 +20,9 @@ import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.Events;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.*;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
-import gr.ictpro.jsalatas.agendawidget.model.task.opentasks.TaskContract;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
 import gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
@@ -91,7 +92,7 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
             v = new RemoteViews(appContext.getPackageName(), R.layout.calendar_event_header_layout);
             v.setTextViewText(R.id.tvDate, Settings.formatDate(Settings.getStringPref(appContext, "shortDateFormat", appWidgetId), item.getStartDate()));
         } else {
-            // FIXME: This is a mess. I wish I would know how to make it cleaner :\
+            // FIXME: This is a mess. I wish I knew how to make it cleaner :*
             CalendarEvent calendarEvent = (CalendarEvent) item;
             boolean isTask = calendarEvent instanceof TaskEvent;
             if (isTask) {
@@ -148,16 +149,25 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 }
             }
 
-            if(calendarEvent.getEndDate().getTime() !=0) {
+             if(calendarEvent.getEndDate().getTime() !=0) {
                 boolean endIsToday = DateUtils.isInSameDay(calendarEvent.getEndDate(), now);
+                boolean showDue =  calendarEvent instanceof TaskEvent  && !endIsToday;
                 if (endIsToday && !calendarEvent.isAllDay()) {
-                    sb.append(" ").append(Settings.formatDate(Settings.getStringPref(appContext, "timeFormat", appWidgetId), calendarEvent.getEndDate()));
+                    if(!isTask) {
+                        sb.append(" ");
+                    }
+                    sb.append(Settings.formatDate(Settings.getStringPref(appContext, "timeFormat", appWidgetId), calendarEvent.getEndDate()));
                 } else if (!calendarEvent.isAllDay() || isTask) {
-                    if (!DateUtils.isInSameDay(calendarEvent.getStartDate(), calendarEvent.getEndDate()) && !Settings.getBoolPref(appContext, "repeatMultidayEvents", appWidgetId)) {
-                        sb.append(" ").append(Settings.formatDate(Settings.getStringPref(appContext, "shortDateFormat", appWidgetId), calendarEvent.getEndDate()));
+                    if (showDue || (!DateUtils.isInSameDay(calendarEvent.getStartDate(), calendarEvent.getEndDate()) && !Settings.getBoolPref(appContext, "repeatMultidayEvents", appWidgetId))) {
+                        if(!isTask) {
+                            sb.append(" ");
+                        }
+                        sb.append(Settings.formatDate(Settings.getStringPref(appContext, "shortDateFormat", appWidgetId), calendarEvent.getEndDate()));
                     }
                     if (DateUtils.dayFloor(calendarEvent.getEndDate()).compareTo(calendarEvent.getEndDate()) != 0) {
-                        sb.append(" ");
+                        if(!isTask) {
+                            sb.append(" ");
+                        }
                         sb.append(Settings.formatDate(Settings.getStringPref(appContext, "timeFormat", appWidgetId), calendarEvent.getEndDate()));
                     }
                 }
@@ -213,7 +223,10 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 v.setInt(R.id.imgNotes, "setVisibility", View.GONE);
             }
 
-            Uri contentUri = (calendarEvent instanceof TaskEvent) ? Uri.parse(TaskContract.BASE_URI+ TaskContract.Tasks.CONTENT_URI): CalendarContract.Events.CONTENT_URI;
+            //TODO: Get actual setting
+            //TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId);
+            TaskContract tasks = TaskProvider.getTaskContract("gr.ictpro.jsalatas.agendawidget.model.task.providers.OpenTaskProvider");
+            Uri contentUri = (calendarEvent instanceof TaskEvent) ? Uri.parse(tasks.getTasksURI()): CalendarContract.Events.CONTENT_URI;
             Uri uri = ContentUris.withAppendedId(contentUri, calendarEvent.getId());
             Intent intent = new Intent(Intent.ACTION_VIEW).setData(uri);
             v.setOnClickFillInIntent(R.id.viewCalendarEvent, intent);

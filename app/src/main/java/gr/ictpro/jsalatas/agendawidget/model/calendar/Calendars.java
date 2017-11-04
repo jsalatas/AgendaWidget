@@ -80,13 +80,15 @@ public class Calendars {
         TimeZone tzLocal = TimeZone.getDefault();
 
         java.util.Calendar calendarInstance = GregorianCalendar.getInstance();
-        calendarInstance.setTimeInMillis(calendarInstance.getTimeInMillis() + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
-
         Date selectedRangeStart = DateUtils.dayFloor(calendarInstance.getTime());
+        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
+        selectedRangeStart = DateUtils.dayFloor(calendarInstance.getTime());
+
+
         Long searchPeriod = Settings.getLongPref(AgendaWidgetApplication.getContext(), "searchPeriod", appWidgetId);
 
-        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod + tzLocal.getOffset(calendarInstance.getTimeInMillis()));
-        Date selectedRangeEnd = DateUtils.dayEnd(calendarInstance.getTime());
+        calendarInstance.setTimeInMillis(selectedRangeStart.getTime() + searchPeriod);
+        Date selectedRangeEnd = DateUtils.dayCeil(calendarInstance.getTime());
 
         ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
 
@@ -133,10 +135,10 @@ public class Calendars {
             calendarInstance.setTimeInMillis(cur.getLong(8));
             endDate = calendarInstance.getTime();
 
-            if(allDay || now.compareTo(endDate)<=0) {
-                CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
-                Events.adjustAllDayEvents(e);
+            CalendarEvent e = new CalendarEvent(id, color, title, location, description, startDate, endDate, allDay);
+            Events.adjustAllDayEvents(e);
 
+            if ((allDay && now.compareTo(e.getEndDate()) < 0) || (!allDay && now.compareTo(e.getEndDate()) <= 0)) {
                 if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "repeatMultidayEvents", appWidgetId) && e.isMultiDay()) {
                     calendarEvents.addAll(e.getMultidayEventsList(selectedRangeEnd));
                 } else {
@@ -152,15 +154,15 @@ public class Calendars {
             List<EventItem> tmpCalendarEvents = new ArrayList<>();
             Date headerDate = DateUtils.dayFloor(DateUtils.previousDay(selectedRangeStart));
 
-            for(EventItem e: calendarEvents) {
+            for (EventItem e : calendarEvents) {
                 Date current = DateUtils.dayFloor(e.getStartDate());
-                if(current.compareTo(headerDate) != 0) {
+                if (current.compareTo(headerDate) != 0) {
                     headerDate = DateUtils.dayFloor(current);
-                    if(headerDate.compareTo(DateUtils.dayFloor(selectedRangeStart)) < 0) {
+                    if (headerDate.compareTo(DateUtils.dayFloor(selectedRangeStart)) < 0) {
                         headerDate = DateUtils.dayFloor(selectedRangeStart);
                     }
                     DayGroup dg = new DayGroup(headerDate);
-                    if(!tmpCalendarEvents.contains(dg)) {
+                    if (!tmpCalendarEvents.contains(dg)) {
                         tmpCalendarEvents.add(dg);
                     }
                 }
