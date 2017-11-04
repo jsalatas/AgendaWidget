@@ -14,7 +14,7 @@ public class TaskEvent extends CalendarEvent {
     private final int priority;
 
 
-    public TaskEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay, int priority) {
+    TaskEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay, int priority) {
         super(id, color, title, location, description, startDate, endDate, allDay);
         this.priority = priority;
     }
@@ -65,21 +65,4 @@ public class TaskEvent extends CalendarEvent {
     public List<CalendarEvent> getMultidayEventsList(Date until) {
         return new ArrayList<>();
     }
-
-    public @ColorInt int getPriorityColor() {
-        String coloStr = "#888888";
-        if(priority > 5) {
-            // low
-            coloStr = "#00AA00";
-        } else if (priority == 5) {
-            // medium
-            coloStr = "#FF8000";
-        } else if (priority> 0 && priority < 5) {
-            // high
-            coloStr = "#FF0000";
-        }
-
-        return Color.parseColor(coloStr);
-    }
-
 }

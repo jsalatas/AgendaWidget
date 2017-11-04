@@ -45,6 +45,10 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
+    ViewPager getViewPager() {
+        return viewPager;
+    }
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);

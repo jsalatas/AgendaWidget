@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.*;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
+import gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementListUnion;
 import org.simpleframework.xml.Root;
@@ -29,6 +31,7 @@ public class Settings {
             @ElementList(entry = "DateShort", inline = true, type = SettingDateShort.class),
             @ElementList(entry = "NumberOfLines", inline = true, type = SettingNumberOfLines.class),
             @ElementList(entry = "SearchPeriod", inline = true, type = SettingSearchPeriod.class),
+            @ElementList(entry = "TaskProvider", inline = true, type = SettingTaskProvider.class),
             @ElementList(entry = "Tasks", inline = true, type = SettingTasks.class),
             @ElementList(entry = "Time", inline = true, type = SettingTime.class),
             @ElementList(entry = "TransparentColor", inline = true, type = SettingTransparentColor.class),
@@ -59,6 +62,7 @@ public class Settings {
     private void loadSettingsValues() {
         for (Setting setting:settings) {
             setting.setStringValue(getStringPref(context, setting.getName(), widgetId));
+            setting.setAppWidgetId(widgetId);
         }
     }
 
@@ -217,4 +221,7 @@ public class Settings {
         }
     }
 
+    public boolean hasNoTaskProvider(int appWidgetId) {
+        return TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId)) instanceof NoTaskProvider;
+    }
 }

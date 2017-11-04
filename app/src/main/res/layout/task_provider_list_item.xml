@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gr.ictpro.jsalatas.agendawidget.ui.widgets.CheckableLinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="8dp"
+        android:gravity="center_vertical">
+
+    <RadioButton android:id="@+id/compound_button"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:clickable="false"
+                 android:focusable="false"
+                 android:focusableInTouchMode="false"
+                 android:paddingStart="5dp"
+                 android:paddingEnd="5dp"
+                 android:checked="false"/>
+
+            <TextView android:id="@+id/tvTitle"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textSize="@dimen/settings_title_text_size"
+                      android:textColor="@color/colorText"/>
+
+</gr.ictpro.jsalatas.agendawidget.ui.widgets.CheckableLinearLayout>

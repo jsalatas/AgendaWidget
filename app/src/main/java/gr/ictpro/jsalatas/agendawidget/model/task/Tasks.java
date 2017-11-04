@@ -9,8 +9,8 @@ import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
-import gr.ictpro.jsalatas.agendawidget.model.Events;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.*;
@@ -19,13 +19,14 @@ public class Tasks {
     public final static String READ_TASKS_PERMISSION = "org.dmfs.permission.READ_TASKS";
     private static List<Task> taskList;
 
-    public static void refreshTaskList() {
-        if (!checkPermissions()) {
+    private static void refreshTaskList(int appWidgetId) {
+        TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId));
+        refreshTaskList(tasks);
+    }
+    public static void refreshTaskList(TaskContract tasks) {
+        if (tasks.getTaskListsURI() == null || !checkPermissions()) {
             return;
         }
-        //TODO: Get actual setting
-        //TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId);
-        TaskContract tasks = TaskProvider.getTaskContract("gr.ictpro.jsalatas.agendawidget.model.task.providers.OpenTaskProvider");
 
         final String[] TASK_PROJECTION = new String[]{
                 tasks.getListId(),
@@ -68,27 +69,30 @@ public class Tasks {
 
     public static List<EventItem> getEvents(int appWidgetId) {
         List<EventItem> taskEvents = new ArrayList<>();
-        if (!checkPermissions()) {
+        TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId));
+
+        if (tasks instanceof NoTaskProvider || !checkPermissions()) {
             return taskEvents;
         }
 
-        refreshTaskList();
-
-        //TODO: Get actual setting
-        //TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId);
-        TaskContract tasks = TaskProvider.getTaskContract("gr.ictpro.jsalatas.agendawidget.model.task.providers.OpenTaskProvider");
+        refreshTaskList(appWidgetId);
 
         String[] tasksList = Settings.getStringPref(AgendaWidgetApplication.getContext(), "tasks", appWidgetId).split("@@@");
         StringBuilder sb = new StringBuilder();
-        for (String task : tasksList) {
-            if (!sb.toString().isEmpty()) {
-                sb.append(" OR ");
+        String selectedAccountsFilter =" 1 = 1 ";
+        if(tasks.getItemListId() != null) {
+            if (tasksList.length > 0 && !tasksList[0].isEmpty()) {
+                for (String task : tasksList) {
+
+                    if (!sb.toString().isEmpty()) {
+                        sb.append(" OR ");
+                    }
+                    sb.append(tasks.getItemListId()).append(" = ").append(task);
+                }
+
+                selectedAccountsFilter = sb.toString();
             }
-            sb.append(tasks.getItemListId()).append(" = ").append(task);
         }
-
-        String selectedAccountsFilter = sb.toString();
-
         Date now = GregorianCalendar.getInstance().getTime();
 
 
@@ -106,13 +110,13 @@ public class Tasks {
 
         final ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
 
-        final String[] TASK_PROJECTION = new String[]{
+
+        String[] TASK_PROJECTION = new String[]{
                 tasks.getItemId(),
-                tasks.getItemTaskColor(),
                 tasks.getItemTitle(),
                 tasks.getItemLocation(),
                 tasks.getItemDescription(),
-                tasks.getItemTz(),
+                /*tasks.getItemTz(),*/
                 tasks.getItemDtstart(),
                 tasks.getItemDue(),
                 tasks.getItemIsAllday(),
@@ -202,7 +206,8 @@ public class Tasks {
                 .append(tasks.getItemCompleted()).append("=0")
                 .append(")");
 
-        String selection = "(" + selectedAccountsFilter + ") AND (" + sb.toString() + ")";
+        String selection = "(" + selectedAccountsFilter + ") AND (" + sb.toString() + ")"
+                + (tasks.getExtraFilter() != null? tasks.getExtraFilter() : "");
 
         final Uri uri = Uri.parse(tasks.getTasksURI());
         Cursor cur = cr.query(uri, TASK_PROJECTION, selection, null, null);
@@ -210,19 +215,19 @@ public class Tasks {
 
         while (cur.moveToNext()) {
             id = cur.getLong(0);
-            color = cur.getInt(1);
-            title = cur.getString(2);
-            location = cur.getString(3);
-            description = cur.getString(4);
-            allDay = cur.getInt(8) == 1;
-            calendarInstance.setTimeInMillis(cur.getLong(6));
+            color = 0; //cur.getInt(1);
+            title = cur.getString(1);
+            location = cur.getString(2);
+            description = cur.getString(3);
+            allDay = cur.getInt(6) == 1;
+            calendarInstance.setTimeInMillis(cur.getLong(4));
             startDate = calendarInstance.getTime();
-            calendarInstance.setTimeInMillis(cur.getLong(7));
+            calendarInstance.setTimeInMillis(cur.getLong(5));
             endDate = calendarInstance.getTime();
-            priority = cur.getInt(9);
+            priority = cur.getInt(7);
 
             TaskEvent e = new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
-            Events.adjustAllDayEvents(e);
+            tasks.adjustAllDayEvents(e);
 
             if ((allDay && now.compareTo(DateUtils.dayCeil(e.getEndDate())) < 0)
                     || (!allDay && now.compareTo(e.getEndDate()) <= 0)

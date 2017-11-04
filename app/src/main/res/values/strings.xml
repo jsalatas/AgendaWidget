@@ -70,6 +70,8 @@
 
     <!-- Task Settings -->
     <string name="tasks_category">Tasks</string>
+    <string name="task_provider_prop">Task Provider</string>
+    <string name="task_provider_desc">Select the tasks provider.</string>
     <string name="selected_tasks_prop">Select Tasks</string>
     <string name="selected_tasks_desc">Selects the tasks that appear in the widget.</string>
     <string name="task_options_category">Task Options</string>

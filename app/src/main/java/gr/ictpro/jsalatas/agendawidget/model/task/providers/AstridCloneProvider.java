@@ -2,13 +2,11 @@ package gr.ictpro.jsalatas.agendawidget.model.task.providers;
 
 import android.content.ContentUris;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
-import gr.ictpro.jsalatas.agendawidget.model.Events;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
@@ -16,28 +14,28 @@ import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-public class OpenTaskProvider implements TaskContract {
+public class AstridCloneProvider implements TaskContract {
     @Override
     public String getPermissions() {
-        return "org.dmfs.permission.READ_TASKS";
+        return "org.tasks.READ";
     }
 
     @Override
     public @NonNull
     String getProviderName() {
-        return "Open Tasks";
+        return "Astrid Clone";
     }
 
     @Override
     public @NonNull
     String getBaseURI() {
-        return "content://org.dmfs.tasks";
+        return "content://org.tasks";
     }
 
     @Override
     public @NonNull
     String getProviderURI() {
-        return "org.dmfs.tasks";
+        return "org.tasks.tasksprovider";
     }
 
     @Override
@@ -47,15 +45,20 @@ public class OpenTaskProvider implements TaskContract {
     }
 
     @Override
-    public @NonNull Intent getViewIntent(TaskEvent event) {
-        Uri contentUri = Uri.parse(getTasksURI());
+    public @NonNull
+    Intent getViewIntent(TaskEvent event) {
+        Uri contentUri = Uri.parse("content://org.tasks.tasksprovider/tasks");
         Uri uri = ContentUris.withAppendedId(contentUri, event.getId());
-        return  new Intent(Intent.ACTION_VIEW).setData(uri);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "vnd.android.cursor.item/task");
+        intent.putExtra("id", event.getId());
+
+        return intent;
     }
 
     @Override
     public String getTaskListsURI() {
-        return getBaseURI() + "/tasklists";
+        return null;
     }
 
     @Override
@@ -96,7 +99,7 @@ public class OpenTaskProvider implements TaskContract {
 
     @Override
     public String getItemListId() {
-        return "list_id";
+        return null;
     }
 
     @Override
@@ -108,37 +111,37 @@ public class OpenTaskProvider implements TaskContract {
     @Override
     public @NonNull
     String getItemLocation() {
-        return "location";
+        return "NULL as location";
     }
 
     @Override
     public @NonNull
     String getItemDescription() {
-        return "description";
+        return "notes";
     }
 
     @Override
     public @NonNull
     String getItemDtstart() {
-        return "dtstart";
+        return "case hideUntil when 0 then null else hideUntil end ";
     }
 
     @Override
     public @NonNull
     String getItemIsAllday() {
-        return "is_allday";
+        return "dueDate <> 0 AND (dueDate % (1000*60)) <> 1000 as is_allday";
     }
 
     @Override
     public @NonNull
     String getItemDue() {
-        return "due";
+        return " case dueDate when 0 then null else dueDate end ";
     }
 
     @Override
     public @NonNull
     String getItemPriority() {
-        return "priority";
+        return "importance";
     }
 
     @Override
@@ -149,47 +152,64 @@ public class OpenTaskProvider implements TaskContract {
 
     @Override
     public String getExtraFilter() {
-        return null;
+        return " AND (deleted = 0)";
     }
 
     @Override
-    public @ColorInt int getPriorityColor(TaskEvent event) {
+    public @ColorInt
+    int getPriorityColor(TaskEvent event) {
         int color = PRIORITY_NONE;
-        if(event.getPriority() > 5) {
-            // low
-            color = PRIORITY_LOW;
-        } else if (event.getPriority() == 5) {
-            // medium
-            color = PRIORITY_MEDIUM;
-        } else if (event.getPriority() > 0 && event.getPriority() < 5) {
-            // high
-            color = PRIORITY_HIGH;
+        switch (event.getPriority()) {
+            case 0:
+                color = PRIORITY_HIGH;
+                break;
+            case 1:
+                color = PRIORITY_MEDIUM;
+                break;
+            case 2:
+                color = PRIORITY_LOW;
+                break;
+            case 3:
+                color = PRIORITY_NONE;
+                break;
         }
 
         return color;
     }
 
+
     @Override
     public int compare(EventItem o1, EventItem o2) {
-        if(o1 instanceof TaskEvent && o2 instanceof TaskEvent) {
+        if (o1 instanceof TaskEvent && o2 instanceof TaskEvent) {
             int o1Priority = ((TaskEvent) o1).getPriority();
             int o2Priority = ((TaskEvent) o2).getPriority();
-            if (o1Priority != 0 && o2Priority != 0) {
+            if (o1Priority != o2Priority) {
                 return o1Priority - o2Priority;
-            } else if (o1Priority != o2Priority) {
-                return o2Priority - o1Priority;
             }
-        } else if(!(o1 instanceof TaskEvent) && o2 instanceof TaskEvent) {
+        } else if (!(o1 instanceof TaskEvent) && o2 instanceof TaskEvent) {
             return 1;
-        } else if(o1 instanceof TaskEvent) {
+        } else if (o1 instanceof TaskEvent) {
             return -1;
         }
         return o1.compareTo(o2);
+
     }
 
     @Override
     public void adjustAllDayEvents(CalendarEvent event) {
-        Events.adjustAllDayEvents(event);
-    }
+        // Assume current time zone for all day events
+        if (event.isAllDay()) {
+            java.util.Calendar calendarInstance = GregorianCalendar.getInstance();
 
+            if (event.getStartDate().getTime() != 0) {
+                calendarInstance.setTimeInMillis(event.getStartDate().getTime() - 1000 * 60 * 60 * 12);
+                event.setStartDate(calendarInstance.getTime());
+            }
+
+            if (event.getEndDate().getTime() != 0) {
+                calendarInstance.setTimeInMillis(event.getEndDate().getTime() - 1000 * 60 * 60 * 12);
+                event.setEndDate(calendarInstance.getTime());
+            }
+        }
+    }
 }

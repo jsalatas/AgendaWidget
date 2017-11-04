@@ -11,6 +11,9 @@ import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingBool;
+import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingString;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
 
 import java.util.List;
 
@@ -54,7 +57,9 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
 
     @Override
     public boolean isEnabled(int position) {
+        boolean isEnabled = true;
         if(getItem(position) instanceof ListItemSetting) {
+            // Checking other properties
             Setting setting = ((ListItemSetting) getItem(position)).getSetting();
             String disabledByItems = setting.getDisabledBy();
             if(disabledByItems != null) {
@@ -69,14 +74,37 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
                             if(!enabled && setting instanceof SettingBool) {
                                 ((SettingBool) setting).setValue(false);
                             }
-                            return enabled;
+                            isEnabled = enabled;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Checking providers
+            String disabledByProviders = setting.getDisabledByProvider();
+            if(disabledByProviders != null && !setting.getName().equals("taskProvider")) {
+                int index = indexOf("taskProvider");
+                if(index != -1) {
+                    TaskContract taskProvider = TaskProvider.getTaskContract(((ListItemSetting) getItem(index)).getSetting().getStringValue());
+                    String[] disabledByList = disabledByProviders.split(",");
+                    for (String disabledBy : disabledByList) {
+                        boolean enabled = !TaskProvider.getTaskContract(disabledBy).getClass().equals(taskProvider.getClass());
+                        if (!enabled) {
+                            if (setting instanceof SettingBool) {
+                                ((SettingBool) setting).setValue(false);
+                            } else if (setting instanceof SettingString) {
+                                setting.setStringValue("");
+                            }
+                            isEnabled = false;
+                            break;
                         }
                     }
                 }
             }
 
         }
-        return true;
+        return isEnabled;
     }
 
     public int indexOf(String settingName) {

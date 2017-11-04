@@ -1,15 +1,33 @@
 package gr.ictpro.jsalatas.agendawidget.model.task;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import gr.ictpro.jsalatas.agendawidget.model.EventItem;
+import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
 
-public interface TaskContract {
+import java.util.Comparator;
+
+public interface TaskContract extends Comparator<EventItem> {
+    @ColorInt int PRIORITY_NONE = Color.parseColor("#888888");
+    @ColorInt int PRIORITY_LOW = Color.parseColor("#00AA00");
+    @ColorInt int PRIORITY_MEDIUM = Color.parseColor("#FF8000");
+    @ColorInt int PRIORITY_HIGH = Color.parseColor("#FF0000");
+
+    String getPermissions();
+
     @NonNull String getProviderName();
 
     @NonNull String getBaseURI();
 
+    @NonNull String getProviderURI();
+
     @NonNull String getTasksURI();
 
-    @NonNull String getTaskListsURI();
+    @NonNull Intent getViewIntent(TaskEvent event);
+
+    String getTaskListsURI();
 
     @NonNull String getListId();
 
@@ -23,17 +41,13 @@ public interface TaskContract {
 
     @NonNull String getItemId();
 
-    @NonNull String getItemTaskColor();
-
-    @NonNull String getItemListId();
+    String getItemListId();
 
     @NonNull String getItemTitle();
 
     @NonNull String getItemLocation();
 
     @NonNull String getItemDescription();
-
-    @NonNull String getItemTz();
 
     @NonNull String getItemDtstart();
 
@@ -44,5 +58,11 @@ public interface TaskContract {
     @NonNull String getItemPriority();
 
     @NonNull String getItemCompleted();
+
+    String getExtraFilter();
+
+    @ColorInt int getPriorityColor(TaskEvent event);
+
+    void adjustAllDayEvents(CalendarEvent event);
 
 }

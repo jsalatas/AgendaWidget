@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.CalendarContract;
-import android.util.Log;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
@@ -23,10 +22,7 @@ import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
 import gr.ictpro.jsalatas.agendawidget.service.AgendaWidgetService;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implementation of App Widget functionality.
@@ -100,8 +96,8 @@ public class AgendaWidget extends AppWidgetProvider {
             List<String> taskProviderURIs = new ArrayList<>();
             List<TaskContract> taskProviders = TaskProvider.getProviders();
             for(TaskContract t: taskProviders) {
-                if(providerExists(t)) {
-                    taskProviderURIs.add(t.getBaseURI());
+                if(!t.getProviderURI().isEmpty() && providerExists(t)) {
+                    taskProviderURIs.add(t.getProviderURI());
                 }
             }
 
@@ -116,7 +112,7 @@ public class AgendaWidget extends AppWidgetProvider {
 
         private static boolean providerExists(TaskContract taskProvider) {
             boolean exists ;
-            ContentProviderClient taskClient = AgendaWidgetApplication.getContext().getContentResolver().acquireContentProviderClient(taskProvider.getBaseURI());
+            ContentProviderClient taskClient = AgendaWidgetApplication.getContext().getContentResolver().acquireContentProviderClient(taskProvider.getProviderURI());
             if (taskClient == null) {
                 exists = false;
             }
@@ -124,7 +120,6 @@ public class AgendaWidget extends AppWidgetProvider {
                 taskClient.release();
                 exists = true;
             }
-
             return exists;
         }
 
@@ -155,7 +150,7 @@ public class AgendaWidget extends AppWidgetProvider {
         public int onStartCommand(Intent intent, int flags, int startId) {
             getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
             for(TaskObserver taskObserver: taskObservers) {
-                getContentResolver().registerContentObserver(Uri.parse(taskObserver.uri), true, taskObserver);
+                getContentResolver().registerContentObserver(Uri.parse("content://"+taskObserver.uri), true, taskObserver);
             }
             registerReceiver(agendaChangedReceiver, intentFilter);
             if (intent != null && intent.getAction() != null) {

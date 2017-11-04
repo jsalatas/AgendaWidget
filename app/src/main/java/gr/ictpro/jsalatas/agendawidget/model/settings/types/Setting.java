@@ -31,8 +31,12 @@ public abstract class Setting<T> {
     private String description;
     @Attribute
     private String defaultValue;
-    @Attribute (required = false)
+    @Attribute(required = false)
     private String disabledBy;
+    @Attribute(required = false)
+    private String disabledByProvider;
+
+    private int appWidgetId;
 
     private String value;
 
@@ -60,7 +64,13 @@ public abstract class Setting<T> {
         return disabledBy;
     }
 
-    public String getStringValue() {return value != null? value : defaultValue;}
+    public String getDisabledByProvider() {
+        return disabledByProvider;
+    }
+
+    public String getStringValue() {
+        return value != null ? value : defaultValue;
+    }
 
     public void setStringValue(String value) {
         this.value = value;
@@ -83,21 +93,29 @@ public abstract class Setting<T> {
         return v;
     }
 
+    public int getAppWidgetId() {
+        return appWidgetId;
+    }
+
+    public void setAppWidgetId(int appWidgetId) {
+        this.appWidgetId = appWidgetId;
+    }
+
     void setEnabled(View v, boolean isEnabled) {
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
         TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
         LinearLayout root = (LinearLayout) v.findViewById(R.id.root);
 
-        @ColorInt int titleColor = v.getContext().getResources().getColor(isEnabled ? R.color.colorText: R.color.colorDisabledItem);
+        @ColorInt int titleColor = v.getContext().getResources().getColor(isEnabled ? R.color.colorText : R.color.colorDisabledItem);
         tvTitle.setTextColor(titleColor);
 
-        @ColorInt int descriptionColor = v.getContext().getResources().getColor(isEnabled ? R.color.colorDescriptionText: R.color.colorDisabledItemDescription);
+        @ColorInt int descriptionColor = v.getContext().getResources().getColor(isEnabled ? R.color.colorDescriptionText : R.color.colorDisabledItemDescription);
         tvDescription.setTextColor(descriptionColor);
     }
 
     public void onClick(final AdapterView<?> parent, View view) {
         SettingDialog<T> dialog = getDialog(view);
-        if(shouldRefreshList()) {
+        if (shouldRefreshList()) {
             dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {

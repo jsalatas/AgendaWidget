@@ -18,7 +18,6 @@ public class DayGroup implements EventItem {
         return startDate;
     }
 
-    @Override
     public int compareTo(EventItem o) {
         Calendar startCalendarInstance = GregorianCalendar.getInstance();
         Calendar oStartCalendarInstance = GregorianCalendar.getInstance();

@@ -13,6 +13,7 @@ public class TaskProvider {
         if(providers == null) {
             String[] providersList = AgendaWidgetApplication.getContext().getResources().getStringArray(R.array.task_providers);
             providers = new ArrayList<>();
+            providers.add(getTaskContract("gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider"));
             for(String provider: providersList) {
                 providers.add(getTaskContract(provider));
             }

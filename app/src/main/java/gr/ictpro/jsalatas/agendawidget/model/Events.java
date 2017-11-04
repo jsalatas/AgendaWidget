@@ -1,7 +1,11 @@
 package gr.ictpro.jsalatas.agendawidget.model;
 
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.Calendars;
+import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
+import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
 import gr.ictpro.jsalatas.agendawidget.model.task.Tasks;
 
 import java.util.*;
@@ -13,7 +17,9 @@ public class Events {
         events.addAll(Calendars.getEvents(appWidgetId));
         events.addAll(Tasks.getEvents(appWidgetId));
 
-        Collections.sort(events);
+        // TODO: Correct Sort
+        TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId));
+        Collections.sort(events, tasks);
 
         return events;
     }
