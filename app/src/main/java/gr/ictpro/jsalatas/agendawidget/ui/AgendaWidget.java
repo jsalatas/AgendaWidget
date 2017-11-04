@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.CalendarContract;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
@@ -92,7 +93,7 @@ public class AgendaWidget extends AppWidgetProvider {
             intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
             intentFilter.addAction(Intent.ACTION_SCREEN_ON);
             intentFilter.addAction(Intent.ACTION_DATE_CHANGED);
-            intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+            intentFilter.addAction(Intent.ACTION_MY_PACKAGE_REPLACED);
             intentFilter.addAction(ACTION_UPDATE);
 
             // initialize taskObservers
@@ -131,6 +132,11 @@ public class AgendaWidget extends AppWidgetProvider {
                 BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+                        if(intent.getAction().equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
+                            context.stopService(new Intent(context, AgendaUpdateService.class));
+                            context.startService(new Intent(context, AgendaUpdateService.class));
+                        }
+
                         sendUpdate(context, intent);
                     }
                 };
@@ -258,10 +264,7 @@ public class AgendaWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
-            context.stopService(new Intent(context, AgendaUpdateService.class));
-            context.startService(new Intent(context, AgendaUpdateService.class));
-        } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && intent.getBooleanExtra(ACTION_FORCE_UPDATE, false)) {
+        if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && intent.getBooleanExtra(ACTION_FORCE_UPDATE, false)) {
             resetLastUpdate(intent);
         }
         super.onReceive(context, intent);
