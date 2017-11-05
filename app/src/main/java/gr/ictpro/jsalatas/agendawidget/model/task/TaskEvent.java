@@ -42,21 +42,6 @@ public class TaskEvent extends CalendarEvent {
     }
 
     @Override
-    public int compareTo(EventItem o) {
-        if(o instanceof TaskEvent) {
-            int otherPriority = ((TaskEvent)o).priority;
-            if (this.priority != 0 && otherPriority != 0) {
-                return this.priority - otherPriority;
-            } else if (this.priority != otherPriority) {
-                return otherPriority - this.priority;
-            }
-        } else {
-            return -1;
-        }
-        return super.compareTo(o);
-    }
-
-    @Override
     public boolean isMultiDay() {
         return false;
     }

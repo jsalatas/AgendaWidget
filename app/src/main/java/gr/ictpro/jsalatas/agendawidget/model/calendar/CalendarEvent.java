@@ -1,6 +1,7 @@
 package gr.ictpro.jsalatas.agendawidget.model.calendar;
 
 import android.support.annotation.ColorInt;
+import android.util.Log;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
@@ -108,7 +109,7 @@ public class CalendarEvent implements EventItem {
 
     @Override
     public int compareTo(EventItem o) {
-        if(o instanceof TaskEvent) {
+        if(o instanceof TaskEvent && !(this instanceof TaskEvent)) {
             return 1;
         }
 
