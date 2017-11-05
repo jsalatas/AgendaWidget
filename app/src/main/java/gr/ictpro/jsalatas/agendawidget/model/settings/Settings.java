@@ -60,7 +60,7 @@ public class Settings {
     }
 
     private void loadSettingsValues() {
-        for (Setting setting:settings) {
+        for (Setting setting : settings) {
             setting.setStringValue(getStringPref(context, setting.getName(), widgetId));
             setting.setAppWidgetId(widgetId);
         }
@@ -68,7 +68,7 @@ public class Settings {
 
     public void saveSettingsValues() {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        for (Setting setting:settings) {
+        for (Setting setting : settings) {
             prefs.putString(setting.getName() + "_" + widgetId, setting.getStringValue());
         }
         prefs.apply();
@@ -83,7 +83,7 @@ public class Settings {
 
         String category = "";
         for (Setting setting : settings) {
-            if(tab != setting.getTab()) {
+            if (tab != setting.getTab()) {
                 continue;
             }
 
@@ -99,15 +99,15 @@ public class Settings {
 
     public static void deletePrefs(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        for(Setting setting: settingsList) {
+        for (Setting setting : settingsList) {
             prefs.remove(setting.getName() + "_" + appWidgetId);
         }
         prefs.apply();
     }
 
     Setting<?> getSetting(String name) {
-        for(Setting setting: settings) {
-            if(setting.getName().equals(name)) {
+        for (Setting setting : settings) {
+            if (setting.getName().equals(name)) {
                 return setting;
             }
         }
@@ -129,14 +129,20 @@ public class Settings {
         return prefs.getString(name + "_" + appWidgetId, getDefaultPref(name));
     }
 
+    public static void setPref(Context context, String name, int appWidgetId, String value) {
+        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
+        prefs.putString(name + "_" + appWidgetId, value);
+        prefs.apply();
+    }
+
     public static Boolean getBoolPref(Context context, String name, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         return Boolean.parseBoolean(prefs.getString(name + "_" + appWidgetId, getDefaultPref(name)));
     }
 
     private static String getDefaultPref(String name) {
-        for(Setting setting: settingsList) {
-            if(setting.getName().equals(name)) {
+        for (Setting setting : settingsList) {
+            if (setting.getName().equals(name)) {
                 // Value is null so we always get the default value
                 // TODO: Maybe I need to reconsider the whole approach
                 return setting.getStringValue();
@@ -156,32 +162,32 @@ public class Settings {
     }
 
     public static String formatDate(String type, Date date) {
-            Locale locale = AgendaWidgetApplication.getCurrentLocale();
+        Locale locale = AgendaWidgetApplication.getCurrentLocale();
 
-            DateFormat df;
-            String s = type.toUpperCase();
-            switch (s) {
-                case "FULL":
-                    df = DateFormat.getDateInstance(DateFormat.FULL, locale);
-                    break;
-                case "LONG":
-                    df = DateFormat.getDateInstance(DateFormat.LONG, locale);
-                    break;
-                case "MEDIUM":
-                    df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
-                    break;
-                case "SHORT":
-                    df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
-                    break;
-                default: //custom
-                    try {
-                        df = new SimpleDateFormat(type);
-                    } catch (IllegalArgumentException e) {
-                        return "";
-                    }
-                    break;
-            }
-            return df.format(date);
+        DateFormat df;
+        String s = type.toUpperCase();
+        switch (s) {
+            case "FULL":
+                df = DateFormat.getDateInstance(DateFormat.FULL, locale);
+                break;
+            case "LONG":
+                df = DateFormat.getDateInstance(DateFormat.LONG, locale);
+                break;
+            case "MEDIUM":
+                df = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+                break;
+            case "SHORT":
+                df = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+                break;
+            default: //custom
+                try {
+                    df = new SimpleDateFormat(type);
+                } catch (IllegalArgumentException e) {
+                    return "";
+                }
+                break;
+        }
+        return df.format(date);
     }
 
     public static String formatTime(String type, Date date) {
@@ -216,7 +222,7 @@ public class Settings {
         Serializer serializer = new Persister();
         PersistentSettings persistentSettings = serializer.read(PersistentSettings.class, inputStream);
         Map<String, String> settingsMap = persistentSettings.getPersistentSettings();
-        for (String key: settingsMap.keySet()) {
+        for (String key : settingsMap.keySet()) {
             getSetting(key).setStringValue(settingsMap.get(key));
         }
     }

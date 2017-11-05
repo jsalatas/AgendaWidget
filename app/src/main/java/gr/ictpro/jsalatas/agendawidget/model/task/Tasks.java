@@ -16,7 +16,6 @@ import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 import java.util.*;
 
 public class Tasks {
-    public final static String READ_TASKS_PERMISSION = "org.dmfs.permission.READ_TASKS";
     private static List<Task> taskList;
 
     private static void refreshTaskList(int appWidgetId) {
@@ -24,7 +23,7 @@ public class Tasks {
         refreshTaskList(tasks);
     }
     public static void refreshTaskList(TaskContract tasks) {
-        if (tasks.getTaskListsURI() == null || !checkPermissions()) {
+        if (tasks.getTaskListsURI() == null || !checkPermissions(tasks)) {
             return;
         }
 
@@ -58,8 +57,11 @@ public class Tasks {
         taskList = result;
     }
 
-    private static boolean checkPermissions() {
-        int permissionCheck = ContextCompat.checkSelfPermission(AgendaWidgetApplication.getContext(), READ_TASKS_PERMISSION);
+    private static boolean checkPermissions(TaskContract tasks) {
+        if (tasks.getPermissions() == null) {
+            return true;
+        }
+        int permissionCheck = ContextCompat.checkSelfPermission(AgendaWidgetApplication.getContext(), tasks.getPermissions());
         return permissionCheck != PackageManager.PERMISSION_DENIED;
     }
 
@@ -71,7 +73,7 @@ public class Tasks {
         List<EventItem> taskEvents = new ArrayList<>();
         TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId));
 
-        if (tasks instanceof NoTaskProvider || !checkPermissions()) {
+        if (tasks instanceof NoTaskProvider || !checkPermissions(tasks)) {
             return taskEvents;
         }
 
@@ -212,6 +214,9 @@ public class Tasks {
         final Uri uri = Uri.parse(tasks.getTasksURI());
         Cursor cur = cr.query(uri, TASK_PROJECTION, selection, null, null);
 
+        if(cur == null) {
+            return taskEvents;
+        }
 
         while (cur.moveToNext()) {
             id = cur.getLong(0);

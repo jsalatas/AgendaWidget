@@ -149,7 +149,7 @@ public class NoTaskProvider implements TaskContract {
     }
 
     @Override
-    public @ColorInt int getPriorityColor(TaskEvent event) {
+    public @ColorInt @NonNull int getPriorityColor(TaskEvent event) {
         return PRIORITY_NONE;
     }
 

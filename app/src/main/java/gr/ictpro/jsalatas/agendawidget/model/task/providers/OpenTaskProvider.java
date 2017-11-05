@@ -153,7 +153,7 @@ public class OpenTaskProvider implements TaskContract {
     }
 
     @Override
-    public @ColorInt int getPriorityColor(TaskEvent event) {
+    public @ColorInt @NonNull int getPriorityColor(TaskEvent event) {
         int color = PRIORITY_NONE;
         if(event.getPriority() > 5) {
             // low

@@ -110,7 +110,7 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
             boolean isToday = (isTask && calendarEvent.getEndDate().getTime()!=0
                     && ((Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showOverdueTasks", appWidgetId) && calendarEvent.getEndDate().compareTo(now) <= 0)
-                    || (calendarEvent.getEndDate().compareTo(now) >= 0 && DateUtils.isInSameDay(calendarEvent.getEndDate(), now)))) ||
+                    || (calendarEvent.getEndDate().compareTo(now) <= 0 && DateUtils.isInSameDay(calendarEvent.getEndDate(), now)))) ||
                     (!isTask && (calendarEvent.containsDate(now) ||
                     DateUtils.isInSameDay(calendarEvent.getStartDate(), now) ||
                     DateUtils.isInSameDay(calendarEvent.getEndDate(), now)));

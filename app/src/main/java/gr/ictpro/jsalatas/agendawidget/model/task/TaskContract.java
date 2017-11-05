@@ -61,7 +61,7 @@ public interface TaskContract extends Comparator<EventItem> {
 
     String getExtraFilter();
 
-    @ColorInt int getPriorityColor(TaskEvent event);
+    @NonNull @ColorInt int getPriorityColor(TaskEvent event);
 
     void adjustAllDayEvents(CalendarEvent event);
 

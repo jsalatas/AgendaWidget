@@ -3,16 +3,13 @@ package gr.ictpro.jsalatas.agendawidget.model.task.providers;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.CalendarContract;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
-
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 public class AstridCloneProvider implements TaskContract {
     @Override
@@ -199,16 +196,12 @@ public class AstridCloneProvider implements TaskContract {
     public void adjustAllDayEvents(CalendarEvent event) {
         // Assume current time zone for all day events
         if (event.isAllDay()) {
-            java.util.Calendar calendarInstance = GregorianCalendar.getInstance();
-
             if (event.getStartDate().getTime() != 0) {
-                calendarInstance.setTimeInMillis(event.getStartDate().getTime() - 1000 * 60 * 60 * 12);
-                event.setStartDate(calendarInstance.getTime());
+                event.setStartDate(DateUtils.dayFloor(event.getStartDate()));
             }
 
             if (event.getEndDate().getTime() != 0) {
-                calendarInstance.setTimeInMillis(event.getEndDate().getTime() - 1000 * 60 * 60 * 12);
-                event.setEndDate(calendarInstance.getTime());
+                event.setEndDate(DateUtils.dayFloor(event.getEndDate()));
             }
         }
     }

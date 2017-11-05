@@ -24,11 +24,14 @@ public class TaskSelectionDialog extends SettingDialog<String> {
 
     @Override
     public void show() {
-        if (checkForPermission(Tasks.READ_TASKS_PERMISSION)) {
+        TaskContract tasks = TaskProvider.getTaskContract(setting.getStringValue());
+        if (checkForPermission(tasks)) {
             super.show();
             loadTasks();
         } else {
-            ActivityCompat.requestPermissions(AgendaWidgetApplication.getActivity(this.getContext()), new String[]{Tasks.READ_TASKS_PERMISSION}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK);
+            if(tasks.getPermissions() != null) {
+                ActivityCompat.requestPermissions(AgendaWidgetApplication.getActivity(this.getContext()), new String[]{tasks.getPermissions()}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK);
+            }
             cancel();
         }
     }
@@ -64,13 +67,16 @@ public class TaskSelectionDialog extends SettingDialog<String> {
         }
     }
 
-    private boolean checkForPermission(String permission) {
-        if (ContextCompat.checkSelfPermission(this.getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+    private boolean checkForPermission(TaskContract tasks) {
+        if(tasks.getPermissions() == null) {
+            return true;
+        }
+        if (ContextCompat.checkSelfPermission(this.getContext(), tasks.getPermissions()) != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(AgendaWidgetApplication.getActivity(this.getContext()), permission)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(AgendaWidgetApplication.getActivity(this.getContext()), tasks.getPermissions())) {
                 return false;
             } else {
-                ActivityCompat.requestPermissions(AgendaWidgetApplication.getActivity(this.getContext()), new String[]{permission}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK);
+                ActivityCompat.requestPermissions(AgendaWidgetApplication.getActivity(this.getContext()), new String[]{tasks.getPermissions()}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK);
                 return false;
             }
         }
@@ -79,6 +85,8 @@ public class TaskSelectionDialog extends SettingDialog<String> {
 
     @Override
     protected String getSetting() {
+        TaskContract tasks = TaskProvider.getTaskContract(setting.getStringValue());
+        checkForPermission(tasks);
         ListView l = (ListView) findViewById(R.id.lst_calendars_selection);
         StringBuilder selected = new StringBuilder();
         SparseBooleanArray checked = l.getCheckedItemPositions();
