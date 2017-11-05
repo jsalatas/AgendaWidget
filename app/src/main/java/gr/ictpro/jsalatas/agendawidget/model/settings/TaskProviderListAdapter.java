@@ -44,7 +44,7 @@ public class TaskProviderListAdapter extends ArrayAdapter<TaskContract> {
 
     public static boolean providerExists(TaskContract taskProvider) {
         boolean exists ;
-        // TODO: needs permissions
+        // TODO: needs permissions???
         ContentProviderClient taskClient = AgendaWidgetApplication.getContext().getContentResolver().acquireContentProviderClient(taskProvider.getProviderURI());
         if (taskClient == null) {
             exists = false;

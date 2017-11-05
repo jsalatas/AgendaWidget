@@ -46,7 +46,7 @@ public class Tasks {
             String name = cur.getString(2);
             int color = cur.getInt(3);
 
-            // TODO: created an option on whether to show non-synced calendars and task lists
+            // TODO: create an option on whether to show non-synced calendars and task lists
             boolean syncEnabled = cur.getInt(4) == 1;
             if (syncEnabled) {
                 Task t = new Task(id, accountName, name, color);

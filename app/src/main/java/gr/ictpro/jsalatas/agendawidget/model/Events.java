@@ -17,7 +17,6 @@ public class Events {
         events.addAll(Calendars.getEvents(appWidgetId));
         events.addAll(Tasks.getEvents(appWidgetId));
 
-        // TODO: Correct Sort
         TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId));
         Collections.sort(events, tasks);
 
