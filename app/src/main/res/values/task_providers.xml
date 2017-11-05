@@ -1,6 +1,7 @@
 <resources>
     <string-array name="task_providers">
-        <item>gr.ictpro.jsalatas.agendawidget.model.task.providers.OpenTaskProvider</item>
         <item>gr.ictpro.jsalatas.agendawidget.model.task.providers.AstridCloneProvider</item>
+        <item>gr.ictpro.jsalatas.agendawidget.model.task.providers.GoogleTaskProvider</item>
+        <item>gr.ictpro.jsalatas.agendawidget.model.task.providers.OpenTaskProvider</item>
     </string-array>
 </resources>

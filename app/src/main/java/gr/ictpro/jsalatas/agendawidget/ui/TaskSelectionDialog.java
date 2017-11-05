@@ -24,7 +24,7 @@ public class TaskSelectionDialog extends SettingDialog<String> {
 
     @Override
     public void show() {
-        TaskContract tasks = TaskProvider.getTaskContract(setting.getStringValue());
+        TaskContract tasks = getTaskProvider();
         if (checkForPermission(tasks)) {
             super.show();
             loadTasks();
@@ -36,8 +36,7 @@ public class TaskSelectionDialog extends SettingDialog<String> {
         }
     }
 
-    private void loadTasks() {
-        ListView l = (ListView) findViewById(R.id.lst_calendars_selection);
+    private TaskContract getTaskProvider() {
         ViewPager viewPager = ((AgendaWidgetConfigureActivity)AgendaWidgetApplication.getActivity(getContext())).getViewPager();
         Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
 
@@ -46,10 +45,13 @@ public class TaskSelectionDialog extends SettingDialog<String> {
         SettingsListAdapter sa = (SettingsListAdapter) settingsList.getAdapter();
         int index = sa.indexOf("taskProvider");
 
-        TaskContract taskProvider = TaskProvider.getTaskContract(((ListItemSetting) sa.getItem(index)).getSetting().getStringValue());
-        Tasks.refreshTaskList(taskProvider);
-        TaskListAdapter adapter = new TaskListAdapter(getContext(), Tasks.getTaskList());
+        return TaskProvider.getTaskContract(((ListItemSetting) sa.getItem(index)).getSetting().getStringValue());
 
+    }
+    private void loadTasks() {
+        TaskListAdapter adapter = new TaskListAdapter(getContext(), Tasks.refreshTaskList(getTaskProvider()));
+
+        ListView l = (ListView) findViewById(R.id.lst_calendars_selection);
         l.setAdapter(adapter);
         String selectedTasks = setting.getValue();
         if(!selectedTasks.isEmpty()) {
@@ -85,7 +87,7 @@ public class TaskSelectionDialog extends SettingDialog<String> {
 
     @Override
     protected String getSetting() {
-        TaskContract tasks = TaskProvider.getTaskContract(setting.getStringValue());
+        TaskContract tasks = getTaskProvider();
         checkForPermission(tasks);
         ListView l = (ListView) findViewById(R.id.lst_calendars_selection);
         StringBuilder selected = new StringBuilder();

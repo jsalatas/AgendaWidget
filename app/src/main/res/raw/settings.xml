@@ -157,7 +157,7 @@
           title="@string/use_calendar_layout_options_prop"
           description="@string/use_calendar_layout_options_desc"
           defaultValue="false"
-          disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider"/>
+          disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider,gr.ictpro.jsalatas.agendawidget.model.task.providers.GoogleTaskProvider"/>
     <Bool name="showLocationTasks"
           tab="TASKS"
           category="@string/layout_options_category"
@@ -165,7 +165,7 @@
           description="@string/show_location_desc"
           defaultValue="false"
           disabledBy="!useCalendarLayoutOptions"
-          disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider,gr.ictpro.jsalatas.agendawidget.model.task.providers.AstridCloneProvider" />
+          disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider,gr.ictpro.jsalatas.agendawidget.model.task.providers.AstridCloneProvider,gr.ictpro.jsalatas.agendawidget.model.task.providers.GoogleTaskProvider" />
     <Bool name="showNotesTasks"
           tab="TASKS"
           category="@string/layout_options_category"
@@ -173,7 +173,7 @@
           description="@string/show_notes_desc"
           defaultValue="false"
           disabledBy="!useCalendarLayoutOptions"
-          disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider"/>
+          disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider,gr.ictpro.jsalatas.agendawidget.model.task.providers.GoogleTaskProvider"/>
     <NumberOfLines name="notesMaxLinesTasks"
                    tab="TASKS"
                    category="@string/layout_options_category"
@@ -181,6 +181,6 @@
                    description="@string/notes_number_of_lines_desc"
                    defaultValue="1"
                    disabledBy="!useCalendarLayoutOptions,showNotes"
-                   disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider"/>
+                   disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider,gr.ictpro.jsalatas.agendawidget.model.task.providers.GoogleTaskProvider"/>
 
 </settings>

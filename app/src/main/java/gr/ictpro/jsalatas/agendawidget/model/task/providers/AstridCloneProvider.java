@@ -2,14 +2,22 @@ package gr.ictpro.jsalatas.agendawidget.model.task.providers;
 
 import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
+import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
+import gr.ictpro.jsalatas.agendawidget.model.task.Task;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class AstridCloneProvider implements TaskContract {
     @Override
@@ -205,4 +213,135 @@ public class AstridCloneProvider implements TaskContract {
             }
         }
     }
+
+    @Override
+    public String[] getListSelectFields() {
+        return null;
+    }
+
+    @Override
+    public Task getTaskList(Cursor cursor) {
+        return null;
+    }
+
+    @Override
+    public String getAccountsFilter(int appWidgetId) {
+        return null;
+    }
+
+    @Override
+    public String[] getEventSelectFields() {
+        return new String[]{
+                getItemId(),
+                getItemTitle(),
+                getItemLocation(),
+                getItemDescription(),
+                getItemDtstart(),
+                getItemDue(),
+                getItemIsAllday(),
+                getItemPriority(),
+                getItemCompleted(),
+        };
+    }
+
+    @Override
+    public TaskEvent getTaskEvent(Cursor cursor, int appWidgetId) {
+        long id = cursor.getLong(0);
+        @ColorInt int color = cursor.getInt(1);
+        String title = cursor.getString(1);
+        String location = cursor.getString(2);
+        String description = cursor.getString(3);
+        boolean allDay = cursor.getInt(6) == 1;
+        Calendar calendarInstance = GregorianCalendar.getInstance();
+        calendarInstance.setTimeInMillis(cursor.getLong(4));
+        Date startDate = calendarInstance.getTime();
+        calendarInstance.setTimeInMillis(cursor.getLong(5));
+        Date endDate = calendarInstance.getTime();
+        int priority = cursor.getInt(7);
+
+        return new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
+    }
+
+    @Override
+    public String getTaskFilter(Date startRange, Date endRange, int appWidgetId) {
+        long sr = startRange.getTime();
+        long er = endRange.getTime();
+
+        StringBuilder sb = new StringBuilder();
+        final String dtStart = getItemDtstart();
+        final String due = getItemDue();
+
+        // FIXME: This is a mess :(
+        if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "useCalendarSearchPeriod", appWidgetId)) {
+            // DTSTART >= startRange and DTSTART <= endRange
+            sb.append("((((")
+                    .append(dtStart).append(">=").append(sr)
+                    .append(" AND ")
+                    .append(dtStart).append("<=").append(er)
+                    .append(")")
+                    .append(" or ")
+                    // DUE >= startRange and DUE <= endRange
+                    .append("(")
+                    .append(due).append(">=").append(sr)
+                    .append(" AND ")
+                    .append(due).append("<=").append(er)
+                    .append(")")
+                    .append(" or ")
+                    // DSTART <= startRange and DUE => endRange
+                    .append("(")
+                    .append(dtStart).append("<=").append(sr)
+                    .append(" AND ")
+                    .append(due).append(">=").append(er)
+                    .append(")")
+                    .append(" or ")
+                    //  DSTART = 0 and (DUE = 0 OR DUE <= endRange)
+                    .append("(")
+                    .append(dtStart).append(" is null")
+                    .append(" AND (")
+                    .append(due).append(" is null")
+                    .append(" or ")
+                    .append(due).append("<=").append(er)
+                    .append("))")
+                    .append(" or ")
+                    // DUE = 0 and (DTSTART = 0 OR DTSTART <= endRange)
+                    .append("(")
+                    .append(due).append(" is null")
+                    .append(" AND (")
+                    .append(dtStart).append(" is null")
+                    .append(" or ")
+                    .append(dtStart).append("<=").append(er)
+                    .append(")))")
+                    .append(" or (")
+                    .append(due).append("<=").append(sr)
+                    .append("))");
+
+        } else {
+            sb.append("(")
+                    .append(due).append(" is null")
+                    .append(" or ")
+                    .append(due).append(">=").append(sr);
+        }
+        if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showOverdueTasks", appWidgetId)) {
+            sb.append(" or (")
+                    .append(due).append("<").append(sr)
+                    .append(")");
+        }
+        sb.append(") AND (")
+                .append(dtStart).append(" is null")
+                .append(" or ")
+                .append(dtStart).append("<=").append(GregorianCalendar.getInstance().getTimeInMillis());
+        sb.append(") AND (")
+                .append(getItemCompleted()).append(" is null")
+                .append(" or ")
+                .append(getItemCompleted()).append("=0")
+                .append(")");
+
+        return sb.toString();
+    }
+
+    @Override
+    public String[] getTaskFilterArgs() {
+        return null;
+    }
+
 }

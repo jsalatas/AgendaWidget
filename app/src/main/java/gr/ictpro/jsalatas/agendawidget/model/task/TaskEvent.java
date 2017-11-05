@@ -14,7 +14,7 @@ public class TaskEvent extends CalendarEvent {
     private final int priority;
 
 
-    TaskEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay, int priority) {
+    public TaskEvent(long id, int color, String title, String location, String description, Date startDate, Date endDate, boolean allDay, int priority) {
         super(id, color, title, location, description, startDate, endDate, allDay);
         this.priority = priority;
     }

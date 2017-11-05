@@ -15,5 +15,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="settings_margin">15dp</dimen>
     <dimen name="settings_category_margin_top">15dp</dimen>
     <dimen name="settings_category_margin_bottom">0dp</dimen>
+    <dimen name="tasklist_margin">15dp</dimen>
 
 </resources>

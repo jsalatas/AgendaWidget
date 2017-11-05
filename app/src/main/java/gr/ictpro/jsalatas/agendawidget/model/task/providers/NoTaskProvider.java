@@ -1,12 +1,16 @@
 package gr.ictpro.jsalatas.agendawidget.model.task.providers;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
+import gr.ictpro.jsalatas.agendawidget.model.task.Task;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskEvent;
+
+import java.util.Date;
 
 public class NoTaskProvider implements TaskContract {
     @Override
@@ -158,4 +162,38 @@ public class NoTaskProvider implements TaskContract {
         // Do Nothing
     }
 
+    @Override
+    public String[] getListSelectFields() {
+        return null;
+    }
+
+    @Override
+    public Task getTaskList(Cursor cursor) {
+        return null;
+    }
+
+    @Override
+    public String getAccountsFilter(int appWidgetId) {
+        return null;
+    }
+
+    @Override
+    public String[] getEventSelectFields() {
+        return null;
+    }
+
+    @Override
+    public TaskEvent getTaskEvent(Cursor cursor, int appWidgetId) {
+        return null;
+    }
+
+    @Override
+    public String getTaskFilter(Date startRange, Date endRange, int appWidgetId) {
+        return null;
+    }
+
+    @Override
+    public String[] getTaskFilterArgs() {
+        return null;
+    }
 }

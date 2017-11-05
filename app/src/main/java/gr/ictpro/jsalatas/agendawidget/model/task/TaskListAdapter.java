@@ -5,9 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import gr.ictpro.jsalatas.agendawidget.R;
-import gr.ictpro.jsalatas.agendawidget.model.calendar.Calendar;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 
 import java.util.List;
 
@@ -27,9 +28,20 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         TextView tvDisplayName = (TextView)v.findViewById(R.id.tvDisplayName);
         tvDisplayName.setText(item.getName());
         TextView tvAccountName = (TextView)v.findViewById(R.id.tvAccountName);
-        tvAccountName.setText(item.getAccountName());
+        if(item.getAccountName() == null) {
+            tvAccountName.setVisibility(View.GONE);
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)tvDisplayName.getLayoutParams();
+            int margin = AgendaWidgetApplication.getContext().getResources().getDimensionPixelSize(R.dimen.tasklist_margin);
+            lp.setMargins(0, margin, 0, margin);
+        } else {
+            tvAccountName.setText(item.getAccountName());
+        }
         View viewCalendarColor = v.findViewById(R.id.viewCalendarColor);
-        viewCalendarColor.setBackgroundColor(item.getColor());
+        if(item.getColor() == null) {
+            viewCalendarColor.setVisibility(View.GONE);
+        } else {
+            viewCalendarColor.setBackgroundColor(item.getColor());
+        }
 
         return v;
 

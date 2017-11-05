@@ -1,6 +1,7 @@
 package gr.ictpro.jsalatas.agendawidget.model.task;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.calendar.CalendarEvent;
 
 import java.util.Comparator;
+import java.util.Date;
 
 public interface TaskContract extends Comparator<EventItem> {
     @ColorInt int PRIORITY_NONE = Color.parseColor("#888888");
@@ -65,4 +67,17 @@ public interface TaskContract extends Comparator<EventItem> {
 
     void adjustAllDayEvents(CalendarEvent event);
 
+    String[] getListSelectFields();
+
+    String[] getEventSelectFields();
+
+    Task getTaskList(Cursor cursor);
+
+    String getAccountsFilter(int appWidgetId);
+
+    String getTaskFilter(Date startRange, Date endRange, int appWidgetId);
+
+    String[] getTaskFilterArgs();
+
+    TaskEvent getTaskEvent(Cursor cursor, int appWidgetId);
 }
