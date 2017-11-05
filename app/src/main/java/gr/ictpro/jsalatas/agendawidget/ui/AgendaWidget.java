@@ -101,7 +101,7 @@ public class AgendaWidget extends AppWidgetProvider {
             initTaskObservers();
         }
 
-        private static void initTaskObservers() {
+        public static void initTaskObservers() {
             List<String> taskProviderURIs = new ArrayList<>();
             List<TaskContract> taskProviders = TaskProvider.getProviders();
             for(TaskContract t: taskProviders) {
@@ -123,8 +123,7 @@ public class AgendaWidget extends AppWidgetProvider {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         if(intent.getAction().equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
-                            context.stopService(new Intent(context, AgendaUpdateService.class));
-                            context.startService(new Intent(context, AgendaUpdateService.class));
+                            restartService();
                         } else if(intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED) && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                             String packageName = intent.getData().toString().replace("package:", "");
                             updateTaskProviders(context, packageName);
@@ -167,6 +166,12 @@ public class AgendaWidget extends AppWidgetProvider {
         }
     }
 
+    public static void restartService() {
+        Context context = AgendaWidgetApplication.getContext();
+        context.stopService(new Intent(context, AgendaUpdateService.class));
+        context.startService(new Intent(context, AgendaUpdateService.class));
+    }
+
     private static void updateTaskProviders(Context context, String packageName) {
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), AgendaWidget.class.getName());
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -177,6 +182,7 @@ public class AgendaWidget extends AppWidgetProvider {
         widgetUpdateIntent.putExtra(AgendaWidget.ACTION_PROVIDER_REMOVED, true);
         widgetUpdateIntent.putExtra(EXTRA_PACKAGE_NAME, packageName);
 
+        restartService();
         context.sendBroadcast(widgetUpdateIntent);
 
     }

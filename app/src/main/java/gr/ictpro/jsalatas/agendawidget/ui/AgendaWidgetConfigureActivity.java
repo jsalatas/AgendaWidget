@@ -1,6 +1,7 @@
 package gr.ictpro.jsalatas.agendawidget.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -192,7 +193,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     }
 
     private void saveSettings(String filename) {
-        if (!checkForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!checkForPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE)) {
             //Insist
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
             return;
@@ -208,7 +209,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     }
 
     private void loadSettings() {
-        if (!checkForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!checkForPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE)) {
             //Insist
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
             return;
@@ -273,8 +274,8 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private boolean checkForPermission(String permission) {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+    public static boolean checkForPermission(Activity context, String permission, int requestCode) {
+        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
 
             String[] permissions;
             if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -282,10 +283,10 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
             } else {
                 permissions = new String[]{permission};
             }
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, permission)) {
                 return false;
             } else {
-                ActivityCompat.requestPermissions(this, permissions, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(context, permissions, requestCode);
                 return false;
             }
         }

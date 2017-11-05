@@ -23,7 +23,7 @@ public class CalendarSelectionDialog extends SettingDialog<String> {
 
     @Override
     public void show() {
-        if (checkForPermission(Manifest.permission.READ_CALENDAR)) {
+        if (AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(this.getContext()), Manifest.permission.READ_CALENDAR, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR)) {
             super.show();
             loadCalendars();
         } else {
@@ -52,19 +52,6 @@ public class CalendarSelectionDialog extends SettingDialog<String> {
                 }
             }
         }
-    }
-
-    private boolean checkForPermission(String permission) {
-        if (ContextCompat.checkSelfPermission(this.getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(AgendaWidgetApplication.getActivity(this.getContext()), permission)) {
-                return false;
-            } else {
-                ActivityCompat.requestPermissions(AgendaWidgetApplication.getActivity(this.getContext()), new String[]{permission}, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR);
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
