@@ -34,7 +34,7 @@ public class TaskProviderListAdapter extends ArrayAdapter<TaskContract> {
 
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
         tvTitle.setText(AgendaWidgetApplication.getResourceString(item.getProviderName()));
-        if(!isEnabled(position)) {
+        if (!isEnabled(position)) {
             tvTitle.setTextColor(AgendaWidgetApplication.getContext().getResources().getColor(R.color.colorDisabledItem));
             v.findViewById(R.id.compound_button).setEnabled(false);
         }
@@ -43,19 +43,15 @@ public class TaskProviderListAdapter extends ArrayAdapter<TaskContract> {
     }
 
     public static boolean providerExists(TaskContract taskProvider) {
-        boolean exists ;
+        boolean exists;
         // TODO: needs permissions???
-        try {
-            ContentProviderClient taskClient = AgendaWidgetApplication.getContext().getContentResolver().acquireContentProviderClient(taskProvider.getProviderURI());
+        ContentProviderClient taskClient = AgendaWidgetApplication.getContext().getContentResolver().acquireContentProviderClient(taskProvider.getProviderURI());
 
-            if (taskClient == null) {
-                exists = false;
-            } else {
-                taskClient.release();
-                exists = true;
-            }
-        } catch (SecurityException e) {
-            return true;
+        if (taskClient == null) {
+            exists = false;
+        } else {
+            taskClient.release();
+            exists = true;
         }
         return exists;
     }
@@ -63,6 +59,10 @@ public class TaskProviderListAdapter extends ArrayAdapter<TaskContract> {
     @Override
     public boolean isEnabled(int position) {
         TaskContract tasks = getItem(position);
-        return tasks instanceof NoTaskProvider || providerExists(tasks);
+        try {
+            return tasks instanceof NoTaskProvider || providerExists(tasks);
+        } catch (SecurityException e) {
+            return false;
+        }
     }
 }

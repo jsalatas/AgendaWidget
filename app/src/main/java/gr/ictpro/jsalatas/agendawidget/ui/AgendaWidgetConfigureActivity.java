@@ -25,6 +25,7 @@ import android.widget.ListView;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.*;
+import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
 
 /**
  * The configuration screen for the {@link AgendaWidget AgendaWidget} AppWidget.
@@ -35,6 +36,10 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     static final int PERMISSIONS_REQUEST_READ_TASK = 3;
     private static final int BACKUP_FILE_WRITE = 4;
     private static final int BACKUP_FILE_READ = 5;
+    static final int PERMISSIONS_REQUEST_TASK_PROVIDER = 6;
+
+    private SettingDialog<?> pendingPermissionsSettingsDialog;
+
     private boolean savingBackup;
 
     private static final String[] PERMISSIONS_STORAGE = {
@@ -48,6 +53,10 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
 
     ViewPager getViewPager() {
         return viewPager;
+    }
+
+    void setPendingPermissionsSettingsDialog(SettingDialog<?> pendingPermissionsSettingsDialog) {
+        this.pendingPermissionsSettingsDialog = pendingPermissionsSettingsDialog;
     }
 
     @Override
@@ -189,6 +198,24 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 }
                 break;
             }
+            case PERMISSIONS_REQUEST_TASK_PROVIDER: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(pendingPermissionsSettingsDialog != null) {
+                        pendingPermissionsSettingsDialog.cancel();
+                    }
+                    Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
+
+                    ListView l = (ListView) f.getView().findViewById(R.id.lst_settings);
+                    SettingsListAdapter adapter = (SettingsListAdapter) l.getAdapter();
+                    int index = adapter.indexOf("taskProvider");
+                    if (index != -1) {
+                        l.performItemClick(l.getAdapter().getView(index, null, null),
+                                index, l.getAdapter().getItemId(index));
+                    }
+                }
+                pendingPermissionsSettingsDialog = null;
+                break;
+            }
         }
     }
 
@@ -274,7 +301,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public static boolean checkForPermission(Activity context, String permission, int requestCode) {
+    static boolean checkForPermission(Activity context, String permission, int requestCode) {
         if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
 
             String[] permissions;

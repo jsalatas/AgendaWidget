@@ -105,8 +105,12 @@ public class AgendaWidget extends AppWidgetProvider {
             List<String> taskProviderURIs = new ArrayList<>();
             List<TaskContract> taskProviders = TaskProvider.getProviders();
             for(TaskContract t: taskProviders) {
-                if(!t.getProviderURI().isEmpty() && TaskProviderListAdapter.providerExists(t)) {
-                    taskProviderURIs.add(t.getProviderURI());
+                try {
+                    if (!t.getProviderURI().isEmpty() && TaskProviderListAdapter.providerExists(t)) {
+                        taskProviderURIs.add(t.getProviderURI());
+                    }
+                } catch (SecurityException e) {
+                    // Do nothing
                 }
             }
 
