@@ -144,6 +144,13 @@
           description="@string/show_overdue_tasks_desc"
           defaultValue="false"
           disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider"/>
+    <Bool name="showFutureTasks"
+          tab="TASKS"
+          category="@string/task_options_category"
+          title="@string/show_future_tasks_prop"
+          description="@string/show_future_tasks_desc"
+          defaultValue="true"
+          disabledByProvider="gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider,gr.ictpro.jsalatas.agendawidget.model.task.providers.GoogleTaskProvider"/>
     <Bool name="useCalendarSearchPeriod"
           tab="TASKS"
           category="@string/task_options_category"

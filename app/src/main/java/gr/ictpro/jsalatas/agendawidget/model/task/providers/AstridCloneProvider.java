@@ -274,7 +274,7 @@ public class AstridCloneProvider implements TaskContract {
         // FIXME: This is a mess :(
         if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "useCalendarSearchPeriod", appWidgetId)) {
             // DTSTART >= startRange and DTSTART <= endRange
-            sb.append("((((")
+            sb.append("(((((")
                     .append(dtStart).append(">=").append(sr)
                     .append(" AND ")
                     .append(dtStart).append("<=").append(er)
@@ -295,18 +295,22 @@ public class AstridCloneProvider implements TaskContract {
                     .append(")")
                     .append(" or ")
                     //  DSTART = 0 and (DUE = 0 OR DUE <= endRange)
-                    .append("(")
+                    .append("((")
                     .append(dtStart).append(" is null")
-                    .append(" AND (")
+                    .append(" or ")
+                    .append(dtStart).append(" =0")
+                    .append(") AND (")
                     .append(due).append(" is null")
                     .append(" or ")
                     .append(due).append("<=").append(er)
                     .append("))")
                     .append(" or ")
                     // DUE = 0 and (DTSTART = 0 OR DTSTART <= endRange)
-                    .append("(")
+                    .append("((")
                     .append(due).append(" is null")
-                    .append(" AND (")
+                    .append(" or ")
+                    .append(due).append(" =0")
+                    .append(") AND (")
                     .append(dtStart).append(" is null")
                     .append(" or ")
                     .append(dtStart).append("<=").append(er)
@@ -316,20 +320,24 @@ public class AstridCloneProvider implements TaskContract {
                     .append("))");
 
         } else {
-            sb.append("(")
+            sb.append("((")
                     .append(due).append(" is null")
+                    .append(" or ")
+                    .append(due).append(" =0")
                     .append(" or ")
                     .append(due).append(">=").append(sr);
         }
         if (Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showOverdueTasks", appWidgetId)) {
-            sb.append(" or (")
-                    .append(due).append("<").append(sr)
-                    .append(")");
+            sb.append(") or (")
+                    .append(due).append("<").append(sr);
         }
-        sb.append(") AND (")
-                .append(dtStart).append(" is null")
-                .append(" or ")
-                .append(dtStart).append("<=").append(GregorianCalendar.getInstance().getTimeInMillis());
+        sb.append(")");
+        if (!Settings.getBoolPref(AgendaWidgetApplication.getContext(), "showFutureTasks", appWidgetId)) {
+            sb.append(") AND (")
+                    .append(dtStart).append(" is null")
+                    .append(" or ")
+                    .append(dtStart).append("<=").append(GregorianCalendar.getInstance().getTimeInMillis());
+        }
         sb.append(") AND (")
                 .append(getItemCompleted()).append(" is null")
                 .append(" or ")
@@ -338,8 +346,7 @@ public class AstridCloneProvider implements TaskContract {
 
         return sb.toString();
     }
-
-    @Override
+        @Override
     public String[] getTaskFilterArgs() {
         return null;
     }

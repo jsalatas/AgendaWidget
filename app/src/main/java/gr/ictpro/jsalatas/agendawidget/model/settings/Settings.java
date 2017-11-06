@@ -68,12 +68,12 @@ public class Settings {
     }
 
     public void saveSettingsValues() {
-        AgendaWidget.updateTaskObservers();
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         for (Setting setting : settings) {
             prefs.putString(setting.getName() + "_" + widgetId, setting.getStringValue());
         }
         prefs.apply();
+        AgendaWidget.updateTaskObservers();
     }
 
     private List<Setting> getSettings() {

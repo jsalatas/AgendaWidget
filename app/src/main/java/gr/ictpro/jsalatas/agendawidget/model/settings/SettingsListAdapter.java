@@ -89,7 +89,8 @@ public class SettingsListAdapter extends ArrayAdapter<ListItem> {
                     TaskContract taskProvider = TaskProvider.getTaskContract(((ListItemSetting) getItem(index)).getSetting().getStringValue());
                     String[] disabledByList = disabledByProviders.split(",");
                     for (String disabledBy : disabledByList) {
-                        boolean enabled = !TaskProvider.getTaskContract(disabledBy).getClass().equals(taskProvider.getClass());
+                        TaskContract t = TaskProvider.getTaskContract(disabledBy);
+                        boolean enabled = t==null || taskProvider==null || !t.getClass().equals(taskProvider.getClass());
                         if (!enabled) {
                             if (setting instanceof SettingBool) {
                                 ((SettingBool) setting).setValue(false);

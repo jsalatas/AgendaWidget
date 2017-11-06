@@ -9,6 +9,7 @@ import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.EventItem;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
 import gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider;
+import gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget;
 import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.*;
@@ -52,6 +53,9 @@ public class Tasks {
         List<EventItem> taskEvents = new ArrayList<>();
         TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId));
 
+        if(tasks == null) {
+            return taskEvents;
+        }
         if (tasks instanceof NoTaskProvider || !checkPermissions(tasks)) {
             return taskEvents;
         }

@@ -123,10 +123,8 @@ public class AgendaWidget extends AppWidgetProvider {
 
         @Override
         public void onDestroy() {
-            Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> stopping service");
             unregisterReceiver(agendaChangedReceiver);
             for (TaskObserver taskObserver : taskObservers) {
-                Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> unregisterContentObserver " + taskObserver.uri);
                 getContentResolver().unregisterContentObserver(taskObserver);
             }
             getContentResolver().unregisterContentObserver(calendarObserver);
@@ -135,10 +133,8 @@ public class AgendaWidget extends AppWidgetProvider {
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
-            Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> starting service");
             getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
             for (TaskObserver taskObserver : taskObservers) {
-                Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> registerContentObserver " + taskObserver.uri);
                 getContentResolver().registerContentObserver(Uri.parse("content://" + taskObserver.uri), true, taskObserver);
             }
             registerReceiver(agendaChangedReceiver, intentFilter);

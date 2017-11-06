@@ -77,6 +77,8 @@
     <string name="task_options_category">Task Options</string>
     <string name="show_overdue_tasks_prop">Show Overdue Tasks</string>
     <string name="show_overdue_tasks_desc">When selected, it will treat overdue tasks as today\'s.</string>
+    <string name="show_future_tasks_prop">Show Future Tasks</string>
+    <string name="show_future_tasks_desc">Shows tasks that have not started yet.</string>
     <string name="use_calendar_search_period_prop">Use Calendar\'s Search Period</string>
     <string name="use_calendar_search_period_desc">When selected, it will not display tasks with both start and due dates after the search period.</string>
     <string name="use_calendar_layout_options_prop">Use Calendar\'s Layout Options</string>
