@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.CalendarContract;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
 import gr.ictpro.jsalatas.agendawidget.R;
@@ -59,6 +60,7 @@ public class AgendaWidget extends AppWidgetProvider {
 
     static class TaskObserver extends ContentObserver {
         final String uri;
+
         TaskObserver(Handler handler, String uri) {
             super(handler);
             this.uri = uri;
@@ -98,39 +100,21 @@ public class AgendaWidget extends AppWidgetProvider {
             intentFilter.addDataScheme("package");
             intentFilter.addAction(ACTION_UPDATE);
 
-            initTaskObservers();
-        }
-
-        public static void initTaskObservers() {
-            List<String> taskProviderURIs = new ArrayList<>();
-            List<TaskContract> taskProviders = TaskProvider.getProviders();
-            for(TaskContract t: taskProviders) {
-                try {
-                    if (!t.getProviderURI().isEmpty() && TaskProviderListAdapter.providerExists(t)) {
-                        taskProviderURIs.add(t.getProviderURI());
-                    }
-                } catch (SecurityException e) {
-                    // Do nothing
-                }
-            }
-
-            taskObservers = new TaskObserver[taskProviderURIs.size()];
-            int i = 0;
-            for(String uri: taskProviderURIs) {
-                taskObservers[i] = new TaskObserver(new Handler(), uri);
-                i++;
-            }
+            updateTaskObservers();
         }
 
         private final BroadcastReceiver agendaChangedReceiver = new
                 BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        if(intent.getAction().equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
-                            restartService();
-                        } else if(intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED) && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
+                        if (intent.getAction().equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
+                            AgendaWidget.updateTaskObservers();
+                        } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED) && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                             String packageName = intent.getData().toString().replace("package:", "");
                             updateTaskProviders(context, packageName);
+                            AgendaWidget.updateTaskObservers();
+                        } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
+                            AgendaWidget.updateTaskObservers();
                         }
 
                         sendUpdate(context, intent);
@@ -139,8 +123,10 @@ public class AgendaWidget extends AppWidgetProvider {
 
         @Override
         public void onDestroy() {
+            Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> stopping service");
             unregisterReceiver(agendaChangedReceiver);
-            for(TaskObserver taskObserver: taskObservers) {
+            for (TaskObserver taskObserver : taskObservers) {
+                Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> unregisterContentObserver " + taskObserver.uri);
                 getContentResolver().unregisterContentObserver(taskObserver);
             }
             getContentResolver().unregisterContentObserver(calendarObserver);
@@ -149,9 +135,11 @@ public class AgendaWidget extends AppWidgetProvider {
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
+            Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> starting service");
             getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
-            for(TaskObserver taskObserver: taskObservers) {
-                getContentResolver().registerContentObserver(Uri.parse("content://"+taskObserver.uri), true, taskObserver);
+            for (TaskObserver taskObserver : taskObservers) {
+                Log.d("SERVICE", ">>>>>>>>>>>>>>>>>> registerContentObserver " + taskObserver.uri);
+                getContentResolver().registerContentObserver(Uri.parse("content://" + taskObserver.uri), true, taskObserver);
             }
             registerReceiver(agendaChangedReceiver, intentFilter);
             if (intent != null && intent.getAction() != null) {
@@ -170,9 +158,29 @@ public class AgendaWidget extends AppWidgetProvider {
         }
     }
 
-    public static void restartService() {
+    public synchronized static void updateTaskObservers() {
+        List<TaskContract> providersInUser = TaskProvider.getProvidersInUse();
+        List<String> taskProviderURIs = new ArrayList<>();
+        for (TaskContract t : providersInUser) {
+            try {
+                if (!t.getProviderURI().isEmpty() && TaskProviderListAdapter.providerExists(t)) {
+                    taskProviderURIs.add(t.getProviderURI());
+                }
+            } catch (SecurityException e) {
+                // Do nothing
+            }
+        }
+
         Context context = AgendaWidgetApplication.getContext();
         context.stopService(new Intent(context, AgendaUpdateService.class));
+
+        AgendaUpdateService.taskObservers = new TaskObserver[taskProviderURIs.size()];
+        int i = 0;
+        for (String uri : taskProviderURIs) {
+            AgendaUpdateService.taskObservers[i] = new TaskObserver(new Handler(), uri);
+            i++;
+        }
+
         context.startService(new Intent(context, AgendaUpdateService.class));
     }
 
@@ -186,9 +194,8 @@ public class AgendaWidget extends AppWidgetProvider {
         widgetUpdateIntent.putExtra(AgendaWidget.ACTION_PROVIDER_REMOVED, true);
         widgetUpdateIntent.putExtra(EXTRA_PACKAGE_NAME, packageName);
 
-        restartService();
+        updateTaskObservers();
         context.sendBroadcast(widgetUpdateIntent);
-
     }
 
     private static void sendUpdate(Context context, Intent intent) {
@@ -214,8 +221,10 @@ public class AgendaWidget extends AppWidgetProvider {
         }
         WidgetValues values = widgetValues.get(appWidgetId);
 
-        if(values.removedProvider != null) {
-            Settings.setPref(context, "taskProvider", appWidgetId, "gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider");
+        if (values.removedProvider != null) {
+            if (Settings.getStringPref(context, "taskProvider", appWidgetId).equals(values.removedProvider)) {
+                Settings.setPref(context, "taskProvider", appWidgetId, "gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider");
+            }
             values.removedProvider = null;
         } else if (values.nextUpdate > currentTime.getTime()) {
             // We need to force an update in case of a removed provider

@@ -7,6 +7,7 @@ import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.*;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
 import gr.ictpro.jsalatas.agendawidget.model.task.providers.NoTaskProvider;
+import gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementListUnion;
 import org.simpleframework.xml.Root;
@@ -67,6 +68,7 @@ public class Settings {
     }
 
     public void saveSettingsValues() {
+        AgendaWidget.updateTaskObservers();
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         for (Setting setting : settings) {
             prefs.putString(setting.getName() + "_" + widgetId, setting.getStringValue());
@@ -103,6 +105,7 @@ public class Settings {
             prefs.remove(setting.getName() + "_" + appWidgetId);
         }
         prefs.apply();
+        AgendaWidget.updateTaskObservers();
     }
 
     Setting<?> getSetting(String name) {
