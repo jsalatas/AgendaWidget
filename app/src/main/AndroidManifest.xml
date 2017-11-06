@@ -3,10 +3,10 @@
           package="gr.ictpro.jsalatas.agendawidget">
 
     <uses-permission android:name="android.permission.READ_CALENDAR"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="org.dmfs.permission.READ_TASKS" />
-    <uses-permission android:name="org.tasks.READ" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="org.dmfs.permission.READ_TASKS"/>
+    <uses-permission android:name="org.tasks.READ"/>
     <uses-permission android:name="org.dayup.gtask.v2.permission.READ_TASKS"/>
 
     <application
@@ -20,8 +20,9 @@
                 android:name="firebase_crash_collection_enabled"
                 android:value="@bool/FIREBASE_CRASH_ENABLED"/>
 
-        <activity android:name=".ui.AgendaWidgetConfigureActivity"
-                  android:theme="@style/AppTheme.NoActionBar">
+        <activity
+                android:name=".ui.AgendaWidgetConfigureActivity"
+                android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
@@ -40,9 +41,10 @@
                     android:resource="@xml/agenda_widget_info"/>
         </receiver>
 
-        <service android:name=".service.AgendaWidgetService"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" >
+        <service
+                android:name=".service.AgendaWidgetService"
+                android:exported="false"
+                android:permission="android.permission.BIND_REMOTEVIEWS">
         </service>
         <service
                 android:name=".ui.AgendaWidget$AgendaUpdateService"
@@ -51,6 +53,10 @@
                 <action android:name="gr.ictpro.jsalatas.agendawidget.action.UPDATE"/>
             </intent-filter>
         </service>
+
+        <activity android:name=".ui.NewEventActivity"
+                  android:theme="@style/AlertDialogTheme">
+        </activity>
     </application>
 
 </manifest>

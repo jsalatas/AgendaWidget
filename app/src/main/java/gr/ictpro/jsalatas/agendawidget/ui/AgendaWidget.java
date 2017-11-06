@@ -237,11 +237,19 @@ public class AgendaWidget extends AppWidgetProvider {
 
         Uri data = Uri.withAppendedPath(Uri.parse("agenda://widget/id/"), String.valueOf(appWidgetId));
 
+        // Bind widget add button
+        Intent newEventIntent = new Intent(context, NewEventActivity.class);
+        newEventIntent.setData(data);
+        newEventIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, newEventIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        views.setOnClickPendingIntent(R.id.imgAdd, pendingIntent);
+
         // Bind widget configuration button
         Intent configIntent = new Intent(context, AgendaWidgetConfigureActivity.class);
         configIntent.setData(data);
         configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         views.setOnClickPendingIntent(R.id.imgSettings, pendingIntent);
 

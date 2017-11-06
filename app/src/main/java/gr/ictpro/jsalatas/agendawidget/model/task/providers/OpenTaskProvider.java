@@ -55,10 +55,16 @@ public class OpenTaskProvider implements TaskContract {
 
     @Override
     public @NonNull
-    Intent getViewIntent(TaskEvent event) {
+    Intent getIntent(TaskEvent event) {
         Uri contentUri = Uri.parse(getTasksURI());
-        Uri uri = ContentUris.withAppendedId(contentUri, event.getId());
-        return new Intent(Intent.ACTION_VIEW).setData(uri);
+        Uri uri;
+        if(event != null) {
+            uri = ContentUris.withAppendedId(contentUri, event.getId());
+        } else {
+            uri = contentUri;
+        }
+
+        return new Intent(event == null? Intent.ACTION_INSERT:Intent.ACTION_VIEW).setData(uri);
     }
 
     @Override

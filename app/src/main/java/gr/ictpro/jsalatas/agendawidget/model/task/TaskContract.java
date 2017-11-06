@@ -27,7 +27,7 @@ public interface TaskContract extends Comparator<EventItem> {
 
     @NonNull String getTasksURI();
 
-    @NonNull Intent getViewIntent(TaskEvent event);
+    @NonNull Intent getIntent(TaskEvent event);
 
     String getTaskListsURI();
 

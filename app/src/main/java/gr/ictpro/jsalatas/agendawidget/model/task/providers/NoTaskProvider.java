@@ -44,7 +44,7 @@ public class NoTaskProvider implements TaskContract {
     }
 
     @Override
-    public @NonNull Intent getViewIntent(TaskEvent event) {
+    public @NonNull Intent getIntent(TaskEvent event) {
         return new Intent();
     }
 

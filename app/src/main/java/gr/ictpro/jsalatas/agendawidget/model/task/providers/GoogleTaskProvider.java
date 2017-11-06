@@ -51,10 +51,16 @@ public class GoogleTaskProvider implements TaskContract {
 
     @Override
     public @NonNull
-    Intent getViewIntent(TaskEvent event) {
-        Uri contentUri = Uri.parse(getTasksURI());
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(ContentUris.withAppendedId(contentUri, event.getId()), "vnd.android.cursor.item/dayup.gtask.task");
+    Intent getIntent(TaskEvent event) {
+        Uri contentUri = Uri.parse(event == null? getBaseURI():getTasksURI());
+        Intent intent = new Intent(event == null? Intent.ACTION_INSERT:Intent.ACTION_VIEW);
+        Uri uri;
+        if(event != null) {
+            uri = ContentUris.withAppendedId(contentUri, event.getId());
+        } else {
+            uri = contentUri;
+        }
+        intent.setDataAndType(uri, "vnd.android.cursor.item/dayup.gtask.task");
 
         return intent;
     }

@@ -51,12 +51,20 @@ public class AstridCloneProvider implements TaskContract {
 
     @Override
     public @NonNull
-    Intent getViewIntent(TaskEvent event) {
+    Intent getIntent(TaskEvent event) {
         Uri contentUri = Uri.parse("content://org.tasks.tasksprovider/tasks");
-        Uri uri = ContentUris.withAppendedId(contentUri, event.getId());
+        Uri uri;
+        if(event != null) {
+            uri = ContentUris.withAppendedId(contentUri, event.getId());
+        } else {
+            uri = contentUri;
+        }
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, "vnd.android.cursor.item/task");
-        intent.putExtra("id", event.getId());
+
+        if(event != null) {
+            intent.putExtra("id", event.getId());
+        }
 
         return intent;
     }

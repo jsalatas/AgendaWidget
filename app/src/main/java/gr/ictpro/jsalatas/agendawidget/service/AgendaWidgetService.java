@@ -229,7 +229,7 @@ class AgendaWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
             if(calendarEvent instanceof TaskEvent) {
                 TaskContract tasks = TaskProvider.getTaskContract(Settings.getStringPref(AgendaWidgetApplication.getContext(), "taskProvider", appWidgetId));
-                v.setOnClickFillInIntent(R.id.viewCalendarEvent, tasks.getViewIntent((TaskEvent) calendarEvent));
+                v.setOnClickFillInIntent(R.id.viewCalendarEvent, tasks.getIntent((TaskEvent) calendarEvent));
             } else {
                 Uri contentUri = CalendarContract.Events.CONTENT_URI;
                 Uri uri = ContentUris.withAppendedId(contentUri, calendarEvent.getId());

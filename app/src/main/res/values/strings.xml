@@ -19,6 +19,9 @@
     <string name="notes">notes</string>
     <string name="priority">priority</string>
     <string name="all_day">all day</string>
+    <string name="add_new">Add New</string>
+    <string name="add_calendar_event">Calendar Event</string>
+    <string name="add_task">Task</string>
 
     <!-- General Settings -->
     <string name="appearance_category">Appearance</string>
@@ -39,7 +42,9 @@
     <string name="today_date_title_color_prop">Today\'s Title and Date Color</string>
     <string name="today_date_title_color_desc">The color of the today\'s events title and date (1st line).</string>
     <string name="today_location_notes_color_prop">Today\'s Location and Notes Color</string>
-    <string name="today_location_notes_color_desc">The color of the today\'s events location and notes (2nd and 3rd lines).</string>
+    <string name="today_location_notes_color_desc">The color of the today\'s events location and notes (2nd and 3rd
+        lines).
+    </string>
     <string name="datettime_format">Date and Time Format</string>
     <string name="long_date_prop">Long Date</string>
     <string name="short_date_prop">Short Date</string>
@@ -55,11 +60,15 @@
     <string name="group_by_date_prop">Group by Date</string>
     <string name="group_by_date_desc">Groups events by date, showing a common date header.</string>
     <string name="repeat_multiday_events_prop">Repeat Multiple Day Events</string>
-    <string name="repeat_multiday_events_desc">If selected multiple day events are repeatedly shown in each day. Otherwise they are shown only in their first day.</string>
+    <string name="repeat_multiday_events_desc">If selected multiple day events are repeatedly shown in each day.
+        Otherwise they are shown only in their first day.
+    </string>
 
     <string name="layout_options_category">Layout Options</string>
     <string name="show_all_day_prop">Indicate All Day Events</string>
-    <string name="show_all_day_desc">When selected, the \"(all day)\" literal will be added next to an event, to explicitly indicate that it is an all day event.</string>
+    <string name="show_all_day_desc">When selected, the \"(all day)\" literal will be added next to an event, to
+        explicitly indicate that it is an all day event.
+    </string>
     <string name="show_location_prop">Show Event\'s Location</string>
     <string name="show_location_desc">Show event\'s location on a separate line.</string>
     <string name="show_notes_prop">Show Event\'s Notes</string>
@@ -80,9 +89,12 @@
     <string name="show_future_tasks_prop">Show Future Tasks</string>
     <string name="show_future_tasks_desc">Shows tasks that have not started yet.</string>
     <string name="use_calendar_search_period_prop">Use Calendar\'s Search Period</string>
-    <string name="use_calendar_search_period_desc">When selected, it will not display tasks with both start and due dates after the search period.</string>
+    <string name="use_calendar_search_period_desc">When selected, it will not display tasks with both start and due
+        dates after the search period.
+    </string>
     <string name="use_calendar_layout_options_prop">Use Calendar\'s Layout Options</string>
-    <string name="use_calendar_layout_options_desc">Use same layout options with calendar events when applicable.</string>
+    <string name="use_calendar_layout_options_desc">Use same layout options with calendar events when applicable.
+    </string>
 
     <!-- datetime format dialog -->
     <string name="full_format">Full</string>
