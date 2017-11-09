@@ -22,6 +22,7 @@ import gr.ictpro.jsalatas.agendawidget.model.settings.TaskProviderListAdapter;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskContract;
 import gr.ictpro.jsalatas.agendawidget.model.task.TaskProvider;
 import gr.ictpro.jsalatas.agendawidget.service.AgendaWidgetService;
+import gr.ictpro.jsalatas.agendawidget.utils.DateUtils;
 
 import java.util.*;
 
@@ -37,6 +38,7 @@ public class AgendaWidget extends AppWidgetProvider {
 
     public static class WidgetValues {
         public long nextUpdate = 0;
+        public long lastUpdate = 0;
         String removedProvider = null;
     }
 
@@ -223,10 +225,17 @@ public class AgendaWidget extends AppWidgetProvider {
             }
             values.removedProvider = null;
         } else if (values.nextUpdate > currentTime.getTime()) {
-            // We need to force an update in case of a removed provider
-            // no need to update
-            return;
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTimeInMillis(values.lastUpdate);
+            if (DateUtils.isInSameDay(currentTime, calendar.getTime())) {
+                // We need to force an update in case of a removed provider
+                // no need to update
+                return;
+            }
         }
+
+
+        values.lastUpdate = currentTime.getTime();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.agenda_widget);
 
@@ -330,6 +339,7 @@ public class AgendaWidget extends AppWidgetProvider {
                         widgetValues.put(appWidgetId, new WidgetValues());
                     }
                     widgetValues.get(appWidgetId).nextUpdate = 0;
+                    widgetValues.get(appWidgetId).lastUpdate = 0;
                 }
             }
         }
