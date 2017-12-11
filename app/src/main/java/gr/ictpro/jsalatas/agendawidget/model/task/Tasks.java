@@ -62,8 +62,6 @@ public class Tasks {
 
         refreshTaskList(appWidgetId);
 
-        String selectedAccountsFilter = tasks.getAccountsFilter(appWidgetId);
-
         Date now = GregorianCalendar.getInstance().getTime();
 
         TimeZone tzLocal = TimeZone.getDefault();
@@ -79,12 +77,6 @@ public class Tasks {
         Date selectedRangeEnd = DateUtils.dayEnd(calendarInstance.getTime());
 
         final ContentResolver cr = AgendaWidgetApplication.getContext().getContentResolver();
-
-
-        String taskFilter = tasks.getTaskFilter(selectedRangeStart, selectedRangeEnd, appWidgetId);
-
-        String selection = "(" + selectedAccountsFilter + ") AND (" + (taskFilter == null ? " 1=1": taskFilter) + ")"
-                + (tasks.getExtraFilter() != null? tasks.getExtraFilter() : "");
 
         final Uri uri = Uri.parse(tasks.getTasksURI());
         Cursor cur = cr.query(uri, tasks.getEventSelectFields(), tasks.getTaskFilter(selectedRangeStart, selectedRangeEnd, appWidgetId), tasks.getTaskFilterArgs(), null);

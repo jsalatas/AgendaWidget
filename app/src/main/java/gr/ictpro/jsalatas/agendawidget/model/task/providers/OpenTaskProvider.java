@@ -238,7 +238,7 @@ public class OpenTaskProvider implements TaskContract {
     public String getAccountsFilter(int appWidgetId) {
         String[] tasksList = Settings.getStringPref(AgendaWidgetApplication.getContext(), "tasks", appWidgetId).split("@@@");
         StringBuilder sb = new StringBuilder();
-        String selectedAccountsFilter =" 1 = 1 ";
+        String selectedAccountsFilter ="(1 = 1)";
         if(getItemListId() != null) {
             if (tasksList.length > 0 && !tasksList[0].isEmpty()) {
                 for (String task : tasksList) {
@@ -248,8 +248,7 @@ public class OpenTaskProvider implements TaskContract {
                     }
                     sb.append(getItemListId()).append(" = ").append(task);
                 }
-
-                selectedAccountsFilter = sb.toString();
+                selectedAccountsFilter = "(" + sb.toString() +")";
             }
         }
         return selectedAccountsFilter;
@@ -284,6 +283,8 @@ public class OpenTaskProvider implements TaskContract {
         calendarInstance.setTimeInMillis(cursor.getLong(5));
         Date endDate = calendarInstance.getTime();
         int priority = cursor.getInt(7);
+
+        String[] tasksList = Settings.getStringPref(AgendaWidgetApplication.getContext(), "tasks", appWidgetId).split("@@@");
 
         return new TaskEvent(id, color, title, location, description, startDate, endDate, allDay, priority);
     }
@@ -370,6 +371,8 @@ public class OpenTaskProvider implements TaskContract {
                 .append(getItemCompleted()).append("=0")
                 .append(")");
 
+        sb.append(" AND ");
+        sb.append(getAccountsFilter(appWidgetId));
         return sb.toString();
     }
 
