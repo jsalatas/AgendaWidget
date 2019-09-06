@@ -179,7 +179,7 @@ public class AgendaWidget extends AppWidgetProvider {
             i++;
         }
 
-        context.startService(new Intent(context, AgendaUpdateService.class));
+        context.startForegroundService(new Intent(context, AgendaUpdateService.class));
     }
 
     private static void updateTaskProviders(Context context, String packageName) {
@@ -358,7 +358,7 @@ public class AgendaWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
-        context.startService(new Intent(context, AgendaUpdateService.class));
+        context.startForegroundService(new Intent(context, AgendaUpdateService.class));
     }
 
     @Override
