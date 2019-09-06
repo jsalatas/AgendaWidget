@@ -20,6 +20,11 @@
           android:orderInCategory="200"
           app:showAsAction="never"
           android:title="@string/restore"/>
+    <item android:id="@+id/action_privacy"
+            android:orderInCategory="200"
+            app:showAsAction="never"
+            android:title="@string/privacy"/>
+
 
 </menu>
 

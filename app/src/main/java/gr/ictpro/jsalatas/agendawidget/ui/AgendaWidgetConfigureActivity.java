@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
@@ -147,6 +148,10 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                     int resId = R.drawable.ic_dialog_error;
                     showAlert(resId, dialogTitle, dialogText);
                 }
+                break;
+            case R.id.action_privacy:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://jsalatas.ictpro.gr/AgendaWidget_Privacy_Policy.html"));
+                startActivity(browserIntent);
                 break;
             default:
                 return super.onOptionsItemSelected(item);

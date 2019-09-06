@@ -129,6 +129,7 @@
     <string name="backup_failed">Backup Failed</string>
     <string name="restore_failed">Restore Failed</string>
     <string name="error_occurred">An error has occurred:</string>
+    <string name="privacy">Privacy Statement</string>
 
 
 </resources>
