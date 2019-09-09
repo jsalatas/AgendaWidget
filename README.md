@@ -21,5 +21,6 @@ support these :)
 That's why I'm releasing the code under the MIT License. Forking and relisencing is highly recommended, 
 although pull requests are also welcomed. :)
 
- Github repo:  
+Google Play: https://play.google.com/store/apps/details?id=gr.ictpro.jsalatas.agendawidget
+
  
