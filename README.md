@@ -11,8 +11,8 @@ these in various ways. It is highly customizable I would say, so I believe it mi
 as well. 
 
 It can connect to android's calendar system and the following task providers
-- Open Tasks (compatible with owncloud's and nextcloud's task apps)
-- Astrid Clone
+- [Open Tasks](https://github.com/dmfs/opentasks) (compatible with owncloud's and nextcloud's task apps)
+- [Astrid Clone](https://github.com/tasks/tasks)
 - GTasks
 
 but in practice I'm only using Open Tasks, so the other two might not even work and I'm not willing to 
