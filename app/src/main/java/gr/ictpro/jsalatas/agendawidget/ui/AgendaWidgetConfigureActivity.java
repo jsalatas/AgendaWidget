@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.TabLayout;
 import android.view.*;
 import android.widget.ListView;
+import android.widget.Toast;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.*;
@@ -115,6 +116,20 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, AgendaWidget.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetId});
                 intent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
+
+                if (Settings.getStringPref(this, "calendars", widgetId).isEmpty()) {
+                    if (AgendaWidgetConfigureActivity.checkForPermission(this, Manifest.permission.READ_CALENDAR, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR)) {
+                        // TODO: Needs better handling
+                        //       if the application doesn't have read calendart permissions,
+                        //       the toast will be shown by the AgendaWidget#AgendaUpdateService.
+                        Toast toast = Toast.makeText(this, this.getString(R.string.select_calendars), Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
+                    // Don't close settings activity if the user hasn't selected any calendar
+                    return false;
+                }
+
                 sendBroadcast(intent);
 
                 // create the return intent
@@ -205,7 +220,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
             }
             case PERMISSIONS_REQUEST_TASK_PROVIDER: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(pendingPermissionsSettingsDialog != null) {
+                    if (pendingPermissionsSettingsDialog != null) {
                         pendingPermissionsSettingsDialog.cancel();
                     }
                     Fragment f = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
@@ -261,7 +276,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         String dialogTitle;
         String dialogText;
         int resId;
-        if(data == null) {
+        if (data == null) {
             return;
         }
         try {

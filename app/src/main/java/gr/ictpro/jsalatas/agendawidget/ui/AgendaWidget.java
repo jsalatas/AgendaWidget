@@ -12,9 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.CalendarContract;
-import android.util.Log;
 import android.util.SparseArray;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 import gr.ictpro.jsalatas.agendawidget.R;
 import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.Settings;
@@ -125,7 +125,12 @@ public class AgendaWidget extends AppWidgetProvider {
 
         @Override
         public void onDestroy() {
-            unregisterReceiver(agendaChangedReceiver);
+            try {
+                unregisterReceiver(agendaChangedReceiver);
+            } catch (IllegalArgumentException e) {
+                // java.lang.IllegalArgumentException: Receiver not registered: gr.ictpro.jsalatas.agendawidget.ui.AgendaWidget$AgendaUpdateService
+                // do nothing
+            }
             for (TaskObserver taskObserver : taskObservers) {
                 getContentResolver().unregisterContentObserver(taskObserver);
             }
@@ -135,7 +140,14 @@ public class AgendaWidget extends AppWidgetProvider {
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
-            getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
+            try {
+                getContentResolver().registerContentObserver(CalendarContract.Events.CONTENT_URI, true, calendarObserver);
+            } catch (SecurityException e) {
+                // java.lang.SecurityException: Permission Denial: opening provider com.android.providers.calendar.CalendarProvider2
+                Context context = AgendaWidgetApplication.getContext();
+                Toast toast = Toast.makeText(context, context.getString(R.string.select_calendars), Toast.LENGTH_LONG);
+                toast.show();
+            }
             for (TaskObserver taskObserver : taskObservers) {
                 getContentResolver().registerContentObserver(Uri.parse("content://" + taskObserver.uri), true, taskObserver);
             }
@@ -179,7 +191,8 @@ public class AgendaWidget extends AppWidgetProvider {
             i++;
         }
 
-        context.startForegroundService(new Intent(context, AgendaUpdateService.class));
+            context.startForegroundService(new Intent(context, AgendaUpdateService.class));
+            context.startService(new Intent(context, AgendaUpdateService.class));
     }
 
     private static void updateTaskProviders(Context context, String packageName) {
@@ -353,12 +366,6 @@ public class AgendaWidget extends AppWidgetProvider {
             Settings.deletePrefs(context, appWidgetId);
             widgetValues.remove(appWidgetId);
         }
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-        context.startForegroundService(new Intent(context, AgendaUpdateService.class));
     }
 
     @Override

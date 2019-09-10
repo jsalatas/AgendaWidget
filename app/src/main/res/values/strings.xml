@@ -22,6 +22,7 @@
     <string name="add_new">Add New</string>
     <string name="add_calendar_event">Calendar Event</string>
     <string name="add_task">Task</string>
+    <string name="select_calendars">Please grant the permission to read calendar events and select some calendars to display!</string>
 
     <!-- General Settings -->
     <string name="appearance_category">Appearance</string>

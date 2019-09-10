@@ -69,6 +69,10 @@ public class Calendars {
         refreshCalendarList();
 
         String[] calendarsList = Settings.getStringPref(AgendaWidgetApplication.getContext(), "calendars", appWidgetId).split("@@@");
+        if (calendarsList.length == 1 && calendarsList[0].isEmpty()) {
+            return calendarEvents;
+        }
+
         StringBuilder sb = new StringBuilder();
         for (String calendar : calendarsList) {
             if (!sb.toString().isEmpty()) {
