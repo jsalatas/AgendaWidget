@@ -191,8 +191,8 @@ public class AgendaWidget extends AppWidgetProvider {
             i++;
         }
 
-            context.startForegroundService(new Intent(context, AgendaUpdateService.class));
-            context.startService(new Intent(context, AgendaUpdateService.class));
+        context.startForegroundService(new Intent(context, AgendaUpdateService.class));
+        context.startService(new Intent(context, AgendaUpdateService.class));
     }
 
     private static void updateTaskProviders(Context context, String packageName) {

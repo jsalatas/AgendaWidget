@@ -23,7 +23,7 @@ public class CalendarSelectionDialog extends SettingDialog<String> {
 
     @Override
     public void show() {
-        if (AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(this.getContext()), Manifest.permission.READ_CALENDAR, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR)) {
+        if (AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(this.getContext()), Manifest.permission.READ_CALENDAR, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR, false)) {
             super.show();
             loadCalendars();
         } else {

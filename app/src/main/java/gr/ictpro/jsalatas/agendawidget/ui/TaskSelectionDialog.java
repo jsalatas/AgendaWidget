@@ -25,7 +25,7 @@ public class TaskSelectionDialog extends SettingDialog<String> {
     @Override
     public void show() {
         TaskContract tasks = getTaskProvider();
-        if (AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(this.getContext()),tasks.getPermissions(), AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK)) {
+        if (AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(this.getContext()),tasks.getPermissions(), AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK, false)) {
             super.show();
             loadTasks();
         } else {
@@ -72,7 +72,7 @@ public class TaskSelectionDialog extends SettingDialog<String> {
     @Override
     protected String getSetting() {
         TaskContract tasks = getTaskProvider();
-        AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(this.getContext()),tasks.getPermissions(), AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK);
+        AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(this.getContext()),tasks.getPermissions(), AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_TASK, false);
         ListView l = (ListView) findViewById(R.id.lst_calendars_selection);
         StringBuilder selected = new StringBuilder();
         SparseBooleanArray checked = l.getCheckedItemPositions();

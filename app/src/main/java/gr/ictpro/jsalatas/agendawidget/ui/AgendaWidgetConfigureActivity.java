@@ -34,7 +34,7 @@ import gr.ictpro.jsalatas.agendawidget.ui.widgets.SettingDialog;
  */
 public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     static final int PERMISSIONS_REQUEST_READ_CALENDAR = 1;
-    private static final int PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE = 2;
+    public static final int PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE = 2;
     static final int PERMISSIONS_REQUEST_READ_TASK = 3;
     private static final int BACKUP_FILE_WRITE = 4;
     private static final int BACKUP_FILE_READ = 5;
@@ -118,7 +118,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
                 intent.putExtra(AgendaWidget.ACTION_FORCE_UPDATE, true);
 
                 if (Settings.getStringPref(this, "calendars", widgetId).isEmpty()) {
-                    if (AgendaWidgetConfigureActivity.checkForPermission(this, Manifest.permission.READ_CALENDAR, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR)) {
+                    if (AgendaWidgetConfigureActivity.checkForPermission(this, Manifest.permission.READ_CALENDAR, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_READ_CALENDAR, false)) {
                         // TODO: Needs better handling
                         //       if the application doesn't have read calendart permissions,
                         //       the toast will be shown by the AgendaWidget#AgendaUpdateService.
@@ -240,7 +240,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     }
 
     private void saveSettings(String filename) {
-        if (!checkForPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE)) {
+        if (!checkForPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE, false)) {
             //Insist
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
             return;
@@ -256,7 +256,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
     }
 
     private void loadSettings() {
-        if (!checkForPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE)) {
+        if (!checkForPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE, false)) {
             //Insist
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE);
             return;
@@ -321,7 +321,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    static boolean checkForPermission(Activity context, String permission, int requestCode) {
+    public static boolean checkForPermission(Activity context, String permission, int requestCode, boolean justCheck) {
         if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
 
             String[] permissions;
@@ -330,7 +330,7 @@ public class AgendaWidgetConfigureActivity extends AppCompatActivity {
             } else {
                 permissions = new String[]{permission};
             }
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context, permission)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, permission) || justCheck) {
                 return false;
             } else {
                 ActivityCompat.requestPermissions(context, permissions, requestCode);

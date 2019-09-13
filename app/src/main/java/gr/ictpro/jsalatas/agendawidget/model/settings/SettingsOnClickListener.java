@@ -1,13 +1,16 @@
 package gr.ictpro.jsalatas.agendawidget.model.settings;
 
+import android.Manifest;
 import android.app.WallpaperManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.AdapterView;
+import gr.ictpro.jsalatas.agendawidget.application.AgendaWidgetApplication;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.Setting;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingBool;
 import gr.ictpro.jsalatas.agendawidget.model.settings.types.SettingTransparentColor;
+import gr.ictpro.jsalatas.agendawidget.ui.AgendaWidgetConfigureActivity;
 
 public class SettingsOnClickListener implements AdapterView.OnItemClickListener {
     private final Settings settings;
@@ -28,9 +31,14 @@ public class SettingsOnClickListener implements AdapterView.OnItemClickListener 
                 ((SettingTransparentColor) setting).setBackground(null);
             } else if (setting.getName().equals("backgroundColor")) {
                 ((SettingTransparentColor) setting).setTransparent(false);
-                final WallpaperManager wallpaperManager = WallpaperManager.getInstance(view.getContext());
-                final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
-                ((SettingTransparentColor) setting).setBackground(wallpaperDrawable);
+                // TODO: needs permission to read external storage
+                //       properly ask for permission, before showing
+                //       the background color picker.
+                if (AgendaWidgetConfigureActivity.checkForPermission(AgendaWidgetApplication.getActivity(view.getContext()), Manifest.permission.READ_EXTERNAL_STORAGE, AgendaWidgetConfigureActivity.PERMISSIONS_REQUEST_ACCESS_EXTERNAL_STORAGE, true)) {
+                    final WallpaperManager wallpaperManager = WallpaperManager.getInstance(view.getContext());
+                    final Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+                    ((SettingTransparentColor) setting).setBackground(wallpaperDrawable);
+                }
             }
         }
 
